@@ -15,16 +15,16 @@ sangmoon 이 오늘 새로 배운 것을 다음의 규칙으로 commit 합니다
 $ [sudo] gem install gollum
 ```
 
-# pow는 mac 전용으로 gollum만을 사용하겠다.
+# pow는 mac 전용으로 gollum만 사용하겠습니다....
 
-### pow 설치 및 제거
+### ~~pow 설치 및 제거~~
 ```bash
 $ curl get.pow.cx | sh
 
 $ curl get.pow.cx/uninstall.sh | sh
 ```
 
-### 사용법
+### ~~사용법~~
 다음 설정을 하고 브라우저에서 [http://til.wiki.dev/](http://til.wiki.dev/)로 접속한다.
 
 ```bash
@@ -32,5 +32,5 @@ $ cd ~/.pow
 $ ln -s path/to/this_local_repo til.wiki
 ```
 
-### Anvil 설치
+### ~~Anvil 설치~~
 GUI pow 관리툴 Anvil [http://anvilformac.com/](http://anvilformac.com/)
