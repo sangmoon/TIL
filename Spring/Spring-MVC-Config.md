@@ -10,7 +10,7 @@
 하지만 xml파일은 가독성이 떨어지고 디버깅이 어려운 단점이 있다. 그래서 Spring3.1 이후로 java-based 설정이 추가되었다.
 
 ```xml
-//web-context.xml
+<!-- web-servlet.xml -->
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
