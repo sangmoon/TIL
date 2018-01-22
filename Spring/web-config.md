@@ -1,6 +1,6 @@
 2018/01/19
 
-``WebConfig`` 설정을 알아보자. WebConfig가 상속받는 abstract class는 다음 ``WebMvcConfigurerAdapter`` 이다. <br>
+``WebConfig`` 설정을 알아보자. ``servlet.xml``을 대체하는 java class이다. WebConfig가 상속받는 abstract class는 다음 ``WebMvcConfigurerAdapter`` 이다. <br>
 이 abstract class는 ``WebMvcConfigurer`` 라는 interface를 구현했는데 이는 원하는 method만 override하면 실행되도록 하기 위함이다. <br>
 해당 method가 어떤 설정에 해당하는지 알아보자.
 [spring docs](http://docs.spring.io/spring/docs/4.3.0.RC2/spring-framework-reference/htmlsingle/#mvc-config-enable)
