@@ -4,12 +4,10 @@
 
 1. Bean으로 부터 유저 정보 얻기
 ``SecurityConytextHolder``  로 부터 현재 인증된 principal을 얻을 수 있다.
-
 ```java
 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 String currentPrincipalName = authentication.getName();	
 ```
-
 체크하기 전에 유저가 있는지 체크할 수 있다.
 ```java
 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -18,7 +16,6 @@ if (!(authentication instanceof AnonymousAuthenticationToken)) {
     return currentUserName;
 }
 ```
-
 하지만 static call은 좋지 않다... 
 
 2. 컨트롤러에서는 ``(@Controller)`` 추가적인 방법이 가능하다. ``Principal`` 에 method argument로 접근이 가능하다.
@@ -39,7 +36,6 @@ public class SecurityController {
     }
 }
 ```
-
 ``authentication`` token 으로 접근 할 수도 있다.
 ```java
 import org.springframework.security.core.Authentication;
@@ -58,7 +54,6 @@ public class SecurityController {
     }
 }
 ```
-
 HTTP request로 부터 직접 접근도 가능하다.
 ```java
 import java.security.Principal;
@@ -96,7 +91,6 @@ public class AuthenticationFacade implements IAuthenticationFacade {
     }
 }
 ```
-
 DI를 활용해 다음과 같이 decoupled 시켜서 스프링의 장점을 활용할 수 있다.
 ```java
 @Controller
@@ -134,5 +128,7 @@ public class SecurityController {
 그러면 위와 같이 접근 할 수 있다.
 
 다음 두 곳을 참조하였다.
+
 [Baeldung](http://www.baeldung.com/get-user-in-spring-security)
+
 [github-project](https://github.com/eugenp/tutorials/tree/master/spring-security-rest-custom#readme)
