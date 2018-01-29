@@ -108,17 +108,12 @@ public class SecurityController {
 ```
 
 4. JSP 에서는 어떻게 가져오지?
-
-현재 인증 정보는 JSP에서 접근 할 수도 있다.
-
+현재 인증 정보는 JSP에서 접근 할 수도 있다. <br>
 우선 ``spring-security-taglib``를 pom.xml에 추가하고
-
 ```jsp 
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 ```
-
 라고 jsp에 include하면 된다.
-
 ```jsp
 <security:authorize access="isAuthenticated()">
     authenticated as <security:authentication property="principal.username" /> 
