@@ -8,7 +8,7 @@ select user, host from mysql.users
 기존 유저에 변경하려다가 잘 안되서 그냥 현재 ip에 새로운 유저를 등록하고 권한을 주기로 함.
 ```sql
 mysql -u root -p
-mysql> CREATE USER 'username'@'1.2.3.4' IDENTIFIED BY 'password';
-    -> GRANT ALL PRIVILEGES ON *.* TO 'username'@'1.2.3.4' WITH GRANT OPTION;
+mysql> CREATE USER 'username'@'host' IDENTIFIED BY 'password';
+    -> GRANT ALL PRIVILEGES ON *.* TO 'username'@'host' WITH GRANT OPTION;
 ```
 [참조 stackoverflow](https://stackoverflow.com/questions/7864276/cannot-connect-to-database-server-mysql-workbench)
