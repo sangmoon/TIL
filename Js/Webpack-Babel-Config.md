@@ -26,7 +26,7 @@ We should check 3 files. ``package.json`` ``webpack.config.js`` ``.babelrc``
 }
 ```
 
-```json
+```js
 var path = require('path');
 
 module.exports = {
