@@ -19,7 +19,7 @@ public class Researcher implements Employee{
 	}
 }
 
-abstract public class EmployeeDecorator extends Employee{
+abstract public class EmployeeDecorator implements Employee{
 	protected Emplyee decoratedEmployee;
 
 	public EmplyeeDecorator(Employee decoratedEmployee){
