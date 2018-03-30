@@ -12,7 +12,7 @@
 
 - ``remote proxy``: 다른 주소 공간에 있는 real subject로 request를 중계한다.
 - ``virtual proxy``: real subject에 대한 추가 정보를 cache 해서 real object 생성을 최대한 연기한다.
-- ``protection proxy``: caller가 권한이 있는지 체크한다.
+- ``protection proxy``: caller가 권한이 있는지 체크한다. ``real subject``는 기능에만 충실
 
 ### Implementation <br>
 ```java
