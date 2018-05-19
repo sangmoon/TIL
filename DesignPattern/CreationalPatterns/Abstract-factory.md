@@ -9,7 +9,7 @@ Provide an interface  for creating families of related or dependent objects with
 ```java
 //StarBucksFactory.java
 public interface StarBucksFactory{
-
+	public Coffee makeCoffe();
 }
 
 public class KoreaStarBucksFactory implements StarBucksFactory{
