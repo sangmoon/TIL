@@ -38,3 +38,8 @@ Container 삭제
 ```shell
 docker rm [container id | container name]
 ```
+
+Container shell로 들어가기
+```shell
+docker exec -it [container id| container name] /bin/bash
+```
