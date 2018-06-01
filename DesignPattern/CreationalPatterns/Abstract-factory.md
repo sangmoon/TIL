@@ -103,11 +103,11 @@ public class client{
 
 		//...
 	}
-}
+} 
 ```
 
 ```java
-ublic class APPLEPhoneFactory implements PhoneFactory{
+public class APPLEPhoneFactory implements PhoneFactory{
 	public Frame createFrame(){
 		return new APPLEFrame();
 	}
@@ -124,13 +124,11 @@ public class client{
 	public static void main(String[] args){
 		PhnoeFactory aPPLEPhoneFactory = new APPLEPhoneFactory();
 		Phone phone = aPPLEPhoneFactory.createPhone();
+
+		phone.call();
 		//...
 	}
 }
-```
-
-```java
-
 ```
 
 ### Consequences <br>
@@ -138,4 +136,3 @@ public class client{
 2. product families 교환을 쉽게 한다.
 3. 같은 상속을 받는 product 간 consistency를 증가시킨다.
 4. 새로운 product의 추가는 어려워진다.
-5. 새로운 factory의 추가는 쉽다.
