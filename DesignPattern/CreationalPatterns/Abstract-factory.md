@@ -1,15 +1,13 @@
 ## Abstract Factory Pattern
 
 ### Intent <br>
-Provide an interface  for creating families of related or dependent objects without specifying their concrete classes.
-제품군을 만들 때 사용한다.
+관련성 있는 어려 종류의 객체를 특정 그룹으로 묶어 한번에 일관된 방식으로 생성하고 교체할 수 있도록 만든 디자인 패턴이다.
 
 
 ### Implementation <br>
 ```java
 // factory method 사용할 경우
 public enum VenderID{LG, SAMSUNG, APPLE}
-
 
 public class ScreenFactory{
 	public static Screen createScreen(VendorID vendorID){
@@ -46,7 +44,6 @@ public class FrameFactory{
 	}
 }
 
-
 public class client{
 	public static void main(String[] args){
 		Frame frame = FrameFactory.createFrame(VendorID.APPLE);
@@ -59,6 +56,7 @@ public class client{
 }
 ```
 제조사에 화웨이나 소니 등 다른 업체가 추가되면 각각 팩토리의 switch 문을 수정해야 한다. 
+어차피 객체 사이에 연관성이 있지 않냐?? 한번에 모아서 만들자.
 
 ```java
 public enum VenderID{LG, SAMSUNG, APPLE}
@@ -91,14 +89,15 @@ public class APPLEPhoneFactory implements PhoneFactory{
 		return new APPLEFrame();
 	}
 	public Screen createScreen(){
-		return new APPLESCreen();
+		return new APPLEScreen();
 	}
 }
 
 public class client{
 	public static void main(String[] args){
-		Frame frame = APPLEPhoneFactory.createFrame();
-		Screen screen = APPLEPhoneFactory.createScreen();
+		PhnoeFactory aPPLEPhoneFactory = new APPLEPhoneFactory();
+		Frame frame = aPPLEPhoneFactory.createFrame();
+		Screen screen = aPPLEPhoneFactory.createScreen();
 
 		Phone phone = new PhoneBuilder(VendorID.APPLE).setFrame(frame).setScreen(screen).build();
 
@@ -106,6 +105,34 @@ public class client{
 	}
 }
 ```
+
+```java
+ublic class APPLEPhoneFactory implements PhoneFactory{
+	public Frame createFrame(){
+		return new APPLEFrame();
+	}
+	public Screen createScreen(){
+		return new APPLEScreen();
+	}
+
+	public Phone createPhone(){
+		return new IPhone().setFrame(this.createFrame()).setScreen(this.createScreen());
+	}
+}
+
+public class client{
+	public static void main(String[] args){
+		PhnoeFactory aPPLEPhoneFactory = new APPLEPhoneFactory();
+		Phone phone = aPPLEPhoneFactory.createPhone();
+		//...
+	}
+}
+```
+
+```java
+
+```
+
 ### Consequences <br>
 1. concrete classes 들을 숨긴다.
 2. product families 교환을 쉽게 한다.
