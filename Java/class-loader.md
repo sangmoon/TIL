@@ -36,7 +36,7 @@ class-loader의 동작을 살펴보자.
 ``delegation principle``
 `` java.lang.ClassLoader.loadClass()``  method는 runtime에  class definition을 loading 책임이 있다.
 1. 이미 loading 되어 있는지 확인하고(``findLoadedClass(name)``)
-2. loading 안 됐으면 부모 loader에게 위임한다. (``parent.loadClass(name, false)``)
+2. loading 안 됐으면 부모 loader에게 위임한다. (``parent.loadClass(name, false)`` or ```findBootstrapClassOrNull(name)`)
 3. recursive하게 부모의 부모에게 가는데, 부모에게 서 찾을 수 없으면 자기 자신의 classpath에서 찾아 본다.(``finClass(name)``)
 찾지 못할 경우 ``ClassNotFoundException``을 뱉어낸다.
 
@@ -48,4 +48,11 @@ class-loader의 동작을 살펴보자.
 
 코너 케이스로 JNDI의 경우 core class 는  bootstrap loader 에 의해 load 되지만, 이 core class들이 JNDI provider 를 load 해야 할 수 있습니다. JNDI provider는 
 보통 classpath에 등록되어 application class loader의 담당이므로 부모 loader가 자식 class loader에서 class를 찾아야 합니다.
-일반적인 delegation model로는 풀 수 없으며 이 경우 thread context loader를 이용하여 hierachy 를 tunneling 합니다.  
+일반적인 delegation model로는 풀 수 없으며 이 경우 thread context loader를 이용하여 hierachy 를 tunneling 합니다.
+
+## 추가 조사 할 것
+- defineClass
+- findClass
+- loadClass
+동 메소드..
+sync or pararrel class load
