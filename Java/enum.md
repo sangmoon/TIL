@@ -21,7 +21,7 @@ public enum Season{
 }
 ```
 
-이를 컴파일 할 경우 
+이를 컴파일 할 경우
 
 ```java
 public final enum Season {
@@ -68,4 +68,4 @@ public final class Season extends Enum<Season>{
 enum은 결국 final class가 되므로 상속이 불가능하고, 선언한 변수들 또한 static final이기 때문에 ``static{}``  이 부분에서 초기화되고
 수정이 불가능하다. instance가 1개로 제한되므로 오류의 경우가 줄어든다.
 
-참조: https://docs.oracle.com/javase/7/docs/api/java/lang/Enum.html
+참조: [oracle docs](https://docs.oracle.com/javase/7/docs/api/java/lang/Enum.html)

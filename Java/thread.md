@@ -54,12 +54,37 @@ Lock and Conditions
 monitor 객체: lock &n unlock의 대상
 wait으로 기다리고, notify로 wait하고 있는 놈 중 하나를 깨운다.
 
-Spurious wakeup
-notify가 없어도 wait이 깨어날 수 있다.
-
 1. interrupt 발생한 경우
-2. wait_timeout 발생시
-3. spurious wakeup
+2. notify 받는 경우
+3. wait_timeout 발생시
+4. ``spurious wakeup``
 
-항상 condition check를 해야 한다.
+Spurious wakeup
+notify가 없어도 wait이 깨어날 수 있다... 이 것을 대비해서 코드를 짜야한다.
 
+Hotspot JVM에서 lock 구현
+2-word object header(array는 3word)
+1st word: mark word (unsed by sync, gc, cache and hashCode)
+
+park, unpark
+1bit의 state 갖는다. 알 필요가 있는가..?
+
+Java memory model
+
+- Atomicity
+  - java long과 double 제외한 모든 data field 에 대한 update는 atomic
+  - volatile 로 선언되면 모든 field가 atomic
+- Visibility
+  - 한 쓰레드에서 이루어진 data field update를 다른 쓰레드에서 보는 걸 보장하려면
+  - 두 쓰레드가 lock 공유하거나
+  - 해당 필드가 volatile로 선언되거나
+  - 읽는 쓰레드가 해당 필드를 처음 접근할 때
+  - thread가 종료될 때는 flush 되므로 join을 통해 기다리는 thread는 종료 thread의 write를 모두 읽을 수 있다.
+- Ordering
+  - lock 혹은 volatile을 제외하면 컴파일러에 의한 어떤 reordering도 가능
+
+volatile
+Volatile 필드에 접근하는 서로 다른 쓰레드들 간에 happens-before 관계가 성립해야함
+
+- volatile 필드에 write하면 해당 쓰레드의 모든 변수들을 flush하는 효과가 있어야 함
+- volatile 필드에 read할 때에도 cache 값이 invalidate 되어야 함

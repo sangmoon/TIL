@@ -1,15 +1,17 @@
+# nested-class
 
 class 내부에 class를 정의한 것을 nested class라고 한다.
 
 1. inner class
 2. method local inner class
 3. anonymous inner class
-4. static nested class 
+4. static nested class
 
 4 종류가 있다. 1 ~ 3 은 non-static, 4는 static class 이다.
 
 ``inner class``(member inner class)의 경우 inner class를 private 로 선언하여도
 outer class에서 inner에 접근이 가능하며, inner 에서도 outer의 private 멤버에 접근 가능하다.
+
 ```java
 class Outer{
     //...
@@ -18,7 +20,11 @@ class Outer{
     }
 }
 ```
+
+LinkedList class 내의 ListItr class가 한 예이다.
+
 ``method-local Inner class`` 는 외부 class의 method에 내부 class를 정의하여 사용 한다.
+
 ```java
 class Outer{
     //...
@@ -35,8 +41,10 @@ class Outer{
     //...
 }
 ```
+
 ``anonymous Inner class``는 클래스의 선언과 초기화를 동시에 하는 방식이다. class나 interface의 method를 override 할 때 보통 사용한다.
 Android 할 때 button eventListener 만들 때 이런 식으로 했던 것 같다.
+
 ```java
 abstract class AnonymousInner {
    public abstract void mymethod();
@@ -50,12 +58,15 @@ public class Outer_class {
             System.out.println("This is an example of anonymous inner class");
          }
       };
-      inner.mymethod();	
+      inner.mymethod();
    }
 }
 ```
 
+compile 과정에서 자동으로 class를 생성해주기 때문에 코드량이 많이 줄어든다.
+
 ``static nested class`` 는 outer class의 static member이다. 초기화 없이 접근할 수 있다.
+
 ```java
 public class Outer {
    static class Nested_Demo {
@@ -63,12 +74,14 @@ public class Outer {
          System.out.println("This is my nested class");
       }
    }
-   
+
    public static void main(String args[]) {
-      Outer.Nested_Demo nested = new Outer.Nested_Demo();	 
+      Outer.Nested_Demo nested = new Outer.Nested_Demo();
       nested.my_method();
    }
 }
 ```
 
-https://www.tutorialspoint.com/java/java_innerclasses.htm
+이 방식은 singleton object를 만들 때 enum이나 DCL보다 간편해서 많이 쓰인다.
+
+참조 [tutorialspoint 링크](https://www.tutorialspoint.com/java/java_innerclasses.htm)
