@@ -1,4 +1,4 @@
-java.util.Collection
+# java.util.Collection
 
 - List 중복 허용
 - Set, SortedSet, NavigableSet 중복 불가

@@ -1,4 +1,7 @@
+# Access modifier
+
 java 에는 4개의 access modifier 가 있다.
+
 1. public ()
 2. protected
 3. default(package private)
@@ -8,15 +11,15 @@ java 에는 4개의 access modifier 가 있다.
 
 ```java
             | Class | Package | Subclass | Subclass | World
-            |       |         |(same pkg)|(diff pkg)| 
+            |       |         |(same pkg)|(diff pkg)|
 ————————————+———————+—————————+——————————+——————————+————————
-public      |   +   |    +    |    +     |     +    |   +     
+public      |   +   |    +    |    +     |     +    |   +
 ————————————+———————+—————————+——————————+——————————+————————
-protected   |   +   |    +    |    +     |     +    |         
+protected   |   +   |    +    |    +     |     +    |
 ————————————+———————+—————————+——————————+——————————+————————
-default     |   +   |    +    |    +     |          |    
+default     |   +   |    +    |    +     |          |
 ————————————+———————+—————————+——————————+——————————+————————
-private     |   +   |         |          |          |    
+private     |   +   |         |          |          |
 
 + : accessible
 blank : not accessible
