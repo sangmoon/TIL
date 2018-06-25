@@ -48,44 +48,56 @@ interface Flyable{
 
 이는 인터페이스에 method가 1개 가 아니면 컴파일 에러를 발생시켜 오류를 줄여준다.
 또한 실제 class를 만드는 것이 아니기 때문에 메모리 부담이 줄어든다(익명 inner class의 경우 class를 만드는 것이기 때문에 메모리 부담 가중)
-그럼 java built-in functionalInterface를 찾아보자.
 
-1. ``Runnable``
+## java built-in functional interface
+
+- ``Runnable``
 
 thread 생성할 때 보통 사용하는 interface 이다.
 void 타입의 parameter 또한 없다.
-2. ``Supplier<T>``
+
+- ``Supplier<T>``
 
 인자는 받지 않고, T type을 리턴한다. 순수함수는 input parameter에만 영향을 받으므로
 항상 같은 값을 리턴한다.
-3. ``Consumer<T>``
+
+- ``Consumer<T>``
 
 void type 이며 T를 인풋 parameter로 받는다.
-4. ``Function<T, R>``
+
+- ``Function<T, R>``
 
 하나의 인자와 리턴타입을 갖는다.
-5. ``Predicate<T>``
+
+- ``Predicate<T>``
 
 하나의 인자를 받고 리턴 타입은 boolean으로 고정이다.
-6. ``UnaryOperator<T>``
+
+- ``UnaryOperator<T>``
 
 인자와 리턴 타입이 같다.
-7. ``BinaryOperator<T>``
+
+- ``BinaryOperator<T>``
 
 동일한 타입의 인자 2개를 받아서 역시 동일한 타입으로 리턴한다.
-8. ``BiPredicate<T, U>``
+
+- ``BiPredicate<T, U>``
 
 인자 2개를 받아서 boolean으로 리턴한다.
-9. ``BiConsumer<T, U>``
+
+- ``BiConsumer<T, U>``
 
 인자 2개를 받는 void 타입
-10. ``BiFunction<T, U, R>``
+
+- ``BiFunction<T, U, R>``
 
 인자 2개를 받고 리턴한다.
-11. ``Comparator<T>``
+
+- ``Comparator<T>``
 
 자바 전통적인 인터페이스로 객체간 비교 때 사용된다.
-12. ``Callable<T>``
+
+- ``Callable<T>``
 
 runnable에 대응되는 interface로 Future 객체를 사용할 때 사용된다.
 
