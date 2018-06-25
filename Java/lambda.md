@@ -101,7 +101,7 @@ argument가 1개인 anonymous function이 multi arg를 지원하는가
 
 ## Mixin
 
-다른 class의 method를 가지고 있는 class. 상속 외에 다른 방식으로 reuse 함. 
+다른 class의 method를 가지고 있는 class. 상속 외에 다른 방식으로 reuse 함.
 이를 java 에서 받기 위해 default 생김.
 
 ## Default Method
