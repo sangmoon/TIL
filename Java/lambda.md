@@ -20,7 +20,7 @@ Flyable fly = new Flyable(){
         System.out.println("I believe I can fly");
     }
 }
-```
+``` 
 
 Flyable 이라는 interface를 구현한다고 해보자. 이를 구현한 ``Bird``라는 클래스를 만드는게 일반 방법이고,
 재사용성이 없다면 아래 방식으로 익명 inner class를 활용할 수도 있다. 그런데 단순히 method 하나 사용하려고
