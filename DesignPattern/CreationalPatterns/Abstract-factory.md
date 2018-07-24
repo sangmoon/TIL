@@ -107,6 +107,8 @@ public class client{
 } 
 ```
 
+만약 화웨이 폰이 추가된다면? 화웨이폰factory implements PhoneFactory 만 구현하면 된다.
+
 ```java
 public class APPLEPhoneFactory implements PhoneFactory{
 	public Frame createFrame(){
