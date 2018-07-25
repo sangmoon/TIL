@@ -8,14 +8,13 @@
 
 ## Item 29: Favor generic types
 
-## Item 30: Favor generic methods
+## Item 30: Favor generic methods 가능하면 제네릭 메서드로 만들 것
 
-클래스가 generic 일 수 있는 것 처럼 method 도 generic 할 수 있다.
+클래스가 generic 일 수 있는 것 처럼 method 도 generic 할 수 있음 </br>
 예를 들어 collections 에 있는 알고리즘 관련 method(sort, binarysearch) 는 generic 하다.
 
 ```java
-// use raw types - unacceptable!
-//@SuppressWarnings("unchecked")
+// use raw types - 문제 있음
 public static Set union(Set s1, Set s2) {
     // Warning! HashSet(Collection<? extends E>)
     Set result = new HashSet(s1);
@@ -24,8 +23,7 @@ public static Set union(Set s1, Set s2) {
     return result;
 }
 ```
-
-``type parameter list`` 는 접근 제어자와 return type 사이에 위치 합니다.
+- ``형인자 목록(type parameter list)`` 는 접근 제어자와 return type 사이에 위치
 
 ```java
 public static <T> Set<T> union(Set<T> s1, Set<T> s2) {
@@ -33,20 +31,16 @@ public static <T> Set<T> union(Set<T> s1, Set<T> s2) {
     result.addAll(s2);
     return result;
 }
-```
 
-아래와 같은 프로그램은 cast 없고, error 나 warning 없이 컴파일 된다.
-
-```java
-    public static void main(String[] args){
-        Set<String> guys = new HashSet<>(Arrays.asList("Tom", "Dean", "Harry"));
-        Set<String> stooges = new HashSet<>(Arrays.asList("Larry", "Moe", "Curly"));
-        Set<String> aflCio = union(guys, stooges);
-        System.out.println(aflCio);
-    }
+// client 잘 동작함!
+public static void main(String[] args){
+    Set<String> guys = new HashSet<>(Arrays.asList("Tom", "Dean", "Harry"));
+    Set<String> stooges = new HashSet<>(Arrays.asList("Larry", "Moe", "Curly"));
+    Set<String> aflCio = union(guys, stooges);
+    System.out.println(aflCio);
 }
 ```
-위의 union의 단점은 input set 2개와 output이 정확히 같은 타입이라는 것(``T``)
+위의 union의 단점은 input set 2개와 output이 정확히 같은 타입이라는 것(``T``) </br>
 ``bounded wildcard type`` 을 사용해서 좀 더 유연하게 구연 가능 뒤에 나옴
 
 ### type parameter에 대한 convention
@@ -60,15 +54,14 @@ public static <T> Set<T> union(Set<T> s1, Set<T> s2) {
 
 ### 제너릭 싱클톤 패턴
 
-변경이 불가능하지만 많은 자료형에 적용 가능한 객체를 만들어야 할 때가 있다.
-모든 필요한 형인자화 과정에서 동일 객체를 활용할 수 있는데, 그러려면 우선 필요한 형인자화 과정 마다 같은 객체를 나눠주는 정적 팩토리 메서드를 작성해야 한다.
-
-항등 함수는 stateless 하므로 새 함수를 만드는 것은 낭비
+변경이 불가능하지만 많은 자료형에 적용 가능한 객체를 만들어야 할 때가 있다. </br>
+모든 필요한 형인자화 과정에서 동일 객체를 활용할 수 있는데, 그러려면 우선 필요한 형인자화 과정 마다 같은 객체를 나눠주는 정적 팩토리 메서드 필요 </br>
 
 ```java
 private static UnaryOperator<Object> IDENTITY_FN = t -> t;
 
 //IDENTITY_FN 은 stateless 객체이고 형인자는 unbounded 이므로 모든 자료형이 같은 객체를 공유해도 된다.
+// 팩토리 메소드
 @SuppressWarnings("unchecked")
 public static <T> UnaryOperator<T> identityFunction() {
     return (UnaryOperator<T>) IDENTITY_FN;
@@ -81,7 +74,7 @@ public static <T> UnaryOperator<T> identityFunction() {
 ```java
 public static void main(String[] args) {
     String [] strings = {"jute", "hemp", "nylon"};
-    UnaryOperator<String> sameString = identityFunction();
+    UnaryOperator<String> sameString = identityFunction(); //같은 IDENTITY_FN 객체 사용
     for(String s: strings){
         System.out.println(sameString.apply(s));
     }
@@ -90,6 +83,38 @@ public static void main(String[] args) {
     UnaryOperator<Number> sameNumber = identityFunction();
     for(Number n: numbers) {
         System.out.println(sameNumber.apply(n));
+    }
+}
+```
+
+이 패턴은 함수객체 구현에 많이 쓰임
+```java
+//Collections.java
+// 예시 Arrays.sort(a, Collections.reverseOrder());
+@SuppressWarnings("unchecked")
+public static <T> Comparator<T> reverseOrder() {
+    return (Comparator<T>) ReverseComparator.REVERSE_ORDER;
+}
+
+/// 중략 ...
+
+private static class ReverseComparator
+    implements Comparator<Comparable<Object>>, Serializable {
+
+    private static final long serialVersionUID = 7207038068494060240L;
+
+    static final ReverseComparator REVERSE_ORDER
+        = new ReverseComparator();
+
+    public int compare(Comparable<Object> c1, Comparable<Object> c2) {
+        return c2.compareTo(c1);
+    }
+
+    private Object readResolve() { return Collections.reverseOrder(); }
+
+    @Override
+    public Comparator<Comparable<Object>> reversed() {
+        return Comparator.naturalOrder();
     }
 }
 ```
@@ -105,13 +130,14 @@ public interface Comparable<T> {
 }
 ```
 
-정렬, 탐색, 최대 최소값 method 들은 Comparable을 구현한 원소들의 컬랙션을 인자로 받는다.
-이러한 작업이 가능하려면 컬렉션 내 원소들이 서로 비교 가능해야 한다.
+정렬, 탐색, 최대 최소값 method 들은 컬렉션 내 원소들이 서로 비교 가능해야 한다.
+이러한 작업이 가능하려면 Comparable을 구현한 원소들의 컬랙션을 인자로 받아야 한다.
 아래 표현은 "자기 자신과 비교가능한 모든 자료형 T" 를 나타낸다.
-> E 는 ``compareTo(E o)`` 를 구현했음을 보장한다.
+
 ```java
 public static <E extends Comparable<E>> E max(Collection<E> c){...}
 ```
+> E 는 ``compareTo(E o)`` 를 구현했음을 보장한다.
 
 ```java
     public static <E extends Comparable<E>> E max(Collection<E> c) {
@@ -136,12 +162,12 @@ public static <E extends Comparable<E>> E max(Collection<E> c){...}
 - 시간 날 때 기존 메서드 제네릭하게 바꾸면 기존 클라이언트와 호환되면서 더 좋은 API 제공 가능
 
 
-## Item 31: Use bounded wildcards to increase API flexibility
+## Item 31: Use bounded wildcards to increase API flexibility 한정적 와일드카드를 써서 API의 유연성을 높여라
 
-앞에서 했다시피 형인자 자료형(prameterized types) 는 불변형이다.
-상-하위 관계 가 성립하지 않는다.List<Object> 가 하는 걸 List<String> 이 다 할 수 없기 때문에 List<String> 은 List<Object> 의 하위 자료형이 아니다.
+앞에서 했다시피 형인자 자료형(prameterized types) 는 불변형. </br>
+때로는 불변 자료형 보다 유연한 자료형이 필요 할 수 있다. 이때 와일드 카드를 사용하자.
 
-### 와일드카드
+### 한정적 와일드카드
 
 ```java
 // 스택 API
@@ -154,6 +180,8 @@ public class Stack<E> {
 ```
 
 엘리먼트 집합 받아서 다 stack 에 넣는 pushAll 을 생각해보자
+
+#### 생산자 문제
 
 ```java
 // producer.. 문제!
@@ -172,10 +200,11 @@ public static void main(String[] args) {
     Iterable<Integer> integers = Arrays.asList(1,2,3,4,5);
     ws.push(1); //OK
     ws.pushAll(integers); //compile error incompatible types..
+    // Iterable<Integer> is not subtype of Iterable<Number> ...
 }
  ```
 
-Integer 는 Number의 하위 타입이지만 Iterable<Integer> 는 Iterable<Number> 의 하위 타입(subtype)이 아니기 때문
+Integer 는 Number의 하위 타입이지만 Iterable<Integer> 는 Iterable<Number> 의 하위 타입(subtype)이 아니기 때문 </br>
 ``한정적 와일드카드 자료형 (bounded wildcard type)`` 을 활용하면 해결
 
 - ``Iterable<E>``  -> E 의 Iterable
@@ -187,6 +216,9 @@ public void pushAll(Iterable<? extends E> src){
         push(e);
     }
 }
+```
+
+#### 소비자 문제
 
 ```java
 // consumer... 문제!
@@ -204,10 +236,9 @@ public static void main(String[] args) {
 
     Collection<Object>  objects = new ArrayList<>();
     ws.popAll(objects); // 컴파일 에러
+    // Collection<Object> is not subtype of Collection<Number>
 }
 ```
-
-Collection<Number> 자리에 Collcection<Object> 가 들어가려 해서 발생. 
 
 이 때는 E의 컬렉션이 아니라 E의 상위 자료형(supertpye) 컬렉션 이라고 해야 한다.
 - ``Collection<E>``  -> E의 컬렉션
@@ -228,12 +259,19 @@ public void popAll(Collection<? super E> dst) {
 
 - 인자가 T 생산자 라면 ``<? extends T>``, T 소비자라면 ``<? super T>``
 
-Stack 예를 들자면 pushAll의 인자 src 는 스택에 사용될 E 형의 객체 만드는 생산자이므로 extends
-``public void pushAll(Iterable<? extends E> src)``
-popAll 의 인자 dst 는 스택 내의 객체를 소비하므로 super..
-``public void popAll(Collection<? super E> dst)``
+Stack 예를 들자면 pushAll의 인자 src 는 스택에 사용될 E 형의 객체 만드는 생산자이므로 extends </br>
+``public void pushAll(Iterable<? extends E> src)`` </br>
+```java
+E a = ? producer;
+```
 
-앞서 했던 ``union(Set<E> e1, Set<E> e2)`` method 는 producer 이므로
+popAll 의 인자 dst 는 스택 내의 객체를 소비하므로 super.. </br>
+``public void popAll(Collection<? super E> dst)`` </br>
+```java
+? consumer = E a;
+```
+
+앞서 했던 ``union(Set<E> e1, Set<E> e2)`` method 는 producer 이므로 </br>
 ``union(Set<? extends E> e1, Set<? extends E> e2)`` 로 하는게 좋다.
 
 ### return type 으로  와일드 카드를 쓰지 말 것
@@ -276,9 +314,8 @@ Set<Number> numbers = Uniom.<Number>union(integers, doubles); // 명시적 형�
 - argument c에 적용한 것은 직관적. T 객체의 생산자 이므로
 - ``Comparable<T>`` 는 언제나 T 인자를 소비해서 int 값을 반환함  따라서 consumer 니까 super 로 해야 함 . Comparable 과 Comparator는 모두 comsumer!
 책의 예시로는 ``ScheduledFuture<?>`` 나옴. 이 인터페이스는 Future와 Delayed 인터페이스를 상속받는데
-Delayed 인터페이스가 Comparable 을 extends 하고 있음. 즉 
-``<T extends Comparable<T>>`` 이거로는 ``<ScheduledFuture extends Comparable<ScheduledFuture>>`` 이걸 추론할 수 있고
-``<T extends Comparable<? super T>>`` 이거로는 ``<ScheduledFuture extends Comparable<Delayed (super ScheduledFuture)>>``
+Delayed 인터페이스가 Comparable 을 extends 하고 있음. 즉  ``<T extends Comparable<T>>`` 이거로는 ``<ScheduledFuture extends Comparable<ScheduledFuture>>`` 
+이걸 추론할 수 있고 ``<T extends Comparable<? super T>>`` 이거로는 ``<ScheduledFuture extends Comparable<Delayed (super ScheduledFuture)>>``
 를 추론 할 수 있다.
 
 ### 형인자 vs 와일드카드 에선 와일드카드를 쓰자
@@ -336,11 +373,11 @@ Heap Pollution 문제 생길 수 있다.
 ```
 
 
-## Item 33: Consider typesafe heterogeneous containers
+## Item 33: Consider typesafe heterogeneous containers 형 안전 다형성 컨테이너를 쓰면 어떨지 따져보라
 
-Generic은 Set 이나 Map 같은 collection 이나 ThreadLocal 이나 AtomicReference 같은 하나의 원소만을 담는 컨테이너에
-많이 쓰인다. 이 때 형인자를 받는 부분은 컨테이너임. 보통은 컨테이너당 type parameter 가 정해져 있다. 
-이것을 유연하게 하나의 컨테이너에 여러 Type 이 담기면서도 형안정성을 유지할 수 있게 해보자.
+Generic은 Set 이나 Map 같은 collection 이나 ThreadLocal 이나 AtomicReference 같은 하나의 원소만을 담는 컨테이너에 </br>
+많이 쓰인다. 이 때 형인자를 받는 부분은 컨테이너임. 보통은 컨테이너당 type parameter 가 정해져 있다. </br>
+이것을 유연하게 하나의 컨테이너에 여러 Type 이 담기면서도 형안정성을 유지할 수 있게 해보자.</br>
 즉 컨테이너가 아니라 key 값에 형인자를 지정하자. 
 
 ```java
@@ -371,7 +408,7 @@ Favorites 객체는 형 안전(type 에 맞게 캐스팅해서 돌려줌 ``Class
 
 - ``private Map<Class<?>, Object> favorites`` 여기서 map에 unbounded wildcard 쓰면 아무것도 못하지 않나요?
 
-> 여기서 와일드 카드는 map의 타입이 아니라 key에 사용된다. 그래서 가능
+> 여기서 와일드 카드는 map(컨테이너)이 아니라 key에 사용된다. 모든 키가 상이한 형인자 자료형 가질 수 있다는 의미.
 
 - favorites 의 value가 그냥 Object 인데 괜찮나?
 
@@ -389,12 +426,14 @@ public static void main(String[] args) {
 }
 ```
 raw type을 사용하면 generic 을 passing 하기 때문에 문제 발생. dynamic type checking 을 해주어야 한다.
+
 ```java
     public <T> void putFavorite(Class<T> type, T instance) {
         favorites.put(Objects.requireNonNull(type), type.cast(instance));
     }
 ```
 같은 전략을 쓰는 컬랙션 wrapper class: checkedSet, checkedList, checkedMap
+
 ```java
 List safeList = Collections.checkedList(new ArrayList(), String.clss);
 safeList.add(123); // ClassCastException 발생
@@ -404,15 +443,16 @@ safeList.add(123); // ClassCastException 발생
 - ``reifiable type`` : type 정보를 runtime 에서 전부 사용 가능. ex) primitive, non-generic, raw type, invocations of unbound wildcards
 - ``non-reifiable type`` :  type erasure 에 의해 type 정보가 compile time 에서 지워짐 ex) unbound wildcard 를 제외한 generic
 
-따라서 key로 ``String`` ``String[]`` 은 쓰일 수 있지만 List<String> 은 쓰일 수 없다. List<String> 의 class 객체를 얻을 수 없기 때문.
-List<String> 이랑 List<Integer> 는  같은 class 객체 List.class를 공유한다.  만일 자료형 리터럴(List<String>.class)이 가능하면 Favorites 객체는 올바르게 동작 못할 것
+따라서 key로 ``String`` ``String[]`` 은 쓰일 수 있지만 ``List<String>`` 은 쓰일 수 없다. ``List<String>`` 의 class 객체를 얻을 수 없기 때문. </br>
+``List<String>`` 이랑 ``List<Integer>`` 는  같은 class 객체 ``List.class``를 공유한다.  </br>
+만일 자료형 리터럴(``List<String>.class``)이 가능하면 Favorites 객체는 올바르게 동작 못할 것 </br>
 
 ### 해결책 
 - 상위 자료형 토큰(super type token) 
 상속과 reflection 사용해서 구현
 
 ``String.class``(클래스 리터럴) -> ``Class<String>`` (타입 토큰)
-``???`` -> ``Class<List<String>>`` 얻을수 있다면  가능
+``???`` -> ``Class<List<String>>`` 얻을 수 있다면  가능
 
 #### Class.getGenericSuperClass()
 
@@ -432,6 +472,8 @@ Type typeOfGenericSuperclass = sub.getClass().getGenericSuperclass(); //Super<Li
 Type actualType = ((ParameterizedType) typeOfGenericSuperclass).getActualTypeArguments()[0]; // List<String>
 ```
 
+코드 구현도 찾아서 했는데 복잡해서...
+
 ### 한정적 자료형 토큰(bound type parameter)
 Favorites 가 사용하는 자료형 토큰은 비한정적(unbound). get put 에 전달되는 argument를 제한 하고 싶을 때에는 한정적 자료형
 
@@ -440,5 +482,54 @@ annotation API: 한정적 자료형 토큰 많이 씀
 public <T extends Annotation> T getAnnotation(Class<T> annotationType)
 ```
 
-- getAnnotation
-이따 추가
+- ``getAnnotation`` : 프로그램 실행 중에 어노테이션을 읽은 메소드. ``AnnotatedElement`` 인터페이스에 있음
+- ``AnnotatedElement`` : 클래스나 메서드, 필드 등 프로그램 요소들, 즉 리플렉션 객체를 표현하는 리플렉션 자료형들이 구현하는 인터페이스
+
+```java
+// 컴파일 시점에는 자료형을 알 수 없는 어노테이션을 실행시간에 읽어내는 메서드
+// 방식 1 무점검 형변환
+static Annotation getAnnotation(AnnotatedElement element, String annotationTypeName) {
+    Class<?> annotationType = null;
+    try {
+        @SuppressWarnings("unchecked")
+        annonationType = (Class<? extends Annotation>) Class.forName(annotationTypeName); //무점검 형변환 이므로 warning 발생
+    } catch (Exception ex) {
+        throw new IllegalArgumentException(ex);
+    }
+    return element.getAnnotation(annotationType);
+}
+```
+
+클래스 Class 는 이런 종류 형변환 안전하게 동적으로 처리해주는 객체 메서드 ``asSubclass`` 가 이미 있다. 특정 객체를 하위 클래스의 class 객체로 형변환시켜줌. 
+
+```java
+// 컴파일 시점에는 자료형을 알 수 없는 어노테이션을 실행시간에 읽어내는 메서드
+// 방식 2 dynamic 형변환 메서드 사용
+static Annotation getAnnotation(AnnotatedElement element, String annotationTypeName) {
+    Class<?> annotationType = null;
+    try {
+        annonationType = Class.forName(annotationTypeName);
+    } catch (Exception ex) {
+        throw new IllegalArgumentException(ex);
+    }
+    return element.getAnnotation(
+        annotationType.asSubclass(Annotation.class);
+    )
+}
+```
+
+```java
+//asSubclass 구현 ..
+@SuppressWarnings("unchecked")
+public <U> Class<? extends U> asSubclass(Class<U> clazz) {
+    if (clazz.isAssignableFrom(this))
+        return (Class<? extends U>) this;
+    else
+        throw new ClassCastException(this.toString());
+}
+```
+
+### 요오오오약
+- 컨테이너 대신 키를 제네릭으로 하면 형인자 개수의 제약이 없는 형 안전 다형성 컨테이너를 만들 수 있다.
+- 그런 컨테이너는 Class 객체를 키로 쓰는데 그러한 객체를 자료형 토큰(type token) 이라고 한다.
+- 키 자료형을 직접 구현하는 것도 가능하다. 예를 들어 DB 레코드를 표현하는 DataBaseRow 클래스(컨테이너) 는 제네릭 자료형 Column<T> 를 키로 사용할 수 있다.
