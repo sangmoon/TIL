@@ -356,7 +356,7 @@ private static <E> void swapHelper(List<E> list, int i, int j) {
 - PECS 암기하자 암기하자
 - 모든 Comparable 과 Comparator 는 Consumer 이다
 
-## Item 32: Combine generics and varargs judiciously
+## Item 32: Combine generics and varargs judiciously generic 과 다인자변수를 잘 조합하자
 
 varargs 는 method args 를 다인자로 받을 수 있게 한 것
 ```java
@@ -366,12 +366,74 @@ static void func(int... ints);
 func(1,2,3,4);
 ```
 
-내부적으로 인자를 ``array`` 에 보관. 인자가 generic 이면 ....
-Heap Pollution 문제 생길 수 있다.
-```java
+내부적으로 인자를 ``array`` 에 보관. 인자가 generic 이면 Heap Pollution 문제 생길 수 있다.
 
+- Heap Pollution : 형인자 자료형 변수가 형인자 자료형이 아닌 객체를 참조할 때 상황.. runtime 에서 ``ClassCastException`` 날 가능성 높음.
+```java
+static void dangerous(List<String>... stringLists){ // 형인자 자료형 array 가 생겨서 heap pollution
+    List<Integer> intList = Arrays.asList(42, 11);
+    Object[] objects = stringLists;
+    objects[0] = intList;
+    String s = stringLists[0].get(0); // ClassCastException 발생
+}
+
+// client
+public static void main(String... args){
+    dangerous(Arrays.asList("a", "b"), Arrays.asList("c", "d"));
+}
+```
+- generic varargs array parameter 에 값 저장하는 건 좋지 않다.
+
+의문 1 : generic array 만드는 건 못하게 하면서 method 에 generic varargs parameter 허용하는 이유는??
+```java
+List<String>[] = new ArrayList<String>[10]; // 불가능 error
+static void dangerous(List<String>... stringLists){ ...} //가능 warning
+```
+위험을 감수하고 서라도 유용할 때가 있어서 java 언어 설계자들이 남겨둠 </br>
+Java library 들은 generic + varargs 이미 많이 쓰고 있다. Arrays.asList(T... a), Collections.addAll(Collection<? super T> c) 등등.
+이 Method 들은 typesafe 하다.
+
+method를 typesafe 하게 만들었어도 java 7 이전에는 warning 무시하던지, 호출할 때마다 ``@SuppressWarnings("unchecked")`` 붙여야 했다. </br>
+java7 에 ``@SafeVarags`` 어노테이션 나와서 method 선언부에 붙여주면 warning은 안 뜬다. 중요한 건 정말 typesafe 할 때만 붙여주어야 한다는 것. </br>
+
+#### typesafe 조건
+
+1. generic varargs array에 아무 것도 새로 저장하지 말 것(overwrite 하지 말 것)
+2. 그 array의 reference 를 method 밖으로 노출시키지 말 것(해당 method 외의 다른 code 가 1번을 위반할 수 있다)
+
+typesafe 의 예 </br>
+input 으로 들어온 리스트의 배열의 원소들을 하나의 리스트로 만들어서 내보냄. </br>
+```java
+@SafeVarargs
+static <T> List<T> flatten(List<? extends T>... Lists) {
+    List<T> result = new ArrayList<>();
+    for(List<? extends  T> list : lists){
+        return.addAll(list);
+    }
+    return result
+}
 ```
 
+중요한게 Override 안 될 메소드에만 ``@SafeVarargs`` 다는게  중요 </br>
+가능한 모든 override된 method 들이 safe 한 지 보장하는 것은 불가능하기 때문 </br>
+Java8 에서는 static method나 final instance method 에만 저 annotation을 달 수 있고, </br>
+Java9 에서는 private instance method 도 가능해졌다.
+
+또 다른 대안은 varargs 사용하지 않고 List parameter를 사용하는 것 
+```java
+static <T> List<T> flatten(List<List<? extends T>> Lists) {
+    List<T> result = new ArrayList<>();
+    for(List<? extends  T> list : lists){
+        result.addAll(list);
+    }
+    return result
+}
+```
+
+#### 요야야야약
+-  varargs 랑 generic은 잘 안 맞는다
+- generic varargs parameter 는 typesafe 하지는 않지만, 문법적으로는 맞다.
+- method의 parameter 로 generic varargs parameter 쓸 꺼면 typesafe 한지 확인하고 ``@SafeVarargs`` 꼭 달아라 
 
 ## Item 33: Consider typesafe heterogeneous containers 형 안전 다형성 컨테이너를 쓰면 어떨지 따져보라
 
