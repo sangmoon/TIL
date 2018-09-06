@@ -54,6 +54,7 @@ public static void main(String[] args) {
     Set<String> s = null;  // Set으로 참조
 
     try {
+        // cl.newInstance() 를 안쓰고 굳이 생성자 호출하는 이유는?
         s = cons.newInstance();
     } catch (IllegalAccessException e) {
         System.err.println("Class not accessible.");
