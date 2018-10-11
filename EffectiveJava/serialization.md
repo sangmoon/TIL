@@ -2,9 +2,11 @@
 
 ## 규칙 76 readObject 메서드는 방어적으로 구현하라
 
-변경 불가능 기간 클래스. 직렬화를 통해 불변식 꺨 수 있다.
+변경 불가능 클래스 조차, 직렬화를 통해 불변식이 깨질 수 있다.
 1. ``불변식 깨짐`` -> readObject 유효성 검사
 2. ``악의적 객체 참조`` -> readObject 에서 방어적 복사
+
+### immutable class
 
 ```java
 // 규칙 39 Period 클래스
@@ -37,8 +39,12 @@ public final class Period {
     }
 }
 ```
-- 내부 주소는 공개하지 않는다
-- start 시각 <= end 시각 이어야 한다.
+
+### 방어 규칙
+1. 내부 주소는 공개하지 않는다
+2. start  <= end  이어야 한다.
+
+### 공격1. 악의적인 바이트 스트림 공격
 
 ```java
 public class BogusPeriod {
@@ -69,12 +75,12 @@ public class BogusPeriod {
         Period p = (Period) deserialize(serializedForm);
         System.out.println(p);
         // Sat Jan 02 05:00:00 KST 1999 - Mon Jan 02 05:00:00 KST 1984
-        // 불변식 깨짐
+        // 불변식 깨짐 ...!
     }
 }
 ```
 
-### readObject에서 유효성 검사 구현
+### 해결책1. readObject에서 유효성 검사 구현
 
 Serializable 만 implements 하면 직렬화는 되지만 불변식 깨진다. <br>
 ``readObject `` 메소드 는 실질적으로 생성자나 마찬가지(byte stream을 인자로 받는 생성자)
@@ -90,7 +96,7 @@ private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundEx
 }
 ```
 
-### 악의적 객체 참조
+### 공격2. 악의적 객체 참조
 
 ```java
 public class MutablePeriod {
@@ -111,7 +117,7 @@ public class MutablePeriod {
              */
             byte[] ref = {0x71, 0, 0x7e, 0, 5};
             bos.write(ref); // start field
-            ref[4] = 4;
+            ref[4] = 4; // {0x71, 0, 0x7e, 0, 4}
             bos.write(ref); // end field
 
             // Period 와 훔친 Date 참조 역직렬화
@@ -147,6 +153,7 @@ public class MutablePeriod {
 Period 역직렬화 과정에서 객체 참조가 노출됨.
 방어적 복사를 readObject() 에서도 해야 한다.
 
+### 해결책2 방어적 복사
 ```java
 private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
     s.defaultReadObject(); // non-static, non-transient field 채워줌
@@ -160,7 +167,7 @@ private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundEx
 }
 ```
 
-java 1.4부터 위 처럼 방어적 복사 안해도 되도록 ``writeUnshared``와 `readUnshared`` 메소드 추가되었는데, 뒤에 나올 규칙77에 취약하므로 그냥 방어적 복사 사용할 것. <br>
+java 1.4부터 위 처럼 방어적 복사 안해도 되도록 ``writeUnshared``와 ``readUnshared`` 메소드 추가되었는데, 뒤에 나올 규칙77에 취약하므로 그냥 방어적 복사 사용할 것. <br>
 readObject 에서 override 가능한 메소드 호출하지 말 것. 보장 못함.
 
 ### 요약
@@ -240,7 +247,7 @@ public class ObjectInputStreamDemo {
 0x72,                                                                   // TC_CLASSDESC. Specifies that this is a new class.
 0x00, 0x0e,                                                             // Length of the class name.
 0x6a, 0x61, 0x76, 0x61, 0x2e, 0x75, 0x74, 0x69, 0x6c, 0x2e, 0x44, 0x61, 0x74, 0x65, // java.util.Date
-0x68, 0x6a, (byte) 0x81, 0x01, 0x4b, 0x59, 0x74, 0x19,                  // serialVersionUID of the Ljava/util/Date class
+0x68, 0x6a, (byte) 0x81, 0x01, 0x4b, 0x59, 0x74, 0x19,                  // serialVersionUID of the java.util.Date class
 0x03,                                                                   // Varius flags. SC_WRITE_METHOD. 
 0x00, 0x00,                                                             // Number of fields in this class.
 0x78,                                                                   // TC_ENDBLOCKDATA, the end of the optional block data for an object.
@@ -274,10 +281,9 @@ public class Elvis {
 - 클래스에 명시적 readObject 있든 없든 상관 없다
 - 모든 readObject 메서드는 새로 생성된 객체를 반환하는데 이 객체는 클래스가 초기화될 때 만들었던 객체가 아니다
 
-readResolve 는 역직렬화 끝나서 만들어진 객체에 대해 호출된다. 새로 만들어진 객체 대신 이 메서드가 반환하는 객체가 사용자에게 간다.
-
 ### readResove 통한 싱글톤
 
+readResolve 는 역직렬화 끝나서 만들어진 객체에 대해 호출된다. 새로 만들어진 객체 대신 이 메서드가 반환하는 객체가 사용자에게 간다.
 ```java
 public class Elvis {
     public static final Elvis INSTANCE = new Elvis();
@@ -304,7 +310,6 @@ public class Elvis {
 - 싱글턴이 도둑객체 포함하므로 싱글턴 역직렬화될 때 도둑 객체의 readResolve() 가 먼저 실행됨.
 - 이 때 싱글톤 객체의 참조를 static 필드에 복사한다
 - 그 다음 원래 대로 도둑 객체 숨겼던 원래 필드 자료형에 맞는 값을 반환한다. 안 그러면 ClassCastExecption 발생
-
 
 ```java
 // 잘못된 싱글톤
@@ -378,6 +383,8 @@ public class ElvisImpersonator {
 }
 ```
 
+### 해결책
+
 대신 직력화 가능 클래스를 enum 으로 구현하면 확실히 싱글톤 보장이 됨. <br>
 JVM이 보장해주고 프로그래머는 신경 쓸 필요 없음.
 
@@ -392,8 +399,8 @@ public enum Elvis {
 
 ### readResove와 접근 권한
 - readResolve 메서드를 final 클래스에 두는 경우엔 반드시 private으로 선언해야 한다.
-- final 클래스가 아닐 때, readResolve가 private이면 하위 클래스에는 적용되지 않는다.
-final 클래스가 아닐 때, readResolve가 protected나 public이면, readResolve를 재정의하지 않은 모든 하위 클래스에 적용이 될 텐데 이러면 직렬화된 하위 클래스 객체를 deserialize 하면 상위 클래스 객체가 만들어져 ClassCastException이 발생할 것이다.
+- final 클래스가 아닐 때, readResolve가 private이면 하위 클래스에는 적용되지 않는다. 
+- final 클래스가 아닐 때, readResolve가 protected나 public이면, readResolve를 재정의하지 않은 모든 하위 클래스에 적용이 될 텐데 이러면 직렬화된 하위 클래스 객체를 deserialize 하면 상위 클래스 객체가 만들어져 ClassCastException이 발생할 것이다.
 
 ### 요약
 - 개체 수 관련 불변식 강제하고 싶으면 enum 쓰자
@@ -402,7 +409,7 @@ final 클래스가 아닐 때, readResolve가 protected나 public이면, readRes
 ## 규칙78 직렬화된 객체 대신 직렬화 프락시를 고려해 보라
 
 직렬화를 사용하면 버그나 보안 결함 생길 가능성 높음 <br>
-일반 생성자 대진 언어 외적인 매커니즘을 이용하기 때문
+일반 생성자 대신 언어 외적인 매커니즘을 이용하기 때문
 
 이에 대안으로  ``직렬화 프록시 패턴``이 있다.
 - private static nested class (== serialization proxy)를 만든다. (outer class 객체의 논리적 상태를 간결하게 표현하는)
@@ -451,7 +458,7 @@ private Object readResolve() {
 2. 내부 필드 탈취 공격도 저절로 중단
 3. 외부 클래스 필드를 final로 선언할 수 있어서 진정한 immutable class 구현 가능
 4. 직렬화 도중 유효성 검사도 필요 없음
-5. 역직렬호된 객체가 애초에 직렬화된 객체와 다른 클래스가 되도록 할 수 있음(?? 장점인가..??)
+5. 역직렬화된 객체가 애초에 직렬화된 객체와 다른 클래스가 되도록 할 수 있음(?? 장점인가..??)
 
 EnumSet의 경우 생성자가 없고 팩토리 메서드로 EnumSet 객체를 얻는데, 실제로는 자료형 크기가 64 이하면 RegularEnumSet, <br>
 64 보다 크면 JumboEnumSet을 반환한다. 만약 64개 원소를 갖는 enumSet 객체를 직렬화 한다음 enum 자료형에 다섯 개의 원소를 더 추가하고, <br>
