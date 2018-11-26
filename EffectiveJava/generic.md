@@ -1,12 +1,6 @@
 # Generics
 
-## Item 26: Don't use raw types
-
-## Item 27: Eliminate unchecked warnings
-
-## Item 28: Prefer lists to arrays
-
-## Item 29: Favor generic types
+## 2판의 경우 27, 28 ,29 로 되어 있음
 
 ## Item 30: Favor generic methods 가능하면 제네릭 메서드로 만들 것
 
