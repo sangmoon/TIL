@@ -18,13 +18,10 @@ def solution(A):
         
         sliceThree = A[i-2] + A[i-1] + A[i]
         (minSliceThree, minSliceThreeIdx) = (sliceThree, i-2) if sliceThree < minSliceThree else (minSliceThree, minSliceThreeIdx)
-        
-    if minSliceThree * 2 < minSliceTwo * 3:
-        return minSliceThreeIdx
-        
-    elif minSliceThree *2 > minSliceTwo * 3:
-        return minSliceTwoIdx
+
+    if minSliceThree * 2 == minSliceTwo *3:
+        return min(minSliceTwoIdx, minSliceThreeIdx)
         
     else:
-        return minSliceTwoIdx if minSliceTwoIdx <= minSliceThreeIdx else minSliceThreeIdx
+        return minSliceTwoIdx if minSliceThree * 2 > minSliceTwo * 3 else minSliceThreeIdx
         
