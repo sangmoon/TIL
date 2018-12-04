@@ -138,8 +138,169 @@ public class AtomicBoolean {
 
 ## 2.3 락
 
+- 인수분해 결과를 캐시하려함
+- 가장 마지막 인수분해한 숫자를 ``lastNumber``, 그 결과를 ``lastFactors`` 에 담는다.
 
+```java
+@NotThreadSafe
+public class UnsafeCachingFactorizer implements Servlet {
+    private final AtomicReference<BigInteger> lastNumber
+        = new AtomicReference<>();
+    private final AtomicReference<BigInteger[]> lastFactors
+        = new AtomicReference<>();
+
+    public void service(ServletRequest req, ServletResponse resp) {
+        BigInteger i = extractFromRequest(req);
+
+        // 첫번째 취약점
+        if (i.equals(lastNumber.get())) {
+            encodeIntoResponse(resp, lastFactors.get());
+        } else {
+            BigInteger[] factors = factor(i);
+            // 두번째 취약점
+            lastNumber.set(i);
+            lastFactors.set(factors);
+            encodeIntoResponse(resp, factors);
+        }
+    }
+}
+```
+
+- 참조 자체는 쓰레드 안전하지만 결과는 틀릴 수 있다.
+- set() 과 get() 이 2개의 메소드이기 때문에 Atomic하지 않다.
+
+> 상태를 일관성 있게 유지하려면 관련 있는 변수들을 하나의 단일 연산으로 갱신해야 한다.
+
+### 2.3.1 암묵적인 락(intrinsic lock)
+
+- 자바에서는 단일 연산 보장 위해 ``synchronized`` 키워드 제공
+- 락으로 사용될 객체의 참조와 락으로 보호하려는 코드 블록으로 구성
+- 메소드 선언에 synchronized 를 지정하면 매소드 내부 전체를 포함하며 메소드가 포함된 클래스의 인스턴스를 락으로 사용(static method는 클래스 객체를 락으로 사용)
+
+```java
+synchronized (lock) {
+    // lock으로 보호된 영역
+}
+```
+
+- 모든 자바 객체는 락으로 사용 가능
+- 락은 thread 가 synchronized 블록 들어가기 전에 자동으로 확보되어 해당 블록 벗어날 때 자동으로 해제됨
+- 자바의 경우 mutex로 구현
+
+```java
+@Threadsafe
+public class SnchronizedFactorizer implements Servlet {
+    @GuardedBy("this") private BigInteger lastNumber;
+    @GuardedBy("this") private BigInteger[] lastFactors;
+
+    public synchronized void service(ServletRequest req, ServletResponse resp) {
+               BigInteger i = extractFromRequest(req);
+
+        if (i.equals(lastNumber.get())) {
+            encodeIntoResponse(resp, lastFactors.get());
+        } else {
+            BigInteger[] factors = factor(i);
+            lastNumber.set(i);
+            lastFactors.set(factors);
+            encodeIntoResponse(resp, factors);
+        }
+    }
+}
+```
+
+- 메소드에 synchronized 달아서 쉽게 고칠 수 있음.
+- 성능 매우 떨어질 수 있음
+
+### 2.3.2 재진입성(reentrant)
+
+- 암묵적인락은 재진입 가능하기 때문에 자기가 이미 획득한 락을 다시 확보할 수 있음
+- 락 동작을 쉽게 캡슐화 가능
+- 재진입성 없으면 자식 class 에서 override 한 후 부모 class 메소드 호출하면 데드락 걸릴 수 있음
+
+```java
+public class Widget {
+    public synchronized void doSomething(){}
+}
+
+public class LoggingWidget extents Widget {
+    pbulic synchronized void doSomething() {
+        super.doSomething();
+    }
+}
+```
 
 ## 2.4 락으로 상태 보호하기
 
+> 여러 쓰레드에서 접근할 수 있고 변경 가능한 모든 변수를 대상으로 해당 변수에 접근할 때는 항상 동일한 락을 먼저 확보한 상태여야 한다. 이 경우 해당 변수는 확보된 락에 의해 보호된다고 한다.
+
+- 객체의 암묵적인 락과 그 객체의 상태에는 특별한 관계는 없음
+- 쓰기 쉬워서 default로 해놓은 것일 뿐임
+- 공유 상태에 안전하게 접근할 수 있도록 락 규칙이나 동기화 정책을 만들고 프로그램 내에서 규칙과 정책을 일관성 있게 따르는 건순전히 개발자에게 달림
+
+> 모든 변경할 수 있는 공유 변수는 정확하게 단 하나의 락으로 보호해야 한다. 유지 보수하는 사람이 알 수 있게 어느 락으로 보호하고 있는지를 명확하게 표시하라(``@GuardedBy``)
+
+- synchronized 동기화의 해법은 아님
+- ``Vector`` 는 모든 메소드가 단순 동기화되어 있음. 여러 메소드를 섞으면 또 다른 락이 필요함
+
+```java
+if (!vector.contains(element)) {
+    vector.add(elements);
+}
+```
+
+- 동기화를 통해 메소드 각각을 단일 연산화 시킬 수 있지만,여러 메소드를 복합으로 사용하려면 추가 동기화 필요.
+- 모든 메소드를 동기화 하면 성능에 문제 생길 수 있음
+
 ## 2.5 활동성과 성능
+
+- 동기화를 단순하고 큰 단위로 접근하면 안전하지만 성능 감소가 매우 큼
+- ``SynchronizedFactorizer`` 예제의 경우 service 실행을 한번에 한 쓰레드만 할 수 있음
+- 병렬처리 능력이 떨어지게 됨
+
+```java
+@ThreadSafe
+public class CachedFactorizer implements Servlet {
+    @GuardedBy("this") private BigInteger lastNumber;
+    @GuardedBy("this") private BigInteger[] lastFactors;
+    @GuardedBy("this") private long hits;
+    @GuardedBy("this") private long cacheHits;
+
+    public synchronized long getHits() {return hits;}
+    public synchronized double getCacheHitRatio() {
+        return (double) cacheHits / (double) hits;
+    }
+
+    public void service(ServletRequest req, ServletResponse resp) {
+        BigInteger i = extractFromRequest(req);
+        BigInteger[] factors = null;
+        synchronized (this) {
+            ++hits;
+            if (i.equals(lastNumber)) {
+                ++cacheHits;
+                factors = lastFactors.clone();
+            }
+        }
+
+        if (factors == null) {
+            factors = factor(i);
+            synchronized(this) {
+                lastNumber = i;
+                lastFactors = factors.clone();
+            }
+        }
+        encodeIntoResponse(resp, factors);
+    }
+}
+```
+
+- 접속카운터(``hits``) 를 AtomicLong 대신 long으로 사용. 이미 synchronized 블럭 내에서 처리하기 때문에 성능이나 안전성 측면에서 이득이 없음
+- 단순성(전체 메소드 동기화) 병렬 처리 능력(짧은 부분만 동기화) 사이에 균형을 맞춤
+- 락을 잡고 놓는 것 자체도 부하가 있음. 너무 짧게 sync 블럭을 나누는 것도 좋지 않음
+- 위의 경우 오래 걸릴 가능성이 높은 인수분해 시에는 락을 놓는다. 이렇게 하므로써 병렬 처리 능력에 영향을 주지 않으면서 쓰레드 안전성 확보.
+- 각 sync block 은 충분히 짧다(어떻게 계산하지..?)
+
+> 종종 단순성과 성능이 서로 상출할 때가 있다. 동기화 정책을 구현할 때는 성능을 위해 조급하게 단순성(잠재적으로 안전성을 훼손하면서)을 희생하고픈 유혹을 버려야 한다.
+
+- 락을 사용할 땐 블록 안 코드가 수행하는 일과 수행 예측 시간을 파악해야 함. 계산량이 많거나 쓰레드가 잠들 수 있는 작업을 하느라 락을 오래 잡고 있으면 성능 문제가 야기 될 수 있다.
+
+> 복잡하고 오래 걸리는 계산 작업, 네트워크 작업, 사용자 입출력 작업과 같이 빨리 끝나지 않을 수 있는 작업을 하는 부분에서는 가능한 락을 잡지 마라
