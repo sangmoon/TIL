@@ -69,7 +69,7 @@ public class PossibleReordering {
 - 이런 데이터 경쟁이 발생하지 않는 프로그램을 ``올바른 동기화 프로그램(correctly synchoronized program)`` 이라고 함.
 
 > 미리 발생 현상 규칙
->> ``프로그램 순서 규칙``: 특정 스레드를 놓고 봤을 때 프로그램된 순서에서 앞서있는 작업은 동일 스레드에서 뒤에 실행되도록 프로그램된 작업보다 미리 발생한다  
+>> ``프로그램 순서 규칙``: 특정 스레드를 놓고 봤을 때 프로그램된 순서에서 앞서 있는 작업은 동일 스레드에서 뒤에 실행되도록 프로그램된 작업보다 미리 발생한다  
 >> ``모니터 잠금 규칙``: 특정 모니터 잠금 작업이 뒤이어 오는 모든 모니터 잠근 작업보다 미리 발생한다  
 >> ``volatile 변수 규칙``: volatile 변수에 대한 쓰기 작업은 이후에 따라오는 해당 변수에 대한 모든 읽기 작업보다 미리 발생한다  
 >> ``쓰레드 시작 규칙``: 특정 스레드에 대한 Thread.start 작업은 시작된 스레드가 갖고 있는 모든 작업보다 미리 발생한다  
@@ -84,3 +84,184 @@ public class PossibleReordering {
 작업이 부분적으로만 순서가 정해져 있어도, 동기화 작업(락 확보 및 해제, vilatile 변수 읽기 쓰기 작업)은 항상 완전하게 순서가 정해져 있다.
 
 ### 16.1.4 동기화 피기백
+
+- ``피기백(piggyback)``: 현재 사용 중인 동기화 기법의 가시성(visiblity)에 얹혀가는 방법 락으로 보호돼 있지 않은 변수에 모니터락이나 volatile 변수 규칙 같은 미리 발생 규칙을 함께 적용해 순서를 정의하는 방법. 오류가 나기 쉬워 성능 튜닝이 정말 중요할 때만 써야함
+
+- AQS는 FutureTask가 맡은 작업의 진행 상태(실행 중, 완료, 취소 여부를 정수형으로 보관) 및 결과 관리
+- 외부에서는 set()으로 실행 결과를 보관하고, get()으로 결과 값을 가져옴
+- 결과 값 보관 변수를 volatile로 선언해도 되겠지만, 기존 동기화 잘 이용하면 적은 자원으로 동일한 결과 얻을 수 있음
+- FutureTask 메소드에서 ``tryReleaseShared()`` 메소드가 ``tryAcquireShared()`` 보다 항상 먼저 실행되도록 되어 있음...
+
+```java
+// AbstractQueuedSynchronizer 내부
+private volatile Thread runner;
+
+protected boolean tryReleaseShared(int ignore) {
+    runner = null;
+    return true;
+}
+
+protected int tryAcquireShared(int ignore) {
+    return innerIsDone() ? 1 : -1;
+}
+
+boolean innerIsDone() {
+    return ranOrCancelled(getState()) && runner == null;
+}
+```
+
+innerSet() 은 releaseShared() 하기 전에 결과를 set 하고 innerGet()은 acquireShared() 하고 결과 얻어오므로... 락 없으나 result 쓰는 일이 result 읽는 것보다
+먼저 일어나도록 조절하고 있음
+
+```java
+// FutureTask 내부의 AbstactQueuedSynchronizer class
+private final class Sync extends AbstactQueuedSynchorizer {
+    private static final int RUNNING = 1, RAN = 2, CANCELLED = 4;
+    private V result;
+    private Exception exception;
+
+    void innnerSet(V v) {
+        while(true) {
+            int s = getState();
+            if(RanOrCancelled(s))
+                return;
+            if(compareAndSetState(s, RAN)) 
+                break;
+        }
+        result = v;
+        releaseShared(0);
+        done();
+    }
+
+    V innerGet() throws InterruptedException, ExecutionException {
+        acquireSharedInerruptibly(0);
+        if(getState() == CANCELLED)
+            throw new CancellationException();
+        if(exception != null)
+            throw new ExecutionException(exception);
+        return result;
+    }
+}
+```
+
+이처럼 객체 값 공개할 미리 발생 규칙 따로 정의하지 않고, 다른 목적으로 만들어 놓은 미리 발생 순서를 가져다가 사용하는 것을 피기백이라고 함
+
+## 16.2 안전한 공개
+
+## 16.2.1 안전하지 못한 공개
+
+```java
+public class UnsafeLazyInitialization {
+    private static Resource resource;
+
+    public static Resource getInstance() {
+        if(resource == null) {
+            resource = new Resource();
+        }
+        return resource;
+    }
+}
+```
+
+- 경쟁 조건 생길 수 있음
+- 심한 경우, 참조는 최신화되지만 내부 초기화는 재배치 될 수 있음
+
+락을 쓰거나 volatile을 쓰면 미리 발생 관계가 보장됨..
+
+## 16.2.2 안전한 공개
+
+
+
+### 16.2.3 안전한 초기화를 위한 구문
+
+- Syncronized
+- Static (static 변수가 아니어도 static block에서 초기화하면 같은 효과)
+
+```java
+// 스레드 안전 초기화
+public class SafeLazyInitialization {
+    private static Resource resource;
+
+    public synchronized static Resource getInstance() {
+        if(resource == null) {
+            resource = new Resource();
+        }
+        return resource;
+    }
+}
+```
+```java
+// 성질 급한 초기화
+public class SafeLazyInitialization {
+    private static Resource resource = new Resource();
+
+    public synchronized static Resource getInstance() {
+        return resource;
+    }
+}
+```
+```java
+public class ResourceFactory {
+    private static class ResourceHolder {
+        public static Resource resource = new Resource();
+    }
+
+    public static Resource getResource() {
+        return ResourceHolder.resource;
+    }
+}
+```
+
+### 16.2.4 Double Checked Lock
+
+```java
+public class DoubleCheckedLocking {
+    private static Resource resource;
+
+    public static Resource getInstance() {
+        if(resource == null) {
+            synchronized(DoubleCheckedLocking.class) {
+                if(resource == null) {
+                    resource = new Resource();
+                }
+            }
+        }
+        return resource;
+    }
+}
+```
+- 가독성 떨어짐...
+- 부분 구성된 Resource 객체를 가져올 가능성 있음
+- volatile 쓸 것
+
+## 16.3 초기화 안전성
+
+``초기화 안전성(initialization safety)`` : 올바르게 생성된 불변객체를 어떤 방법으로건 공개해도 별다른 동기화 구문 없이 안전하게 쓸 수 있다.
+
+- final 로 선언된 변수를 갖고 있는 클래스는 초기화 안전성 조건 때문에 인스턴스 참조 최초 생성 때 재배치가 일어나지 않는다
+
+```java
+public class SafeStates {
+    private final Map<String, String> status;
+
+    public SafeStates() {
+        states = new HashMap<String, String>();
+    }
+
+    public String getAbbreviation(String s) {
+        return states.get(s);
+    }
+}
+```
+
+이 클래스는 스레드 안전하지만..
+
+- states 가 final이 아니거나
+- 생성자가 아닌 곳에서 states를 변경하거나
+- SafeStates class에 final로 선언되지 않은 다른 변수가 더 있다면 해당 변수들은
+다른 쓰레드에서는 올바르게 못 볼 수 있다.
+- 생성자 완료되기 전에 객체를 외부에 노출하는 경우에도..
+
+## 요약
+
+JMM은 어렵다.
