@@ -39,3 +39,23 @@ public interface HttpHandler {
 ```
 
 ### Mono Flux
+
+* Mono : 0 또는 1개의 data를 담음
+* Flux : 0 에서 n개의 data를 담음
+
+* Mono Flux는 Future와 비슷하지만, lazy 하다는 점에서 다르다
+
+* Webflux 에서 form 데이터에 직접 접근 못함 -> serverWebExchange 이용해야 함
+
+```java
+public String submitForm(ServerWebExchange serverWebExchange, Model model) {
+    Flux<Reservation> reservations =
+        serverWebExchange.getFormData()
+        .map(form -> form.get("courtName"))
+        .flatMapMany(Flux::fromIterable)
+        .concatMap(courtName -> reservationService.query(courtName));
+
+    model.addAttribute("reservations", reservation);
+    return "reservationQuery";
+}
+```
