@@ -12,11 +12,214 @@ public class Main {
 }
 ```
 
-## what is Monad?
-## rx 와 callback 차이
 ## 미리 알아야 할 것
-Generic, lambda, method reference
+> Generic, lambda, method reference
 
+## what is Monad?
+rx 들어가기 전에 모나드가 무엇인지 알아보자.
+CompletableFuture니 Observable이니 Flux 니 다 모나드이기 때문에 알면 확실히 편하다!
+
+
+모나드 정의 대한 가장 쉬운 설명
+
+![flip](https://github.com/sangmoon/TIL/raw/master/springStudy/resource/monad.png)
+
+...? 갑자기 수학이..?
+
+- flatMap은 ``monad`` 가 구현해야 하는 bind method, m 은 모나드, x는 모나드의 내부 값..
+- 결합법칙이 적용되어야 한다
+- 2,3 번은 중립적이어야 한다는 말인데..설명할 수 없다. 아는게 설명할 수가 없어..
+
+또 프로그래밍 언어에서는 다음 3개의 특징을 만족해야 한다
+- 모나드는 다른 타입을 받는 타입이다 (Generic)
+- 모나드 의 값을 생성하는 함수가 있어야 한다(생성자)
+- 다른 모나드타입으로 진행하는 함수가 있어야 한다(flatMap)
+
+... 일단 이렇다고 알아두고 구체적인 설명으로 들어가 봅시다.
+
+### functor
+
+functor는 다음 조건을 만족하는 녀석을 말한다.  
+함수를 인자로 받아 결과를 반환하는 method(여기선 map) 만 있으면 됨
+
+```java
+import java.util.function.Function;
+
+interface Functor<T> {
+    <R> Functor<R> map(Function<T,R> f);
+}
+```
+
+예를 들어보자면 ...
+
+```java
+class Identity<T> implements Functor<T, Identity<?>> {
+    private final T value;
+
+    Identity(T value) { this.value = value; }
+
+    public <R> Identity<R> map(Function<T,R> f) {
+        final R result = f.apply(value);
+        return new Identity<>(result);
+    }
+}
+```
+
+```java
+// 다음과 같이 쓸 수 있다.
+Identity<String> idString = new Identity<>("abc");
+Identity<Integer> idInt = idString.map(String::length);
+
+// chaining 도 물론 가능!
+Identity<byte[]> idBytes = new Identity<>(customer)
+    .map(Customer::getAddress)
+    .map(Address::street)
+    .map((String s) -> s.substring(0,3))
+    .map(String::toLowerCase)
+    .map(String::getBytes);
+```
+그런데 이렇게만 보면 method chaining과 다를 바가 없음
+
+```java
+// 그냥 method chaining
+byte[] bytes = customer
+    .getAddress()
+    .street()
+    .substring(0,3)
+    .toLowerCase()
+    .getBytes();
+```
+
+펑터의 장점은 무엇일까??
+1. 내부에서 함수의 동작을 제어할 수 있다.
+
+java8 에 추가된 Optional을 직접 구현한 FOptional 클래스를 보자
+Optional은 NPE 를 피하며 프로그래밍하기 위한 API!
+
+```java
+class FOptional<T> implements Functor<T,FOptional<?>> {
+    private final T valueOrNull;
+
+    private FOptional(T valueOrNull) {
+        this.valueOrNull = valueOrNull;
+    }
+    public <R> FOptional<R> map(Function<T,R> f) {
+        if (valueOrNull == null) // 비어있으면 f 를 사용하지 않음
+            return empty();
+        else
+            return of(f.apply(valueOrNull));
+    }
+    public static <T> FOptional<T> of(T a) {
+        return new FOptional<T>(a);
+    }
+    public static <T> FOptional<T> empty() {
+        return new FOptional<T>(null);
+    }
+}
+```
+
+팩토리 메소드를 통해 값을 갖는 optional과 null인 optional 생성 가능.  
+값이 null 이면 원래는 NPE지만 함수를 실행시키지 않고 빈 optional 반환. 신기하죠?
+
+또 다른 예제는 List 를 펑터 형태로 바꾼 Flist
+
+```java
+public class FList<T> implements Functor<T, FList<?>> {
+    private final List<T> list; // immutable 해야함
+
+    FList(Iterable<T> iterable) {
+        list = new ArrayList<>();
+        iterable.forEach(list::add); // 대략 이런 느낌
+    }
+
+    @Override
+    public <R> FList<R> map(Function<T, R> f) {
+        ArrayList<R> result = new ArrayList<R>(list.size());
+        for(T t: list) {
+            result.add(f.apply(t));
+        }
+        return new FList<>(result);
+    }
+}
+```
+
+Flist의 장점은 무엇일까?? 내부 값이 1개든 10개든 같은 메소드 적용 가능하다는 것!
+
+```java
+import static java.util.Arrays.asList;
+
+FList<Customer> customers = new FList<>(asList(cust1, cust2));
+FList<String> streets = customers
+        .map(Customer::getAddress)
+        .map(Address::street);
+```
+단순 메소드 체이닝으로는 불가능한 영역. flist 대신에 java8의 Stream 사용해도 되지 않을까?  
+사실 Stream 도 functor 이자 모나드 이다!!
+
+### functor 에서 모나드로
+
+```java
+FOptional<Integer> tryParse(String s) {
+    try {
+        final int i = Integer.parseInt(s);
+        return FOptional.of(i);
+    } catch (NumberFormatException e) {
+        return FOptional.empty();
+    }
+}
+```
+위와 같이 Optinal을 반환하는 메소드를 생각해보자. 스트링을 받아 Integer로 변환되면 해당 값을 Optional로 반환하고,
+실패하면 빈 Optional을 반환한다. ( Exception을 throw 하지 않는 이유는 함수형 언어 스타일과 맞지 않기 때문..
+순수 함수형 언어에는 예외가 없다, 오류나 부적절한 조건도 값으로 명시)
+
+그러면 client code는 ?
+
+```java
+FOptional<String> str = FOptional.of("42");
+FOptional<FOptional<Integer>> num = str.map(this::tryParse); // Optional 안에 Optional이 !?
+```
+functor 예제에서는 단순 Type을 메소드 반환값으로 해서 괜찮았으나 Optional을 반환형으로 하게 되면 문제가 생긴다.
+보기에도 가독성이 떨어지고, 메소드 체이닝에도 문제가 생긴다.
+
+```java
+FOptional<Integer> num1 = // ...
+FOptional<FOptional<Integer>> num2 = // ...
+
+FOptional<Date> date1 = num1.map(t -> new Date(t));
+// 컴파일 안됨
+FOptional<Date> date2 = num2.map(t -> new Date(t));
+```
+펑터를 2번 감싸는 것으로 문제가 발생함.. 이를 해결하기 위해 모나드 탄생
+
+```java
+public interface Monad<T, M extends Monad<?,M>> extends Functor<T, M>{
+    M flatMap(Function<T,M> f);
+// <R> Functor<R> map(Function<T,R> f);
+// Functor<R> 을 반환하지 않고 새로운 M을 반환함 
+}
+```
+
+```java
+// optional 에 구현한 코드
+    public FOptional<?> flatMap(Function<T, FOptional<?>> f) {
+        if(valueOrNull == null) {
+            return FOptional.empty();
+        } else {
+            return f.apply(valueOrNull);
+            // return of(f.apply(valueOrNull));
+        }
+    }
+```
+
+```java
+FOptional<String> num = FOptional.of("42");
+// 이젠 정상 동작
+FOptional<Integer> answer = num.flatMap(this::tryParse);
+```
+
+여기까지가 모나드 정리..!
+사실 오늘 강의 끝내도 됨...
+이제 rxJava 로 들어가 봅시다.
 
 ## Reactive Programming with rxJava
 
