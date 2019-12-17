@@ -1,5 +1,3 @@
-# CreatingAndDestroyingObjects
-
 ## Item 1: Consider static factory methods instead of constructors
 
 기본적으로 클라이언트는 어떤 객체의 퍼블릭 생성자를 얻을 수 있다. 하지만 ``static factory method``를 제공할 수도 있다.
@@ -88,4 +86,3 @@ API가 public 하지 않은 객체를 제공하게 할 수 있다. 이런 기술
 
 요약하자면, 스태틱 팩토리 메소드와 퍼블릭 생성자는 함께 쓰이며 상대적으로 장점이 있다.
 대부분 스태틱 팩토리 메소드가 좋으므로, 단순하게 퍼블릭 생성자를 만들지 않도록 하자.
-
