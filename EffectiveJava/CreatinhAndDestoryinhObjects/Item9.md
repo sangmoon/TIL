@@ -35,7 +35,7 @@ static void copy(String src, String dst) throws IOException {
     }
 }
 ```
-위 예제에서 device 문제로 Exception이 발생하면 첫번째 Exception은 먹히게 된다. 디버깅에 굉장히 안 좋음...
+위 예제에서 device 문제로 Exception이 발생하면 첫번째 Exception은 먹히게 된다. in.read()에서 발생한 익셉션은 out.close() 에서 발생한 익셉션에 의해 먹히게 된다...
 
 java7에 나온 try-with-resources 를 이용하면 이 문제는 해결된다. 이를 위해 해당 자원은 AutoCloseable 인터페이스를 구현해야 한다.
 
