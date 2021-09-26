@@ -116,3 +116,7 @@ public class Complex {
 
 요약 하면 setter를 모두 만드려고 하지 마라. 클래스는 가능한 한 immutable 해야 한다.
 만약 immutable 하게 할 수 없다면 최대한 변경할 수 없도록 제한해라. 생성자는 모든 불변 변수를 초기화 할 수 있게 잘 설계해야 한다.
+
+### OMA 예제
+
+`OrderModificationResultMessage`
