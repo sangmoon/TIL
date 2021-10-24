@@ -1,0 +1,232 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge,chrome=1">
+<title>Sangmoon's TIL</title>
+<meta name=viewport content="width=device-width,minimum-scale=1">
+<meta name=description content="Item 13: Override clone judiciusly Cloneable 인터페이스는 복사를 허용하기 위해 만들어졌다. 하지만 Object의 clone method를 쓸 수 없기 때문에 목적 달성에 실패했다.
+public class Employee { private String name; public Employee(String name) { this.name = name; } public String getName() { return name; } public static void main(String[] args) { Employee emp = new Employee(&#34;Abhi&#34;); try { Employee emp2 = (Employee) emp.clone(); System.out.println(emp2.getName()); } catch (CloneNotSupportedException e) { e.printStackTrace(); } } } // return CloneNotSupportedException.">
+<meta name=generator content="Hugo 0.88.1">
+<meta name=ROBOTS content="NOINDEX, NOFOLLOW">
+<link rel=stylesheet href=/TIL/ananke/css/main.min.css>
+<meta property="og:title" content>
+<meta property="og:description" content="Item 13: Override clone judiciusly Cloneable 인터페이스는 복사를 허용하기 위해 만들어졌다. 하지만 Object의 clone method를 쓸 수 없기 때문에 목적 달성에 실패했다.
+public class Employee { private String name; public Employee(String name) { this.name = name; } public String getName() { return name; } public static void main(String[] args) { Employee emp = new Employee(&#34;Abhi&#34;); try { Employee emp2 = (Employee) emp.clone(); System.out.println(emp2.getName()); } catch (CloneNotSupportedException e) { e.printStackTrace(); } } } // return CloneNotSupportedException.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/posts/effectivejava/methodscommontoallobjects/item13/"><meta property="article:section" content="posts">
+<meta itemprop=name content>
+<meta itemprop=description content="Item 13: Override clone judiciusly Cloneable 인터페이스는 복사를 허용하기 위해 만들어졌다. 하지만 Object의 clone method를 쓸 수 없기 때문에 목적 달성에 실패했다.
+public class Employee { private String name; public Employee(String name) { this.name = name; } public String getName() { return name; } public static void main(String[] args) { Employee emp = new Employee(&#34;Abhi&#34;); try { Employee emp2 = (Employee) emp.clone(); System.out.println(emp2.getName()); } catch (CloneNotSupportedException e) { e.printStackTrace(); } } } // return CloneNotSupportedException.">
+<meta itemprop=wordCount content="919">
+<meta itemprop=keywords content><meta name=twitter:card content="summary">
+<meta name=twitter:title content>
+<meta name=twitter:description content="Item 13: Override clone judiciusly Cloneable 인터페이스는 복사를 허용하기 위해 만들어졌다. 하지만 Object의 clone method를 쓸 수 없기 때문에 목적 달성에 실패했다.
+public class Employee { private String name; public Employee(String name) { this.name = name; } public String getName() { return name; } public static void main(String[] args) { Employee emp = new Employee(&#34;Abhi&#34;); try { Employee emp2 = (Employee) emp.clone(); System.out.println(emp2.getName()); } catch (CloneNotSupportedException e) { e.printStackTrace(); } } } // return CloneNotSupportedException.">
+</head>
+<body class="ma0 avenir bg-near-white">
+<header>
+<div class=bg-black>
+<nav class="pv3 ph3 ph4-ns" role=navigation>
+<div class="flex-l justify-between items-center center">
+<a href=/TIL/ class="f3 fw2 hover-white no-underline white-90 dib">
+Sangmoon's TIL
+</a>
+<div class="flex-l items-center">
+</div>
+</div>
+</nav>
+</div>
+</header>
+<main class=pb7 role=main>
+<article class="flex-l flex-wrap justify-between mw8 center ph3">
+<header class="mt4 w-100">
+<aside class="instapaper_ignoref b helvetica tracked">
+POSTS
+</aside>
+<div id=sharing class=mt3>
+<a href="https://www.facebook.com/sharer.php?u=https://sangmoon.github.io/TIL/posts/effectivejava/methodscommontoallobjects/item13/" class="facebook no-underline" aria-label="share on Facebook"><svg height="32" style="enable-background:new 0 0 67 67" viewBox="0 0 67 67" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M28.765 50.32h6.744V33.998h4.499l.596-5.624h-5.095l.007-2.816c0-1.466.14-2.253 2.244-2.253h2.812V17.68h-4.5c-5.405.0-7.307 2.729-7.307 7.317v3.377h-3.369v5.625h3.369V50.32zM33 64C16.432 64 3 50.569 3 34S16.432 4 33 4s30 13.431 30 30S49.568 64 33 64z" style="fill-rule:evenodd;clip-rule:evenodd"/></svg>
+</a>
+<a href="https://twitter.com/share?url=https://sangmoon.github.io/TIL/posts/effectivejava/methodscommontoallobjects/item13/&text=" class="twitter no-underline" aria-label="share on Twitter"><svg height="32" style="enable-background:new 0 0 67 67" viewBox="0 0 67 67" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167 22.283c-2.619.953-4.274 3.411-4.086 6.101l.063 1.038-1.048-.127c-3.813-.487-7.145-2.139-9.974-4.915l-1.383-1.377-.356 1.017c-.754 2.267-.272 4.661 1.299 6.271.838.89.649 1.017-.796.487-.503-.169-.943-.296-.985-.233-.146.149.356 2.076.754 2.839.545 1.06 1.655 2.097 2.871 2.712l1.027.487-1.215.021c-1.173.0-1.215.021-1.089.467.419 1.377 2.074 2.839 3.918 3.475l1.299.444-1.131.678c-1.676.976-3.646 1.526-5.616 1.568C19.775 43.256 19 43.341 19 43.405c0 .211 2.557 1.397 4.044 1.864 4.463 1.377 9.765.783 13.746-1.568 2.829-1.673 5.657-5 6.978-8.221.713-1.716 1.425-4.851 1.425-6.354.0-.975.063-1.102 1.236-2.267.692-.678 1.341-1.419 1.467-1.631.21-.403.188-.403-.88-.043-1.781.636-2.033.551-1.152-.402.649-.678 1.425-1.907 1.425-2.267.0-.063-.314.042-.671.233-.377.212-1.215.53-1.844.72l-1.131.361-1.027-.7c-.566-.381-1.361-.805-1.781-.932C39.766 21.902 38.131 21.944 37.167 22.283zM33 64C16.432 64 3 50.569 3 34S16.432 4 33 4s30 13.431 30 30S49.568 64 33 64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:"/></svg>
+</a>
+<a href="https://www.linkedin.com/shareArticle?mini=true&url=https://sangmoon.github.io/TIL/posts/effectivejava/methodscommontoallobjects/item13/&title=" class="linkedin no-underline" aria-label="share on LinkedIn"><svg height="32" style="enable-background:new 0 0 65 65" viewBox="0 0 65 65" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M50.837 48.137V36.425c0-6.275-3.35-9.195-7.816-9.195-3.604.0-5.219 1.983-6.119 3.374V27.71h-6.79c.09 1.917.0 20.427.0 20.427h6.79V36.729c0-.609.044-1.219.224-1.655.49-1.22 1.607-2.483 3.482-2.483 2.458.0 3.44 1.873 3.44 4.618v10.929H50.837zM22.959 24.922c2.367.0 3.842-1.57 3.842-3.531-.044-2.003-1.475-3.528-3.797-3.528s-3.841 1.524-3.841 3.528c0 1.961 1.474 3.531 3.753 3.531H22.959zM34 64C17.432 64 4 50.568 4 34 4 17.431 17.432 4 34 4s30 13.431 30 30c0 16.568-13.432 30-30 30zM26.354 48.137V27.71h-6.789v20.427h6.789z" style="fill-rule:evenodd;clip-rule:evenodd;fill:"/></svg>
+</a>
+</div>
+<h1 class="f1 athelas mt3 mb1"></h1>
+</header>
+<div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><h2 id=item-13-override-clone-judiciusly>Item 13: Override clone judiciusly</h2>
+<p><code>Cloneable</code> 인터페이스는 복사를 허용하기 위해 만들어졌다. 하지만 <code>Object</code>의 clone method를 쓸 수 없기 때문에
+목적 달성에 실패했다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Employee</span> <span style=color:#f92672>{</span>
+ 
+  <span style=color:#66d9ef>private</span> String name<span style=color:#f92672>;</span>
+ 
+  <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>Employee</span><span style=color:#f92672>(</span>String name<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+   <span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>name</span> <span style=color:#f92672>=</span> name<span style=color:#f92672>;</span>
+  <span style=color:#f92672>}</span>
+ 
+  <span style=color:#66d9ef>public</span> String <span style=color:#a6e22e>getName</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+   <span style=color:#66d9ef>return</span> name<span style=color:#f92672>;</span>
+  <span style=color:#f92672>}</span>
+    
+  <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span><span style=color:#f92672>(</span>String<span style=color:#f92672>[]</span> args<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+   Employee emp <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Employee<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;Abhi&#34;</span><span style=color:#f92672>);</span>
+   <span style=color:#66d9ef>try</span> <span style=color:#f92672>{</span>
+       Employee emp2 <span style=color:#f92672>=</span> <span style=color:#f92672>(</span>Employee<span style=color:#f92672>)</span> emp<span style=color:#f92672>.</span><span style=color:#a6e22e>clone</span><span style=color:#f92672>();</span>
+       System<span style=color:#f92672>.</span><span style=color:#a6e22e>out</span><span style=color:#f92672>.</span><span style=color:#a6e22e>println</span><span style=color:#f92672>(</span>emp2<span style=color:#f92672>.</span><span style=color:#a6e22e>getName</span><span style=color:#f92672>());</span>
+   <span style=color:#f92672>}</span> <span style=color:#66d9ef>catch</span> <span style=color:#f92672>(</span>CloneNotSupportedException e<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+       e<span style=color:#f92672>.</span><span style=color:#a6e22e>printStackTrace</span><span style=color:#f92672>();</span>
+   <span style=color:#f92672>}</span>
+  <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#75715e>// return CloneNotSupportedException...
+</span></code></pre></div><p>그럼 Cloneable 인터페이스는 무슨 역할을 할까? 그것은 Object의 clone 메소드의 동작을 정한다.
+만약 한 클래스가 Cloneable을 구현했다면 Object.clone() 메소드는 field-by-field copy 객체 를 반환한다.
+구현하지 않았다면 CloneNotSupportedException을 반환한다. 이건 매우 드문 인터페이스의 사용이다. 보통 인터페이스
+구현은 클라이언트에게 그 클래스가 할수 있는 것을 말해준다. 이 경우 인터페이스는 부모클래스의 보호된 메소드 동작을 허용하게 한다.
+실제 상황에서 Cloneable을 구현한 클래스는 적절한 public clone method를 반환해야 한다. 하지만 생성자를 호출하지 않고
+객체를 생성하기 때문에 매우 위험하다.</p>
+<p>clone 메소드에선 <code>super.clone()</code> 을 호출해야 한다. 꼭&mldr; 이걸 하지 않고 부모 클래스의 생성자를 호출하면 컴파일러는 문제를 일으키지 않지만 실제 JVM 동작에서 원치 않는 동작을 할 것이다. 예외적으로 Cloneable을 구현한 클래스가 final이면 sub클래스가 없기 때문에 이런 걱정을 할 필요가 없다. 하지만 super.clone() 을 호출하지 ㅇ낳으면 굳이 Cloneable을 구현할 필요가 없다, Object의 clone 구현에 의존할 필요가 없으니까!</p>
+<p>잘 동작하는 clone 메소드를 제공하는 부모클래스를 가진 클래스에서 Cloneable을 구현한다고 생각해보자. 우선 <code>super.clone</code>을 호출하자. 반환되는 객체는 완벽한 replica 이다.
+모든 필드를 primitive나 immutable 객체로 선언했다면 더 처리할 필요가 없다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>//Item 11의 PhoneNumber 예제
+</span><span style=color:#75715e></span><span style=color:#a6e22e>@Override</span> <span style=color:#66d9ef>public</span> PhoneNumber <span style=color:#a6e22e>clone</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>try</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>return</span> <span style=color:#f92672>(</span>PhoneNumber<span style=color:#f92672>)</span> <span style=color:#66d9ef>super</span><span style=color:#f92672>.</span><span style=color:#a6e22e>clone</span><span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span> <span style=color:#66d9ef>catch</span><span style=color:#f92672>(</span>CloneNotSupportedException e<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> AssertionError<span style=color:#f92672>();</span> <span style=color:#75715e>// Can&#39;t happen.. !
+</span><span style=color:#75715e></span>    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>return 타입을 자기 자신 클래스로 하는게 바람직하다. 클라이언트의 불필요한 캐스팅도 막고 java에서 covariant return type을 지원하기 때문에!</p>
+<p>만약 field에 mutable object 가 있으면 대재앙이 일어난다. 예를 들어 Item 7의 스택을 생각해보자
+이 클래스를 cloneable 하게 만들기 위해 단순히 super.clone() 을 한다면 copy stack 객체는 size 필드는 같지만 elements field는 original 객체의 array와
+같은 array를 바라보게 된다. 따라서 original을 변경하면 NPE가 발생할 가능성이 아주 많다.
+결과적으로 clone 메소드는 생성자처럼 기능한다. 따라서 original 객체에 영향을 주지 않게 만들어야 한다.
+위 예제에서 stack이 적절히 동작하게 만드려면 stack의 내부도 copy 해야 한다. 가장 쉬운 방법은 elements array도 copy 하는 것이다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>Override <span style=color:#66d9ef>public</span> Stack <span style=color:#a6e22e>clone</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>try</span> <span style=color:#f92672>{</span>
+        Stack stack <span style=color:#f92672>=</span> <span style=color:#f92672>(</span>Stack<span style=color:#f92672>)</span><span style=color:#66d9ef>super</span><span style=color:#f92672>.</span><span style=color:#a6e22e>clone</span><span style=color:#f92672>();</span>
+        result<span style=color:#f92672>.</span><span style=color:#a6e22e>elements</span> <span style=color:#f92672>=</span> elements<span style=color:#f92672>.</span><span style=color:#a6e22e>clone</span><span style=color:#f92672>();</span>
+        <span style=color:#66d9ef>return</span> result<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span> <span style=color:#66d9ef>catch</span> <span style=color:#f92672>(</span>CloneNotSupportedException e<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        thorw <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>AssertionError</span><span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>근데 위의 예제는 stack.elements 가 final 필드면 불가능하다. 이건 근본적인 문제인데, serialization 처럼 mutable objects를 final 필드로 갖고 있는 형태와 사용할 수 없다.
+cloneable 하려면 final을 없애야 한다.</p>
+<p>단순 recursive copy 만으로는 부족할 수 있다. hashtable을 생각해보자</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>HashTable</span> <span style=color:#66d9ef>implements</span> Cloneable <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Entry<span style=color:#f92672>[]</span> buckets <span style=color:#f92672>=</span> <span style=color:#f92672>...;</span>
+
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Entry</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>final</span> Object key<span style=color:#f92672>;</span>
+        Object value<span style=color:#f92672>;</span>
+        Entry next<span style=color:#f92672>;</span>
+
+        Entry<span style=color:#f92672>(</span>Object key<span style=color:#f92672>,</span> Object value<span style=color:#f92672>,</span> Entry next<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>key</span> <span style=color:#f92672>=</span> key<span style=color:#f92672>;</span>
+            <span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>value</span> <span style=color:#f92672>=</span> value<span style=color:#f92672>;</span>
+            <span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>next</span> <span style=color:#f92672>=</span> next<span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>Stack에서 했던 것 처럼 buckets array를 recursive 하게 clone 해보자</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@Override</span> <span style=color:#66d9ef>public</span> HashTable <span style=color:#a6e22e>clone</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>try</span> <span style=color:#f92672>{</span>
+        HashTable result <span style=color:#f92672>=</span> <span style=color:#f92672>(</span>HashTable<span style=color:#f92672>)</span> <span style=color:#66d9ef>super</span><span style=color:#f92672>.</span><span style=color:#a6e22e>clone</span><span style=color:#f92672>();</span>
+        result<span style=color:#f92672>.</span><span style=color:#a6e22e>buckets</span> <span style=color:#f92672>=</span> buckets<span style=color:#f92672>.</span><span style=color:#a6e22e>clone</span><span style=color:#f92672>();</span>
+        <span style=color:#66d9ef>return</span> result<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span> <span style=color:#66d9ef>catch</span> <span style=color:#f92672>(</span>CloneNotSupportedException e<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        thorw <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>AssertionError</span><span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>Copy hashtable은 자신만의 bucket 이 있지만 링크드리스트는 오리지날과 같다. 따라서 비정상동작 할 것이다.
+이걸 고치기 위해선 각각 bucket 마다 링크드리스트도 copy 해야 한다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>HashTable</span> <span style=color:#66d9ef>implements</span> Cloneable <span style=color:#f92672>{</span>
+    <span style=color:#75715e>///...
+</span><span style=color:#75715e></span>
+        <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Entry</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>final</span> Object key<span style=color:#f92672>;</span>
+        Object value<span style=color:#f92672>;</span>
+        Entry next<span style=color:#f92672>;</span>
+
+        Entry<span style=color:#f92672>(</span>Object key<span style=color:#f92672>,</span> Object value<span style=color:#f92672>,</span> Entry next<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>key</span> <span style=color:#f92672>=</span> key<span style=color:#f92672>;</span>
+            <span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>value</span> <span style=color:#f92672>=</span> value<span style=color:#f92672>;</span>
+            <span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>next</span> <span style=color:#f92672>=</span> next<span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+
+        Entry <span style=color:#a6e22e>deepCopy</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+            <span style=color:#75715e>// recursively copy the linked list
+</span><span style=color:#75715e></span>            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> Entry<span style=color:#f92672>(</span>key<span style=color:#f92672>,</span> value<span style=color:#f92672>,</span> next <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>?</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>:</span> next<span style=color:#f92672>.</span><span style=color:#a6e22e>deepCopy</span><span style=color:#f92672>());</span>
+        <span style=color:#f92672>}</span>
+    <span style=color:#f92672>}</span>
+    
+    <span style=color:#a6e22e>@Override</span> <span style=color:#66d9ef>public</span> HashTable <span style=color:#a6e22e>clone</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>try</span> <span style=color:#f92672>{</span>
+            HashTable result <span style=color:#f92672>=</span> <span style=color:#f92672>(</span>hashTable<span style=color:#f92672>)</span><span style=color:#66d9ef>super</span><span style=color:#f92672>.</span><span style=color:#a6e22e>clone</span><span style=color:#f92672>();</span>
+            result<span style=color:#f92672>.</span><span style=color:#a6e22e>buckets</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Entry<span style=color:#f92672>[</span>buckets<span style=color:#f92672>.</span><span style=color:#a6e22e>length</span><span style=color:#f92672>];</span>
+            <span style=color:#66d9ef>for</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> 0<span style=color:#f92672>;</span> i <span style=color:#f92672>&lt;</span> buckets<span style=color:#f92672>.</span><span style=color:#a6e22e>length</span><span style=color:#f92672>;</span> i<span style=color:#f92672>++)</span> <span style=color:#f92672>{</span>
+                <span style=color:#66d9ef>if</span><span style=color:#f92672>(</span>buckets<span style=color:#f92672>[</span>i<span style=color:#f92672>]</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+                    results<span style=color:#f92672>[</span>i<span style=color:#f92672>]</span> <span style=color:#f92672>=</span> buckets<span style=color:#f92672>[</span>i<span style=color:#f92672>].</span><span style=color:#a6e22e>deepCopy</span><span style=color:#f92672>();</span>
+                <span style=color:#f92672>}</span>
+            <span style=color:#f92672>}</span>
+            <span style=color:#66d9ef>return</span> result<span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span> <span style=color:#66d9ef>catch</span> <span style=color:#f92672>(</span>CloneNotSupportedException e<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        thorw <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>AssertionError</span><span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>잘 동작하는데, deepCopy가 recursive라서 stackoverFlow 가 발생할 수 있다. 이를 iteration으로 바꾸면&mldr;</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>Entry <span style=color:#a6e22e>deepCopy</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+    Entry result <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Entry<span style=color:#f92672>(</span>key<span style=color:#f92672>,</span> vaule<span style=color:#f92672>,</span> next<span style=color:#f92672>);</span>
+    <span style=color:#66d9ef>for</span> <span style=color:#f92672>(</span>Entry p <span style=color:#f92672>=</span> result<span style=color:#f92672>;</span> p<span style=color:#f92672>.</span><span style=color:#a6e22e>next</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span> p <span style=color:#f92672>=</span> p<span style=color:#f92672>.</span><span style=color:#a6e22e>next</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        p<span style=color:#f92672>.</span><span style=color:#a6e22e>next</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Entry<span style=color:#f92672>(</span>p<span style=color:#f92672>.</span><span style=color:#a6e22e>next</span><span style=color:#f92672>.</span><span style=color:#a6e22e>key</span><span style=color:#f92672>,</span> p<span style=color:#f92672>.</span><span style=color:#a6e22e>next</span><span style=color:#f92672>.</span><span style=color:#a6e22e>value</span><span style=color:#f92672>,</span> p<span style=color:#f92672>.</span><span style=color:#a6e22e>next</span><span style=color:#f92672>.</span><span style=color:#a6e22e>next</span><span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>결국 복잡한 mutable 객체를 cloning 하는 최종 방법은 우선 super.clone을 불러서 필드를 초기화하고 original 객체의 state를 재생산하는 것이다.
+따라서 HashTable 예제에서 클로닝이 제대로 된 후에 put 메소드가 불려서 복사된 객체에서 동작한다. 이 방식이 깔끔하긴 하지만 super.clone() 한 필드를
+덮어써야 하기 때문에 느릴 수 있다.</p>
+<p>생성자와 같이 clone 메소드 내에서는 override 가능한 메소드를 불려선 안된다. 이게 가능하게 되면 subclass가 제대로 필드 바꾸기 전에 original을 오염시킬 수 있다.
+따라서 put(key, value) 는 final 이거나 private 여야 한다.</p>
+<p>public clone 메소드는 <code>CloneNotSupportedException</code>을 throw 해서는 안된다, check exception 을 사용하지 않는게 쓰기 편하기 때문에.</p>
+<p>상속을 위한 클래스를 설계할 때에는 Cloneable을 implements 해서는 안된다. 만약 clone을 구현한다면
+Object의 clone 메소드 처럼 CloneNotSupportedException을 throw 하는 protected 메소드로 구현해야 한다.
+그래야 subclass 들은 마치 Object를 바로 상속받은 것 처럼 Cloneable을 구현할지 말지 자유를 얻을 수 있다.
+반대로 clone 동작을 허용하지 않는 것을 택했다면 아예 막을 수 있다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@Override</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>final</span> Object <span style=color:#a6e22e>clone</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>throws</span> CloneNotSuportedException <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> CloneNotSupportedException<span style=color:#f92672>();</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>또 Objects의 clone() 메소드는 sync 하지 않기 때문에 병렬 프로그래밍을 한다면
+synchronization을 고려해야 한다.</p>
+<p>이런 복잡한 작업이 꼭 필요할까? 거의 아니다.copy 생성자나 copy factory를 구현하는게 더 좋은 방법이다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// Copy constructor
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#a6e22e>Yum</span><span style=color:#f92672>(</span>Yum yum<span style=color:#f92672>){};</span>
+
+<span style=color:#75715e>// Copy factory
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> Yum <span style=color:#a6e22e>newInstance</span><span style=color:#f92672>(</span>Yum yum<span style=color:#f92672>){};</span>
+</code></pre></div><p>클론에 비해 위 방식들의 장점은 이상한 객체 생성을 하지 않아도 된다는 것이다.final field도 신경쓸 필요 없다.
+불필요한 exception 던지지 않는다. casting도 필요 없다.
+또한 자신이 속한 class의 인터페이스를 구현한 타입 클래스도 인자로 받을 수 있다.
+예를 들어 TreeSet을 HashSet으로 바꾸려 한다면 clone은 지원하지 않지만, <code>new TreeSet(hashSet);</code> 으로 가능하다.</p>
+<p>결론적으로 array 복사정도면 모를까 거의 쓰지 말자.. copy constructor 나 copy factory 쓰자</p>
+<ul class=pa0>
+</ul>
+<div class="mt6 instapaper_ignoref">
+</div>
+</div>
+<aside class="w-30-l mt6-l">
+</aside>
+</article>
+</main>
+<footer class="bg-black bottom-0 w-100 pa3" role=contentinfo>
+<div class="flex justify-between">
+<a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href=https://sangmoon.github.io/TIL>
+&copy; Sangmoon's TIL 2021
+</a>
+<div>
+</div>
+</div>
+</footer>
+</body>
+</html>

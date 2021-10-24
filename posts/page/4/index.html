@@ -1,0 +1,239 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge,chrome=1">
+<title>Sangmoon's TIL</title>
+<meta name=viewport content="width=device-width,minimum-scale=1">
+<meta name=description content>
+<meta name=generator content="Hugo 0.88.1">
+<meta name=ROBOTS content="NOINDEX, NOFOLLOW">
+<link rel=stylesheet href=/TIL/ananke/css/main.min.css>
+<link href=/TIL/posts/index.xml rel=alternate type=application/rss+xml title="Sangmoon's TIL">
+<link href=/TIL/posts/index.xml rel=feed type=application/rss+xml title="Sangmoon's TIL">
+<meta property="og:title" content="Posts">
+<meta property="og:description" content>
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/posts/">
+<meta itemprop=name content="Posts">
+<meta itemprop=description content><meta name=twitter:card content="summary">
+<meta name=twitter:title content="Posts">
+<meta name=twitter:description content>
+</head>
+<body class="ma0 avenir bg-near-white">
+<header>
+<div class="pb3-m pb6-l bg-black">
+<nav class="pv3 ph3 ph4-ns" role=navigation>
+<div class="flex-l justify-between items-center center">
+<a href=/TIL/ class="f3 fw2 hover-white no-underline white-90 dib">
+Sangmoon's TIL
+</a>
+<div class="flex-l items-center">
+</div>
+</div>
+</nav>
+<div class="tc-l pv3 ph3 ph4-ns">
+<h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+Posts
+</h1>
+</div>
+</div>
+</header>
+<main class=pb7 role=main>
+<article class="pa3 pa4-ns nested-copy-line-height nested-img">
+<section class="cf ph3 ph5-l pv3 pv4-l f4 tc-l center measure-wide lh-copy mid-gray"></section>
+<section class="flex-ns flex-wrap justify-around mt5">
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/effectivejava/classesandinterfaces/item20/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Item 20: 추상 클래스보다는 인터페이스를 우선하라 추상 클래스는 1개만 상속 가능하지만, 인터페이스는 여러개 구현할 수 있다.
+기존 클래스에도 손쉽게 새로운 인터페이스를 구현해넣을 수 있다. 인터페이스는 Mixin 정의에 안성맞춤이다. 인터페이스는 계층 구조가 없는 타입 프레임워크를 만들 수 있다. public interface Singer { AutidoCLip sing(Song s); } public interface Songwriter { Song compose(int chartPosition); } public interface SingerSongWriter extends Singer, SongWriter { AudioCLip strum(); void actSensitive(); } Default Method Interface 의 default method 를 사용하려면, 꼭 @implSpec 을 붙여서 문서화해야 한다.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/effectivejava/classesandinterfaces/item21/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Item21: 인터페이스는 구현하는 쪽을 생각해서 설계해라 모든 상황에서 불변식을 해치지 않은 default 메소드는 작성하기 어렵다 // Java8 에 추가된 Collection dml removeIf default boolean removeIf(Predicate&lt;? super E> filter) { Objects.requireNonNull(filter); boolean result = false; for (Iterator&lt;E> it = iterator(); it.hashNext();) { if (filter.test(it.next())) { it.remove(); result = true; } } return result; } 굉장히 범용적이지만 못 쓰는 경우도 있다. (ex) 아파치의 SynchronizedCollection)
+컴파일 에러가 발생하지 않아도 런타임 에러가 발생할 수도 있다.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/effectivejava/classesandinterfaces/item22/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Item22: 인터페이스는 타입을 정의하는 용도로만 사용하라 클래스가 인터페이스를 구현한다는 것은 자신의 인스턴스로 무엇을 할 수 있는지 클라이언트에게 알려주는 것.
+Anti Pattern: 상수 인터페이스
+public interface PhysicalConstants { static final double AVOGADROS_NUMBER = 6.022_140_857e23; } 상수는 외부 인터페이스가 아니고 내부 구현이다.
+만약 클라이언트가 이런 상수들을 쓰고 있다면, 인터페이스에서 지우지도 못하게 된다.
+이런 경우에는
+클래스 자체에 추가한다(책에는 클래스나 인터페이스 자체에 추가한다&mldr; 는데 번역 오류인가..?) ENUM 을 사용한다(Item 34) 인스턴스화 못하는 유틸 클래스를 사용한다 public class PhysicalConstants { private PhysicalConstants() {} public static final double AVOGADROS_NUMBER = 6.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/effectivejava/classesandinterfaces/item23/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Item23: 태그 달린 클래스보다는 클래스 계층구조를 활용하라 태그 달린 클래스가 뭐야? -> 두가지 이상의 기능을 커버하는 클래스
+안 좋은 이유
+생성자 여러개 불필요한 필드 많음 객체 지향적이지 않음 반복코드 많음 메모리 낭비 가독성도 아웃 태그 달린 클래스는 클래스 계층구조를 어설프게 흉내낸 아류
+태그에 따라 달라지는 동작은 추상 클래스의 추상 메소드로 선언 태그와 관계없이 같은 메소드는 추상 클래스의 일반 메소드로 선언
+요약 태그 달린 클래스가 보이면 리팩토링을 고려하자
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/effectivejava/classesandinterfaces/item24/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Item24: 멤버 클래스는 되도록 static 으로 만들어라 중첩 클래스는 다음 4개가 존재
+static member class member class anonymous class local class static Member Class 클래스 안에 선언되고, 바깥 클래스 private 멤버 접근 가능. 보통 public 도우미 클래스로 쓰임
+(Non-static) Member Class 바깥 클래스 인스턴스와 암묵적으로 연결되어 있음. 정규화된 this 로 참조 가능.
+class A { public class C { public void run() { System.out.println("Run C: " + A.this.a); } } 어댑터 패턴에서 자주 쓰임
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/effectivejava/classesandinterfaces/item25/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Item25: 톱레벨 클래스는 한 파일에 하나만 담으라 한 파일에 여러 톱 클래스가 있으면 컴파일 순서에 따라 이상한 결과 초래 가능(IDE 에서 이미 경고 할 듯)
+해결책은 하나 파일엔 하나의 톱 클래스만 정의하자. 굳이 하고 싶다면 static member class 써보자.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/effectivejava/creatinhanddestoryinhobjects/item1/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Item 1: Consider static factory methods instead of constructors 기본적으로 클라이언트는 어떤 객체의 퍼블릭 생성자를 얻을 수 있다. 하지만 static factory method를 제공할 수도 있다.
+// Boolean Class 에서 사용하는 static factory method 예제 public static Boolean vaoueOf(boolean b) { return b ? Boolean.TRUE: Boolean.FALSE; } static factory method와 Factory Method Pattern은 다르니 주의!
+이제 클라이언트에게 퍼블릭 생성자를 주는 대신, 팩토리 메서드를 제공한다.
+장점
+생성자와 다르게 이름이 있다.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/effectivejava/creatinhanddestoryinhobjects/item2/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Item 2 Consider a builder when faced with many constructor parameters Static factory 와 constructor 는 같은 문제를 공유한다 - 많은 수의 optional parameter를 처리 하기 힘들다. 전통적으로 많은 파라미터를 같는 경우 telescoping constructor 패턴이 사용된다.
+// Telescoping constructor pattern - scale을 키우기 쉽지 않다 public class NutritionFacts { private final int servingSize; private final int servings; private final int calories; private final int fat; private final int sodium; private final int carbohydrate; public NutritionFacts(int servingSize, int servings) { this(servingSize, servings, 0); } public NutritionFacts(int servingSize, int servings, int calories) { this(servingSize, servings, calories, 0); } public NutritionFacts(int servingSize, int servings, int calories, int fat) { this(servingSize, servings, calories, fat, 0); } public NutritionFacts(int servingSize, int servings, int calories, int fat, int sodium) { this(servingSize, servings, calories, fat, sodium, 0); } public NutritionFacts(int servingSize, int servings, int calories, int fat, int sodium, int carbohydrate) { this.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/effectivejava/creatinhanddestoryinhobjects/item3/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Item 3 Enforce the singleton property with a private constructor or an enum type 싱글톤은 오직 단 1번만 생성되는 객체이다. 상태가 없는 function(Item 24) 나 시스템 컴포넌트가 여기에 해당한다. 싱클톤은 Mock을 만들기 어렵기 때문에 테스트 하기에 어려운 점이 있다.
+보통 2가지 방식이 존재한다. 둘 다 생성자를 private으로 보호하고, 접근자를 public하게 만들어 유일한 객체에 접근하도록 허용한다.
+// 인스턴스를 final로 해 접근하는 방식 public class Elvis { public static final Elvis INSTANCE = new Elvis(); private Elvis() {} } protected나 public 생성자가 없기 때문에 elvis 객체는 오직 1번만 클래스가 초기화 될 때 생성됨을 보장한다.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/effectivejava/creatinhanddestoryinhobjects/item4/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Item 4 Enforce noninstantiability with a private constructor 유틸 클래스들처럼 객체화 시키고 싶지 않은 클래스를 원할 때가 있다. 하지만 명시적 생성자가 없으면 컴파일러는 public default 생성자를 만들어준다. 따라서 private 생성자를 명시적으로 넣으므로써 이를 방지할 수 있다.
+public class UtilityClass { private UtilityClass() { throw new AssertionError(); } } 부과 효과로 이런 방식은 상속을 불가능하게 만든다. 모든 생성자는 부모 생성자를 호출해야 하기 때문에, private 생성자에 접근할 방법이 없다.
+</div>
+</div>
+</div>
+</div>
+</section>
+<ul class="pagination pagination-default">
+<li class=page-item>
+<a href=/TIL/posts/ aria-label=First class=page-link role=button><span aria-hidden=true>&#171;&#171;</span></a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/3/ aria-label=Previous class=page-link role=button><span aria-hidden=true>&#171;</span></a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/2/ aria-label="Page 2" class=page-link role=button>2</a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/3/ aria-label="Page 3" class=page-link role=button>3</a>
+</li>
+<li class="page-item active">
+<a href=# aria-current=page aria-label="Page 4" class=page-link role=button>4</a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/5/ aria-label="Page 5" class=page-link role=button>5</a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/6/ aria-label="Page 6" class=page-link role=button>6</a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/5/ aria-label=Next class=page-link role=button><span aria-hidden=true>&#187;</span></a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/10/ aria-label=Last class=page-link role=button><span aria-hidden=true>&#187;&#187;</span></a>
+</li>
+</ul></article>
+</main>
+<footer class="bg-black bottom-0 w-100 pa3" role=contentinfo>
+<div class="flex justify-between">
+<a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href=https://sangmoon.github.io/TIL>
+&copy; Sangmoon's TIL 2021
+</a>
+<div>
+</div>
+</div>
+</footer>
+</body>
+</html>

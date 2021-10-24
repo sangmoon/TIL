@@ -1,0 +1,183 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge,chrome=1">
+<title>Sangmoon's TIL</title>
+<meta name=viewport content="width=device-width,minimum-scale=1">
+<meta name=description content="Lambda Expression Java 8 부터 람다 표현식을 지원한다. 핵심은 지울 수 있는 건 다 지우고 컴파일러에게 맡기자! 이다.
+interface Flyable void fly() class Bird implements Flyable{ @Override public void fly(){ System.out.println(&#34;I believe I can fly&#34;); } } Flyable fly = new Flyable(){ @Override public void fly(){ System.out.println(&#34;I believe I can fly&#34;); } } Flyable 이라는 interface를 구현한다고 해보자. 이를 구현한 Bird라는 클래스를 만드는게 일반 방법이고, 재사용성이 없다면 아래 방식으로 익명 inner class를 활용할 수도 있다.">
+<meta name=generator content="Hugo 0.88.1">
+<meta name=ROBOTS content="NOINDEX, NOFOLLOW">
+<link rel=stylesheet href=/TIL/ananke/css/main.min.css>
+<meta property="og:title" content>
+<meta property="og:description" content="Lambda Expression Java 8 부터 람다 표현식을 지원한다. 핵심은 지울 수 있는 건 다 지우고 컴파일러에게 맡기자! 이다.
+interface Flyable void fly() class Bird implements Flyable{ @Override public void fly(){ System.out.println(&#34;I believe I can fly&#34;); } } Flyable fly = new Flyable(){ @Override public void fly(){ System.out.println(&#34;I believe I can fly&#34;); } } Flyable 이라는 interface를 구현한다고 해보자. 이를 구현한 Bird라는 클래스를 만드는게 일반 방법이고, 재사용성이 없다면 아래 방식으로 익명 inner class를 활용할 수도 있다.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/posts/java/lambda/"><meta property="article:section" content="posts">
+<meta itemprop=name content>
+<meta itemprop=description content="Lambda Expression Java 8 부터 람다 표현식을 지원한다. 핵심은 지울 수 있는 건 다 지우고 컴파일러에게 맡기자! 이다.
+interface Flyable void fly() class Bird implements Flyable{ @Override public void fly(){ System.out.println(&#34;I believe I can fly&#34;); } } Flyable fly = new Flyable(){ @Override public void fly(){ System.out.println(&#34;I believe I can fly&#34;); } } Flyable 이라는 interface를 구현한다고 해보자. 이를 구현한 Bird라는 클래스를 만드는게 일반 방법이고, 재사용성이 없다면 아래 방식으로 익명 inner class를 활용할 수도 있다.">
+<meta itemprop=wordCount content="383">
+<meta itemprop=keywords content><meta name=twitter:card content="summary">
+<meta name=twitter:title content>
+<meta name=twitter:description content="Lambda Expression Java 8 부터 람다 표현식을 지원한다. 핵심은 지울 수 있는 건 다 지우고 컴파일러에게 맡기자! 이다.
+interface Flyable void fly() class Bird implements Flyable{ @Override public void fly(){ System.out.println(&#34;I believe I can fly&#34;); } } Flyable fly = new Flyable(){ @Override public void fly(){ System.out.println(&#34;I believe I can fly&#34;); } } Flyable 이라는 interface를 구현한다고 해보자. 이를 구현한 Bird라는 클래스를 만드는게 일반 방법이고, 재사용성이 없다면 아래 방식으로 익명 inner class를 활용할 수도 있다.">
+</head>
+<body class="ma0 avenir bg-near-white">
+<header>
+<div class=bg-black>
+<nav class="pv3 ph3 ph4-ns" role=navigation>
+<div class="flex-l justify-between items-center center">
+<a href=/TIL/ class="f3 fw2 hover-white no-underline white-90 dib">
+Sangmoon's TIL
+</a>
+<div class="flex-l items-center">
+</div>
+</div>
+</nav>
+</div>
+</header>
+<main class=pb7 role=main>
+<article class="flex-l flex-wrap justify-between mw8 center ph3">
+<header class="mt4 w-100">
+<aside class="instapaper_ignoref b helvetica tracked">
+POSTS
+</aside>
+<div id=sharing class=mt3>
+<a href="https://www.facebook.com/sharer.php?u=https://sangmoon.github.io/TIL/posts/java/lambda/" class="facebook no-underline" aria-label="share on Facebook"><svg height="32" style="enable-background:new 0 0 67 67" viewBox="0 0 67 67" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M28.765 50.32h6.744V33.998h4.499l.596-5.624h-5.095l.007-2.816c0-1.466.14-2.253 2.244-2.253h2.812V17.68h-4.5c-5.405.0-7.307 2.729-7.307 7.317v3.377h-3.369v5.625h3.369V50.32zM33 64C16.432 64 3 50.569 3 34S16.432 4 33 4s30 13.431 30 30S49.568 64 33 64z" style="fill-rule:evenodd;clip-rule:evenodd"/></svg>
+</a>
+<a href="https://twitter.com/share?url=https://sangmoon.github.io/TIL/posts/java/lambda/&text=" class="twitter no-underline" aria-label="share on Twitter"><svg height="32" style="enable-background:new 0 0 67 67" viewBox="0 0 67 67" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167 22.283c-2.619.953-4.274 3.411-4.086 6.101l.063 1.038-1.048-.127c-3.813-.487-7.145-2.139-9.974-4.915l-1.383-1.377-.356 1.017c-.754 2.267-.272 4.661 1.299 6.271.838.89.649 1.017-.796.487-.503-.169-.943-.296-.985-.233-.146.149.356 2.076.754 2.839.545 1.06 1.655 2.097 2.871 2.712l1.027.487-1.215.021c-1.173.0-1.215.021-1.089.467.419 1.377 2.074 2.839 3.918 3.475l1.299.444-1.131.678c-1.676.976-3.646 1.526-5.616 1.568C19.775 43.256 19 43.341 19 43.405c0 .211 2.557 1.397 4.044 1.864 4.463 1.377 9.765.783 13.746-1.568 2.829-1.673 5.657-5 6.978-8.221.713-1.716 1.425-4.851 1.425-6.354.0-.975.063-1.102 1.236-2.267.692-.678 1.341-1.419 1.467-1.631.21-.403.188-.403-.88-.043-1.781.636-2.033.551-1.152-.402.649-.678 1.425-1.907 1.425-2.267.0-.063-.314.042-.671.233-.377.212-1.215.53-1.844.72l-1.131.361-1.027-.7c-.566-.381-1.361-.805-1.781-.932C39.766 21.902 38.131 21.944 37.167 22.283zM33 64C16.432 64 3 50.569 3 34S16.432 4 33 4s30 13.431 30 30S49.568 64 33 64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:"/></svg>
+</a>
+<a href="https://www.linkedin.com/shareArticle?mini=true&url=https://sangmoon.github.io/TIL/posts/java/lambda/&title=" class="linkedin no-underline" aria-label="share on LinkedIn"><svg height="32" style="enable-background:new 0 0 65 65" viewBox="0 0 65 65" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M50.837 48.137V36.425c0-6.275-3.35-9.195-7.816-9.195-3.604.0-5.219 1.983-6.119 3.374V27.71h-6.79c.09 1.917.0 20.427.0 20.427h6.79V36.729c0-.609.044-1.219.224-1.655.49-1.22 1.607-2.483 3.482-2.483 2.458.0 3.44 1.873 3.44 4.618v10.929H50.837zM22.959 24.922c2.367.0 3.842-1.57 3.842-3.531-.044-2.003-1.475-3.528-3.797-3.528s-3.841 1.524-3.841 3.528c0 1.961 1.474 3.531 3.753 3.531H22.959zM34 64C17.432 64 4 50.568 4 34 4 17.431 17.432 4 34 4s30 13.431 30 30c0 16.568-13.432 30-30 30zM26.354 48.137V27.71h-6.789v20.427h6.789z" style="fill-rule:evenodd;clip-rule:evenodd;fill:"/></svg>
+</a>
+</div>
+<h1 class="f1 athelas mt3 mb1"></h1>
+</header>
+<div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><h1 id=lambda-expression>Lambda Expression</h1>
+<p>Java 8 부터 람다 표현식을 지원한다.
+핵심은 지울 수 있는 건 다 지우고 컴파일러에게 맡기자! 이다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Flyable</span>
+    <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>fly</span><span style=color:#f92672>()</span>
+
+<span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Bird</span> <span style=color:#66d9ef>implements</span> Flyable<span style=color:#f92672>{</span>
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>fly</span><span style=color:#f92672>(){</span>
+        System<span style=color:#f92672>.</span><span style=color:#a6e22e>out</span><span style=color:#f92672>.</span><span style=color:#a6e22e>println</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;I believe I can fly&#34;</span><span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+
+Flyable fly <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Flyable<span style=color:#f92672>(){</span>
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>fly</span><span style=color:#f92672>(){</span>
+        System<span style=color:#f92672>.</span><span style=color:#a6e22e>out</span><span style=color:#f92672>.</span><span style=color:#a6e22e>println</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;I believe I can fly&#34;</span><span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>Flyable 이라는 interface를 구현한다고 해보자. 이를 구현한 <code>Bird</code>라는 클래스를 만드는게 일반 방법이고,
+재사용성이 없다면 아래 방식으로 익명 inner class를 활용할 수도 있다. 그런데 단순히 method 하나 사용하려고
+객체를 새로 생성하고 Override 해주는 게 귀찮게 느껴진다. 위의 코드는 다음과 같이 수정할 수 있다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>Flyable fly <span style=color:#f92672>=</span> <span style=color:#f92672>()</span> <span style=color:#f92672>-&gt;</span> System<span style=color:#f92672>.</span><span style=color:#a6e22e>out</span><span style=color:#f92672>.</span><span style=color:#a6e22e>println</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;I believe I can fly&#34;</span><span style=color:#f92672>);</span>
+</code></pre></div><ul>
+<li>이미 변수 선언에서 Type을 알고 있으므로 new 를 할 필요가 없다.</li>
+<li>구현하려는 method가 1개 이므로 이름 없어도 된다.</li>
+<li>method를 알고 있으니까 parameter 도 간소화 할 수 있다.</li>
+</ul>
+<h2 id=functionalinterface>FunctionalInterface</h2>
+<p>java는 method를 1급객체로 취급하지 않기 때문에 다른 언어들 처럼 바로 lambda를 사용하지는 못한다.
+구현해야할 method가 1개인 functional interface를 사용하여 hint를 주게 된다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@FunctionalInterface</span>
+<span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Flyable</span><span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>fly</span><span style=color:#f92672>()</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>이는 인터페이스에 method가 1개 가 아니면 컴파일 에러를 발생시켜 오류를 줄여준다.
+또한 실제 class를 만드는 것이 아니기 때문에 메모리 부담이 줄어든다(익명 inner class의 경우 class를 만드는 것이기 때문에 메모리 부담 가중)</p>
+<h2 id=java-built-in-functional-interface>java built-in functional interface</h2>
+<ul>
+<li><code>Runnable</code></li>
+</ul>
+<p>thread 생성할 때 보통 사용하는 interface 이다.
+void 타입의 parameter 또한 없다.</p>
+<ul>
+<li><code>Supplier&lt;T></code></li>
+</ul>
+<p>인자는 받지 않고, T type을 리턴한다. 순수함수는 input parameter에만 영향을 받으므로
+항상 같은 값을 리턴한다.</p>
+<ul>
+<li><code>Consumer&lt;T></code></li>
+</ul>
+<p>void type 이며 T를 인풋 parameter로 받는다.</p>
+<ul>
+<li><code>Function&lt;T, R></code></li>
+</ul>
+<p>하나의 인자와 리턴타입을 갖는다.</p>
+<ul>
+<li><code>Predicate&lt;T></code></li>
+</ul>
+<p>하나의 인자를 받고 리턴 타입은 boolean으로 고정이다.</p>
+<ul>
+<li><code>UnaryOperator&lt;T></code></li>
+</ul>
+<p>인자와 리턴 타입이 같다.</p>
+<ul>
+<li><code>BinaryOperator&lt;T></code></li>
+</ul>
+<p>동일한 타입의 인자 2개를 받아서 역시 동일한 타입으로 리턴한다.</p>
+<ul>
+<li><code>BiPredicate&lt;T, U></code></li>
+</ul>
+<p>인자 2개를 받아서 boolean으로 리턴한다.</p>
+<ul>
+<li><code>BiConsumer&lt;T, U></code></li>
+</ul>
+<p>인자 2개를 받는 void 타입</p>
+<ul>
+<li><code>BiFunction&lt;T, U, R></code></li>
+</ul>
+<p>인자 2개를 받고 리턴한다.</p>
+<ul>
+<li><code>Comparator&lt;T></code></li>
+</ul>
+<p>자바 전통적인 인터페이스로 객체간 비교 때 사용된다.</p>
+<ul>
+<li><code>Callable&lt;T></code></li>
+</ul>
+<p>runnable에 대응되는 interface로 Future 객체를 사용할 때 사용된다.</p>
+<p><a href="http://multifrontgarden.tistory.com/125?category=471239">참조사이트</a></p>
+<h2 id=clousure>clousure</h2>
+<p>자유 변수! unbound variable, free variable</p>
+<h2 id=currying>currying</h2>
+<p>argument가 1개인 anonymous function이 multi arg를 지원하는가</p>
+<h2 id=mixin>Mixin</h2>
+<p>다른 class의 method를 가지고 있는 class. 상속 외에 다른 방식으로 reuse 함.
+이를 java 에서 받기 위해 default 생김.</p>
+<h2 id=default-method>Default Method</h2>
+<p>provides a default impl for any class that implements the interface without overriding the method.
+기존 interface 수정하지 않고 새로운 기능성 구현. 다중상속처럼 구현됨
+다만 state(멤버 변수) 를 선언할 수 없고, 오로지 동작(method) 만 가능</p>
+<h2 id=java-8-lambda>Java 8 lambda</h2>
+<ul>
+<li>functional interface</li>
+<li>default method</li>
+<li>streams</li>
+<li>invokeDynamic</li>
+<li>java.util.Spliterator</li>
+</ul>
+<ul class=pa0>
+</ul>
+<div class="mt6 instapaper_ignoref">
+</div>
+</div>
+<aside class="w-30-l mt6-l">
+</aside>
+</article>
+</main>
+<footer class="bg-black bottom-0 w-100 pa3" role=contentinfo>
+<div class="flex justify-between">
+<a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href=https://sangmoon.github.io/TIL>
+&copy; Sangmoon's TIL 2021
+</a>
+<div>
+</div>
+</div>
+</footer>
+</body>
+</html>

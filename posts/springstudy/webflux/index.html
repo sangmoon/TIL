@@ -1,0 +1,275 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge,chrome=1">
+<title>Sangmoon's TIL</title>
+<meta name=viewport content="width=device-width,minimum-scale=1">
+<meta name=description content="WebFlux 앞 부분은 이전 스터디와 겹치기 때문에 생략
+레시피 5-9 리액티브 핸들러 함수 작성하기  @RequestMapping  대신 핸들러 함수로 작성할 수 있음  @FunctionalInterface public interface HandlerFunction<T extends ServerResponse> { Mono<T> handle(ServerRequest request); }  ServerRequest, ServerResponse 를 통해 요청/응답의 다양한 파트들에 비동기적으로 접근 가능  핸들러 함수 작성 @Component //1 다른 어노테이션 없이 Component 만 선언해주면 됨 public class ReservationRestController { private final ReservationService reservationService; public ReservationRestController(ReservationService reservationService) { this.">
+<meta name=generator content="Hugo 0.88.1">
+<meta name=ROBOTS content="NOINDEX, NOFOLLOW">
+<link rel=stylesheet href=/TIL/ananke/css/main.min.css>
+<meta property="og:title" content>
+<meta property="og:description" content="WebFlux 앞 부분은 이전 스터디와 겹치기 때문에 생략
+레시피 5-9 리액티브 핸들러 함수 작성하기  @RequestMapping  대신 핸들러 함수로 작성할 수 있음  @FunctionalInterface public interface HandlerFunction<T extends ServerResponse> { Mono<T> handle(ServerRequest request); }  ServerRequest, ServerResponse 를 통해 요청/응답의 다양한 파트들에 비동기적으로 접근 가능  핸들러 함수 작성 @Component //1 다른 어노테이션 없이 Component 만 선언해주면 됨 public class ReservationRestController { private final ReservationService reservationService; public ReservationRestController(ReservationService reservationService) { this.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/posts/springstudy/webflux/"><meta property="article:section" content="posts">
+<meta itemprop=name content>
+<meta itemprop=description content="WebFlux 앞 부분은 이전 스터디와 겹치기 때문에 생략
+레시피 5-9 리액티브 핸들러 함수 작성하기  @RequestMapping  대신 핸들러 함수로 작성할 수 있음  @FunctionalInterface public interface HandlerFunction<T extends ServerResponse> { Mono<T> handle(ServerRequest request); }  ServerRequest, ServerResponse 를 통해 요청/응답의 다양한 파트들에 비동기적으로 접근 가능  핸들러 함수 작성 @Component //1 다른 어노테이션 없이 Component 만 선언해주면 됨 public class ReservationRestController { private final ReservationService reservationService; public ReservationRestController(ReservationService reservationService) { this.">
+<meta itemprop=wordCount content="674">
+<meta itemprop=keywords content><meta name=twitter:card content="summary">
+<meta name=twitter:title content>
+<meta name=twitter:description content="WebFlux 앞 부분은 이전 스터디와 겹치기 때문에 생략
+레시피 5-9 리액티브 핸들러 함수 작성하기  @RequestMapping  대신 핸들러 함수로 작성할 수 있음  @FunctionalInterface public interface HandlerFunction<T extends ServerResponse> { Mono<T> handle(ServerRequest request); }  ServerRequest, ServerResponse 를 통해 요청/응답의 다양한 파트들에 비동기적으로 접근 가능  핸들러 함수 작성 @Component //1 다른 어노테이션 없이 Component 만 선언해주면 됨 public class ReservationRestController { private final ReservationService reservationService; public ReservationRestController(ReservationService reservationService) { this.">
+</head>
+<body class="ma0 avenir bg-near-white">
+<header>
+<div class=bg-black>
+<nav class="pv3 ph3 ph4-ns" role=navigation>
+<div class="flex-l justify-between items-center center">
+<a href=/TIL/ class="f3 fw2 hover-white no-underline white-90 dib">
+Sangmoon's TIL
+</a>
+<div class="flex-l items-center">
+</div>
+</div>
+</nav>
+</div>
+</header>
+<main class=pb7 role=main>
+<article class="flex-l flex-wrap justify-between mw8 center ph3">
+<header class="mt4 w-100">
+<aside class="instapaper_ignoref b helvetica tracked">
+POSTS
+</aside>
+<div id=sharing class=mt3>
+<a href="https://www.facebook.com/sharer.php?u=https://sangmoon.github.io/TIL/posts/springstudy/webflux/" class="facebook no-underline" aria-label="share on Facebook"><svg height="32" style="enable-background:new 0 0 67 67" viewBox="0 0 67 67" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M28.765 50.32h6.744V33.998h4.499l.596-5.624h-5.095l.007-2.816c0-1.466.14-2.253 2.244-2.253h2.812V17.68h-4.5c-5.405.0-7.307 2.729-7.307 7.317v3.377h-3.369v5.625h3.369V50.32zM33 64C16.432 64 3 50.569 3 34S16.432 4 33 4s30 13.431 30 30S49.568 64 33 64z" style="fill-rule:evenodd;clip-rule:evenodd"/></svg>
+</a>
+<a href="https://twitter.com/share?url=https://sangmoon.github.io/TIL/posts/springstudy/webflux/&text=" class="twitter no-underline" aria-label="share on Twitter"><svg height="32" style="enable-background:new 0 0 67 67" viewBox="0 0 67 67" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167 22.283c-2.619.953-4.274 3.411-4.086 6.101l.063 1.038-1.048-.127c-3.813-.487-7.145-2.139-9.974-4.915l-1.383-1.377-.356 1.017c-.754 2.267-.272 4.661 1.299 6.271.838.89.649 1.017-.796.487-.503-.169-.943-.296-.985-.233-.146.149.356 2.076.754 2.839.545 1.06 1.655 2.097 2.871 2.712l1.027.487-1.215.021c-1.173.0-1.215.021-1.089.467.419 1.377 2.074 2.839 3.918 3.475l1.299.444-1.131.678c-1.676.976-3.646 1.526-5.616 1.568C19.775 43.256 19 43.341 19 43.405c0 .211 2.557 1.397 4.044 1.864 4.463 1.377 9.765.783 13.746-1.568 2.829-1.673 5.657-5 6.978-8.221.713-1.716 1.425-4.851 1.425-6.354.0-.975.063-1.102 1.236-2.267.692-.678 1.341-1.419 1.467-1.631.21-.403.188-.403-.88-.043-1.781.636-2.033.551-1.152-.402.649-.678 1.425-1.907 1.425-2.267.0-.063-.314.042-.671.233-.377.212-1.215.53-1.844.72l-1.131.361-1.027-.7c-.566-.381-1.361-.805-1.781-.932C39.766 21.902 38.131 21.944 37.167 22.283zM33 64C16.432 64 3 50.569 3 34S16.432 4 33 4s30 13.431 30 30S49.568 64 33 64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:"/></svg>
+</a>
+<a href="https://www.linkedin.com/shareArticle?mini=true&url=https://sangmoon.github.io/TIL/posts/springstudy/webflux/&title=" class="linkedin no-underline" aria-label="share on LinkedIn"><svg height="32" style="enable-background:new 0 0 65 65" viewBox="0 0 65 65" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M50.837 48.137V36.425c0-6.275-3.35-9.195-7.816-9.195-3.604.0-5.219 1.983-6.119 3.374V27.71h-6.79c.09 1.917.0 20.427.0 20.427h6.79V36.729c0-.609.044-1.219.224-1.655.49-1.22 1.607-2.483 3.482-2.483 2.458.0 3.44 1.873 3.44 4.618v10.929H50.837zM22.959 24.922c2.367.0 3.842-1.57 3.842-3.531-.044-2.003-1.475-3.528-3.797-3.528s-3.841 1.524-3.841 3.528c0 1.961 1.474 3.531 3.753 3.531H22.959zM34 64C17.432 64 4 50.568 4 34 4 17.431 17.432 4 34 4s30 13.431 30 30c0 16.568-13.432 30-30 30zM26.354 48.137V27.71h-6.789v20.427h6.789z" style="fill-rule:evenodd;clip-rule:evenodd;fill:"/></svg>
+</a>
+</div>
+<h1 class="f1 athelas mt3 mb1"></h1>
+</header>
+<div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><h1 id=webflux>WebFlux</h1>
+<p>앞 부분은 이전 스터디와 겹치기 때문에 생략</p>
+<h2 id=레시피-5-9-리액티브-핸들러-함수-작성하기>레시피 5-9 리액티브 핸들러 함수 작성하기</h2>
+<ul>
+<li><code>@RequestMapping </code> 대신 핸들러 함수로 작성할 수 있음</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@FunctionalInterface</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>HandlerFunction</span><span style=color:#f92672>&lt;</span>T <span style=color:#66d9ef>extends</span> ServerResponse<span style=color:#f92672>&gt;</span> <span style=color:#f92672>{</span>
+    Mono<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>handle</span><span style=color:#f92672>(</span>ServerRequest request<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><ul>
+<li>ServerRequest, ServerResponse 를 통해 요청/응답의 다양한 파트들에 비동기적으로 접근 가능</li>
+</ul>
+<h3 id=핸들러-함수-작성>핸들러 함수 작성</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>
+<span style=color:#a6e22e>@Component</span>  <span style=color:#75715e>//1 다른 어노테이션 없이 Component 만 선언해주면 됨
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ReservationRestController</span> <span style=color:#f92672>{</span>
+
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>final</span> ReservationService reservationService<span style=color:#f92672>;</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>ReservationRestController</span><span style=color:#f92672>(</span>ReservationService reservationService<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>reservationService</span> <span style=color:#f92672>=</span> reservationService<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#66d9ef>public</span> Mono<span style=color:#f92672>&lt;</span>ServerResponse<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>listAll</span><span style=color:#f92672>(</span>ServerRequest request<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>return</span> ServerResponse<span style=color:#f92672>.</span><span style=color:#a6e22e>ok</span><span style=color:#f92672>().</span><span style=color:#a6e22e>body</span><span style=color:#f92672>(</span>reservationService<span style=color:#f92672>.</span><span style=color:#a6e22e>findAll</span><span style=color:#f92672>(),</span> Reservation<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span> 
+        <span style=color:#75715e>//이 녀석이 HandlerFunction
+</span><span style=color:#75715e></span>    <span style=color:#f92672>}</span>
+
+    <span style=color:#66d9ef>public</span> Mono<span style=color:#f92672>&lt;</span>ServerResponse<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>find</span><span style=color:#f92672>(</span>ServerRequest request<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>return</span> ServerResponse
+                <span style=color:#f92672>.</span><span style=color:#a6e22e>ok</span><span style=color:#f92672>()</span>
+                <span style=color:#f92672>.</span><span style=color:#a6e22e>body</span><span style=color:#f92672>(</span>
+                    request<span style=color:#f92672>.</span><span style=color:#a6e22e>bodyToMono</span><span style=color:#f92672>(</span>ReservationQuery<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>)</span>
+                    <span style=color:#f92672>.</span><span style=color:#a6e22e>flatMapMany</span><span style=color:#f92672>(</span>q <span style=color:#f92672>-&gt;</span> reservationService<span style=color:#f92672>.</span><span style=color:#a6e22e>query</span><span style=color:#f92672>(</span>q<span style=color:#f92672>.</span><span style=color:#a6e22e>getCourtName</span><span style=color:#f92672>())),</span> Reservation<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span> 
+                    <span style=color:#75715e>// 이 녀석이 HandlerFunction
+</span><span style=color:#75715e></span>    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h4 id=serverrequest-에서-value-빼오기>ServerRequest 에서 value 빼오기</h4>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// 이와 같은 method로 request parts에 접근 가능
+</span><span style=color:#75715e></span>Mono<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> string <span style=color:#f92672>=</span> request<span style=color:#f92672>.</span><span style=color:#a6e22e>bodyToMono</span><span style=color:#f92672>(</span>String<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+Mono<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> string <span style=color:#f92672>=</span> request<span style=color:#f92672>.</span><span style=color:#a6e22e>body</span><span style=color:#f92672>(</span>BodyExtractors<span style=color:#f92672>.</span><span style=color:#a6e22e>toMono</span><span style=color:#f92672>(</span>String<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>));</span>
+
+Flux<span style=color:#f92672>&lt;</span>Person<span style=color:#f92672>&gt;</span> people <span style=color:#f92672>=</span> request<span style=color:#f92672>.</span><span style=color:#a6e22e>bodyToFlux</span><span style=color:#f92672>(</span>Person<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+Flux<span style=color:#f92672>&lt;</span>Person<span style=color:#f92672>&gt;</span> people <span style=color:#f92672>=</span> request<span style=color:#f92672>.</span><span style=color:#a6e22e>body</span><span style=color:#f92672>(</span>BodyExtractors<span style=color:#f92672>.</span><span style=color:#a6e22e>toFlux</span><span style=color:#f92672>(</span>Person<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>));</span>
+
+Mono<span style=color:#f92672>&lt;</span>MultiValueMap<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>,</span> String<span style=color:#f92672>&gt;</span> map <span style=color:#f92672>=</span> request<span style=color:#f92672>.</span><span style=color:#a6e22e>body</span><span style=color:#f92672>(</span>BodyExtractors<span style=color:#f92672>.</span><span style=color:#a6e22e>toFormData</span><span style=color:#f92672>());</span>
+
+Mono<span style=color:#f92672>&lt;</span>MultiValueMap<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>,</span> Part<span style=color:#f92672>&gt;</span> map <span style=color:#f92672>=</span> request<span style=color:#f92672>.</span><span style=color:#a6e22e>body</span><span style=color:#f92672>(</span>BodyExtractors<span style=color:#f92672>.</span><span style=color:#a6e22e>toMultipartData</span><span style=color:#f92672>());</span>
+
+Flux<span style=color:#f92672>&lt;</span>Part<span style=color:#f92672>&gt;</span> parts <span style=color:#f92672>=</span> request<span style=color:#f92672>.</span><span style=color:#a6e22e>body</span><span style=color:#f92672>(</span>BodyExtractors<span style=color:#f92672>.</span><span style=color:#a6e22e>toParts</span><span style=color:#f92672>());</span>
+</code></pre></div><h3 id=serverresponse-채우기>ServerResponse 채우기</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>ServerResponse<span style=color:#f92672>.</span><span style=color:#a6e22e>ok</span><span style=color:#f92672>().</span><span style=color:#a6e22e>contentType</span><span style=color:#f92672>(</span>MediaType<span style=color:#f92672>.</span><span style=color:#a6e22e>APPLICATION_JSON</span><span style=color:#f92672>).</span><span style=color:#a6e22e>body</span><span style=color:#f92672>(</span>person<span style=color:#f92672>,</span> Person<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span> <span style=color:#75715e>// 200 code로 json response 보냄
+</span><span style=color:#75715e></span>
+ServerResponse<span style=color:#f92672>.</span><span style=color:#a6e22e>created</span><span style=color:#f92672>(</span>location<span style=color:#f92672>).</span><span style=color:#a6e22e>build</span><span style=color:#f92672>();</span> <span style=color:#75715e>// 201 code로 body 없이 location header만 보냄
+</span></code></pre></div><h3 id=요청을-핸들러-함수로-보내기>요청을 핸들러 함수로 보내기</h3>
+<ul>
+<li>라우팅을 담당</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@Bean</span>
+<span style=color:#66d9ef>public</span> RouterFunction<span style=color:#f92672>&lt;</span>ServerResponse<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>reservationsRouter</span><span style=color:#f92672>(</span>ReservationRestController handler<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>return</span> RouterFunctions
+            <span style=color:#f92672>.</span><span style=color:#a6e22e>route</span><span style=color:#f92672>(</span>GET<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;/persons/{id}&#34;</span><span style=color:#f92672>),</span> handler<span style=color:#f92672>::</span>getPersion<span style=color:#f92672>)</span>           <span style=color:#75715e>//1
+</span><span style=color:#75715e></span>            <span style=color:#f92672>.</span><span style=color:#a6e22e>andRoute</span><span style=color:#f92672>(</span>GET<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;/*/reservations&#34;</span><span style=color:#f92672>),</span> handler<span style=color:#f92672>::</span>listAll<span style=color:#f92672>)</span>         <span style=color:#75715e>//2
+</span><span style=color:#75715e></span>            <span style=color:#f92672>.</span><span style=color:#a6e22e>andRoute</span><span style=color:#f92672>(</span>POST<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;/*/reservations&#34;</span><span style=color:#f92672>),</span> handler<span style=color:#f92672>::</span>find<span style=color:#f92672>)</span>
+            <span style=color:#f92672>.</span><span style=color:#a6e22e>andRoute</span><span style=color:#f92672>(</span>GET<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;&#34;</span><span style=color:#f92672>),</span> request <span style=color:#f92672>-&gt;</span> ServerResponse<span style=color:#f92672>.</span><span style=color:#a6e22e>ok</span><span style=color:#f92672>().</span><span style=color:#a6e22e>body</span><span style=color:#f92672>(</span>fromObject<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;Hello World&#34;</span><span style=color:#f92672>)));</span> <span style=color:#75715e>//3
+</span><span style=color:#75715e></span><span style=color:#f92672>}</span>
+</code></pre></div><ol>
+<li>path variable 사용 가능</li>
+<li>wildcard 가능</li>
+<li>그냥 lambda function 으로도 가능</li>
+</ol>
+<h2 id=리엑티브-프로그래밍>리엑티브 프로그래밍</h2>
+<blockquote>
+<p>비동기 프로세스로 동작하는 이벤트 기반의 non-blocking 어플리케이션을 구현하는 프로그래밍</p>
+<blockquote>
+<p>&ldquo;Reactive&rdquo; 라는 용어는 변화에 반응하여 구축되는 프로그래밍 모델을 말합니다. 네트워크 구성 요소가 I / O 이벤트에 반응하고 UI 컨트롤러가 마우스 이벤트 등에 반응합니다. 이러한 의미에서 non-blocking은 reactive 입니다. 왜냐하면 차단되는 대신 알림에 반응하는 방식이기 때문입니다. <strong>&lt;스프링 docs></strong></p>
+</blockquote>
+</blockquote>
+<h2 id=스프링-웹플럭스>스프링 웹플럭스</h2>
+<ul>
+<li>Servlet 3.1부터 non-blocking I/O 지원.</li>
+<li>하지만 여러 API(<code>Filter</code>, <code>Servlet</code>은 Synchronous, <code>getParameter</code>, <code>getPart</code> 는 blocking) non-blocking 하지 않음.</li>
+<li>기존 Spring MVC에서 non-blocking 한계가 있기에, 새롭게 web-flux 프로젝트 만듬</li>
+<li>vert.x 와 유사&mldr;</li>
+</ul>
+<h2 id=reactive-stream>Reactive Stream</h2>
+<ul>
+<li>Stream은 data의 흐름(Publisher가 data를 만들고, Subscriber가 data 처리하는 구조)</li>
+<li>Reactive Stream은 Subscriber가 stream의 속도를 제어할 수 있음(back pressure)</li>
+</ul>
+<h2 id=프로그래밍-모델>프로그래밍 모델</h2>
+<ul>
+<li><code>Annotated Controllers</code>: 기존 MVC 개발 방식처럼 @Controller, @GetMapping 쓰는 방식</li>
+<li><code>Functional EndPoints</code>: 람다 기반으로 콜백을 통해 리퀘스트 처리</li>
+</ul>
+<h2 id=thread-model>Thread Model</h2>
+<ul>
+<li>스프링 MVC와 Webflux 모두 어노테이션 controller를 지원하지만, 동시성 모델에서 큰 차이를 보임</li>
+<li>Spring MVC: 어플리케이션은 현재 쓰레드를 블럭할 수 있다고 가정. 따라서 서블렛 컨테이너는 이를 수용하기 위한 큰 쓰레드 풀이 필요</li>
+<li>Spring WebFlux: 어플리케이션은 쓰레드 블럭을 하지 않는다고 가정. 따라서 적은 쓰레드만을 이용. <code>vanilla WebFlux Server</code> 라면 1개의 기본 쓰레드와 CPU core 수만큼의 request processing 쓰레드 있음</li>
+<li>물론 WebFlux에서도 <code>publishOn</code> 메소드를 통해 다른 쓰레드에서 작업할 수 있게 API 있음(그런데 쓰지 말라고 공식 가이드에서 &mldr; DB작업은 어쩌지..?)</li>
+</ul>
+<h2 id=mono-flux>Mono Flux</h2>
+<ul>
+<li>
+<p>Mono : 0 또는 1개의 data를 담음</p>
+</li>
+<li>
+<p>Flux : 0 에서 n개의 data를 담음</p>
+</li>
+<li>
+<p>Mono && Flux는 Future와 비슷하지만, lazy 하다는 점에서 다르다</p>
+</li>
+</ul>
+<h3 id=completablefuture>CompletableFuture</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> CompletableFuture <span style=color:#a6e22e>myNonBlockingHttpCall</span><span style=color:#f92672>(</span>Object someData<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    var uncompletedFuture <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> CompletableFuture<span style=color:#f92672>();</span> <span style=color:#75715e>// 
+</span><span style=color:#75715e></span>
+    myAsyncHttpClient<span style=color:#f92672>.</span><span style=color:#a6e22e>execute</span><span style=color:#f92672>(</span>someData<span style=color:#f92672>,</span> <span style=color:#f92672>(</span>result<span style=color:#f92672>,</span> exception <span style=color:#f92672>-&gt;</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>if</span><span style=color:#f92672>(</span>exception <span style=color:#f92672>!=</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            uncompletedFuture<span style=color:#f92672>.</span><span style=color:#a6e22e>completeExceptionally</span><span style=color:#f92672>(</span>exception<span style=color:#f92672>);</span>
+            <span style=color:#66d9ef>return</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+        uncompletedFuture<span style=color:#f92672>.</span><span style=color:#a6e22e>complete</span><span style=color:#f92672>(</span>result<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}));</span>
+
+    <span style=color:#66d9ef>return</span> uncompletedFuture<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> CompletableFuture <span style=color:#a6e22e>myUpperLevelBusinessLogic</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+    var future <span style=color:#f92672>=</span> myNonBlockingHttpCall<span style=color:#f92672>();</span> <span style=color:#75715e>// 호출하는 시점에서 실행됨
+</span><span style=color:#75715e></span>
+    <span style=color:#75715e>// ... 
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>something<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+       <span style=color:#75715e>// 그냥 에러를 던지자
+</span><span style=color:#75715e></span>       var errorFuture <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> CompletableFuture<span style=color:#f92672>();</span>
+       errorFuture<span style=color:#f92672>.</span><span style=color:#a6e22e>completeExceptionally</span><span style=color:#f92672>(</span><span style=color:#66d9ef>new</span> RuntimeException<span style=color:#f92672>());</span>
+
+       <span style=color:#66d9ef>return</span> errorFuture<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+
+   <span style=color:#66d9ef>return</span> future<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p><code>myUpperLevelBusinessLogic</code> 를 호출하면 <code>myAsyncHttpClient.execute</code> 는 바로 실행됨.
+어떠한 전/후 컨디션에 따라 실행될 필요가 없다고 해도 제어할 수 없음</p>
+<h3 id=mono>Mono</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> Mono <span style=color:#a6e22e>myNonBlockingHttpCallWithMono</span><span style=color:#f92672>(</span>Object someData<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>return</span> Mono<span style=color:#f92672>.</span><span style=color:#a6e22e>create</span><span style=color:#f92672>(</span>sink <span style=color:#f92672>-&gt;</span> <span style=color:#f92672>{</span>
+            myAsyncHttpClient<span style=color:#f92672>.</span><span style=color:#a6e22e>execute</span><span style=color:#f92672>(</span>someData<span style=color:#f92672>,</span> <span style=color:#f92672>(</span>result<span style=color:#f92672>,</span> exception <span style=color:#f92672>-&gt;</span> <span style=color:#f92672>{</span>
+                <span style=color:#66d9ef>if</span><span style=color:#f92672>(</span>exception <span style=color:#f92672>!=</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+                    sink<span style=color:#f92672>.</span><span style=color:#a6e22e>error</span><span style=color:#f92672>(</span>exception<span style=color:#f92672>);</span>
+                    <span style=color:#66d9ef>return</span><span style=color:#f92672>;</span>
+                <span style=color:#f92672>}</span>
+                sink<span style=color:#f92672>.</span><span style=color:#a6e22e>success</span><span style=color:#f92672>(</span>result<span style=color:#f92672>);</span>
+            <span style=color:#f92672>}))</span>
+    <span style=color:#f92672>});</span>
+<span style=color:#f92672>}</span> 
+
+<span style=color:#66d9ef>public</span> Mono <span style=color:#a6e22e>myUpperLevelBusinessLogic</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+    var mono <span style=color:#f92672>=</span> myNonBlockingHttpCallWithMono<span style=color:#f92672>();</span> <span style=color:#75715e>// 호출 시점에서는 그냥 mono.. 내부 핸들러는 실행되지 않음
+</span><span style=color:#75715e></span>
+    <span style=color:#75715e>// ... some code
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>something<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+       <span style=color:#75715e>// 에러를 던지자
+</span><span style=color:#75715e></span>
+       <span style=color:#66d9ef>return</span> Mono<span style=color:#f92672>.</span><span style=color:#a6e22e>error</span><span style=color:#f92672>(</span><span style=color:#66d9ef>new</span> RuntimeException<span style=color:#f92672>());</span>
+    <span style=color:#f92672>}</span>
+
+   <span style=color:#66d9ef>return</span> mono<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>모노의 경우는 <code>myUpperLevelBusinessLogic</code> 을 실행시켰을 때 http 요청을 날리지 않음. 최종 return Mono를 subscribe() 할 때 비로소 실행됨..</p>
+<ul>
+<li>이러한 특징으로 back pressure 이용 가능. subscriber 가 publisher 속도 제어 가능</li>
+</ul>
+<h2 id=view-를-추가하고-싶다면>view 를 추가하고 싶다면?</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>Rendering <span style=color:#a6e22e>index</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>return</span> Rendering<span style=color:#f92672>.</span><span style=color:#a6e22e>view</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;index&#34;</span><span style=color:#f92672>)</span>
+                    <span style=color:#f92672>.</span><span style=color:#a6e22e>modelAttribute</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;message&#34;</span><span style=color:#f92672>,</span> Message<span style=color:#f92672>.</span><span style=color:#a6e22e>of</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;hello world!&#34;</span><span style=color:#f92672>))</span>
+                    <span style=color:#f92672>.</span><span style=color:#a6e22e>build</span><span style=color:#f92672>();</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h3 id=validation-하고-싶다면>validation 하고 싶다면?</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>PersonHandler</span> <span style=color:#f92672>{</span>
+
+	<span style=color:#66d9ef>private</span> <span style=color:#66d9ef>final</span> Validator validator <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> PersonValidator<span style=color:#f92672>();</span> <span style=color:#75715e>// (1) validator 추가
+</span><span style=color:#75715e></span>
+	<span style=color:#66d9ef>public</span> Mono<span style=color:#f92672>&lt;</span>ServerResponse<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>createPerson</span><span style=color:#f92672>(</span>ServerRequest request<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+		Mono<span style=color:#f92672>&lt;</span>Person<span style=color:#f92672>&gt;</span> person <span style=color:#f92672>=</span> request<span style=color:#f92672>.</span><span style=color:#a6e22e>bodyToMono</span><span style=color:#f92672>(</span>Person<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>).</span><span style=color:#a6e22e>doOnNext</span><span style=color:#f92672>(</span><span style=color:#66d9ef>this</span><span style=color:#f92672>::</span>validate<span style=color:#f92672>);</span> <span style=color:#75715e>// (2) chaining 으로 vaildation 가능
+</span><span style=color:#75715e></span>		<span style=color:#66d9ef>return</span> ok<span style=color:#f92672>().</span><span style=color:#a6e22e>build</span><span style=color:#f92672>(</span>repository<span style=color:#f92672>.</span><span style=color:#a6e22e>savePerson</span><span style=color:#f92672>(</span>person<span style=color:#f92672>));</span>
+	<span style=color:#f92672>}</span>
+
+	<span style=color:#66d9ef>private</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>validate</span><span style=color:#f92672>(</span>Person person<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+		Errors errors <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> BeanPropertyBindingResult<span style=color:#f92672>(</span>person<span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;person&#34;</span><span style=color:#f92672>);</span>
+		validator<span style=color:#f92672>.</span><span style=color:#a6e22e>validate</span><span style=color:#f92672>(</span>person<span style=color:#f92672>,</span> errors<span style=color:#f92672>);</span>
+		<span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>errors<span style=color:#f92672>.</span><span style=color:#a6e22e>hasErrors</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+			<span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> ServerWebInputException<span style=color:#f92672>(</span>errors<span style=color:#f92672>.</span><span style=color:#a6e22e>toString</span><span style=color:#f92672>());</span> <span style=color:#75715e>// (3) 404 Not Found 발생
+</span><span style=color:#75715e></span>		<span style=color:#f92672>}</span>
+	<span style=color:#f92672>}</span>
+</code></pre></div><ul class=pa0>
+</ul>
+<div class="mt6 instapaper_ignoref">
+</div>
+</div>
+<aside class="w-30-l mt6-l">
+</aside>
+</article>
+</main>
+<footer class="bg-black bottom-0 w-100 pa3" role=contentinfo>
+<div class="flex justify-between">
+<a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href=https://sangmoon.github.io/TIL>
+&copy; Sangmoon's TIL 2021
+</a>
+<div>
+</div>
+</div>
+</footer>
+</body>
+</html>

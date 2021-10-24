@@ -1,0 +1,171 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge,chrome=1">
+<title>Sangmoon's TIL</title>
+<meta name=viewport content="width=device-width,minimum-scale=1">
+<meta name=description content>
+<meta name=generator content="Hugo 0.88.1">
+<meta name=ROBOTS content="NOINDEX, NOFOLLOW">
+<link rel=stylesheet href=/TIL/ananke/css/main.min.css>
+<link href=/TIL/posts/index.xml rel=alternate type=application/rss+xml title="Sangmoon's TIL">
+<link href=/TIL/posts/index.xml rel=feed type=application/rss+xml title="Sangmoon's TIL">
+<meta property="og:title" content="Posts">
+<meta property="og:description" content>
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/posts/">
+<meta itemprop=name content="Posts">
+<meta itemprop=description content><meta name=twitter:card content="summary">
+<meta name=twitter:title content="Posts">
+<meta name=twitter:description content>
+</head>
+<body class="ma0 avenir bg-near-white">
+<header>
+<div class="pb3-m pb6-l bg-black">
+<nav class="pv3 ph3 ph4-ns" role=navigation>
+<div class="flex-l justify-between items-center center">
+<a href=/TIL/ class="f3 fw2 hover-white no-underline white-90 dib">
+Sangmoon's TIL
+</a>
+<div class="flex-l items-center">
+</div>
+</div>
+</nav>
+<div class="tc-l pv3 ph3 ph4-ns">
+<h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+Posts
+</h1>
+</div>
+</div>
+</header>
+<main class=pb7 role=main>
+<article class="pa3 pa4-ns nested-copy-line-height nested-img">
+<section class="cf ph3 ph5-l pv3 pv4-l f4 tc-l center measure-wide lh-copy mid-gray"></section>
+<section class="flex-ns flex-wrap justify-around mt5">
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/spring/spring-security-retrieve-user-info/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+2018/01/25
+스프링 시큐리티로 유저 정보 얻기! Bean으로 부터 유저 정보 얻기 SecurityConytextHolder 로 부터 현재 인증된 principal을 얻을 수 있다. Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); String currentPrincipalName = authentication.getName(); 체크하기 전에 유저가 있는지 체크할 수 있다.
+Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); if (!(authentication instanceof AnonymousAuthenticationToken)) { String currentUserName = authentication.getName(); return currentUserName; } 하지만 static call은 좋지 않다&mldr;
+컨트롤러에서는 (@Controller) 추가적인 방법이 가능하다. Principal 에 method argument로 접근이 가능하다. import java.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/spring/transaction/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+transaction @Transactional annotation으로 처리 한다.
+Propagation 속성 PROPAGATION_MADATORY PROPAGATION_NESTED PROPAGATION_NEVER PROPAGATION_NOT_SUPPORTED PROPAGATION_REQUIRED PROPAGATION_REQUIRED_NEW PROPAGATIN_SUPPORTS
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/spring/web-config/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+2018/01/19
+WebConfig 설정을 알아보자. servlet.xml을 대체하는 java class이다. WebConfig가 상속받는 abstract class는 다음 WebMvcConfigurerAdapter 이다. 이 abstract class는 WebMvcConfigurer 라는 interface를 구현했는데 이는 원하는 method만 override하면 실행되도록 하기 위함이다. 해당 method가 어떤 설정에 해당하는지 알아보자. spring docs
+public abstract class WebMvcConfigurerAdapter implements WebMvcConfigurer { @Override public void configurePathMatch(PathMatchConfigurer configurer) { } @Override public void configureContentNegotiation(ContentNegotiationConfigurer configurer) { } @Override public void configureAsyncSupport(AsyncSupportConfigurer configurer) { } @Override public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) { } @Override public void addFormatters(FormatterRegistry registry) { } @Override public void addInterceptors(InterceptorRegistry registry) { } @Override public void addResourceHandlers(ResourceHandlerRegistry registry) { } @Override public void addCorsMappings(CorsRegistry registry) { } @Override public void addViewControllers(ViewControllerRegistry registry) { } @Override public void configureViewResolvers(ViewResolverRegistry registry) { } @Override public void addArgumentResolvers(List&lt;HandlerMethodArgumentResolver> argumentResolvers) { } @Override public void addReturnValueHandlers(List&lt;HandlerMethodReturnValueHandler> returnValueHandlers) { } @Override public void configureMessageConverters(List&lt;HttpMessageConverter&lt;?
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/spring/webinitializer/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/springstudy/reactive/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Reactive Programming Reactive Programming이 어떤 것인지 rxJava(reactive java) 를 통해 설명 webflux 는 이것과 용어는 다르겠지만.. 핵심 개념이나 프로그래밍 방식은 유사할 것이라 생각 Reactive programmming with rxJava ch.4 까지 참조 public class Main { public static void main(String[] args) { Observable.just("Hello world").subscribe(System.out::println); } } 미리 알아야 할 것 Generic, lambda, method reference
+what is Monad? rx 들어가기 전에 모나드가 무엇인지 알아보자. CompletableFuture니 Observable이니 Flux 니 다 모나드이기 때문에 알면 확실히 편하다!
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/springstudy/webflux/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+WebFlux 앞 부분은 이전 스터디와 겹치기 때문에 생략
+레시피 5-9 리액티브 핸들러 함수 작성하기 @RequestMapping 대신 핸들러 함수로 작성할 수 있음 @FunctionalInterface public interface HandlerFunction&lt;T extends ServerResponse> { Mono&lt;T> handle(ServerRequest request); } ServerRequest, ServerResponse 를 통해 요청/응답의 다양한 파트들에 비동기적으로 접근 가능 핸들러 함수 작성 @Component //1 다른 어노테이션 없이 Component 만 선언해주면 됨 public class ReservationRestController { private final ReservationService reservationService; public ReservationRestController(ReservationService reservationService) { this.
+</div>
+</div>
+</div>
+</div>
+</section>
+<ul class="pagination pagination-default">
+<li class=page-item>
+<a href=/TIL/posts/ aria-label=First class=page-link role=button><span aria-hidden=true>&#171;&#171;</span></a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/9/ aria-label=Previous class=page-link role=button><span aria-hidden=true>&#171;</span></a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/6/ aria-label="Page 6" class=page-link role=button>6</a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/7/ aria-label="Page 7" class=page-link role=button>7</a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/8/ aria-label="Page 8" class=page-link role=button>8</a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/9/ aria-label="Page 9" class=page-link role=button>9</a>
+</li>
+<li class="page-item active">
+<a href=# aria-current=page aria-label="Page 10" class=page-link role=button>10</a>
+</li>
+<li class="page-item disabled">
+<a href=# aria-disabled=true aria-label=Next class=page-link role=button tabindex=-1><span aria-hidden=true>&#187;</span></a>
+</li>
+<li class="page-item disabled">
+<a href=# aria-disabled=true aria-label=Last class=page-link role=button tabindex=-1><span aria-hidden=true>&#187;&#187;</span></a>
+</li>
+</ul></article>
+</main>
+<footer class="bg-black bottom-0 w-100 pa3" role=contentinfo>
+<div class="flex justify-between">
+<a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href=https://sangmoon.github.io/TIL>
+&copy; Sangmoon's TIL 2021
+</a>
+<div>
+</div>
+</div>
+</footer>
+</body>
+</html>

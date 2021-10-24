@@ -1,0 +1,399 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge,chrome=1">
+<title>Sangmoon's TIL</title>
+<meta name=viewport content="width=device-width,minimum-scale=1">
+<meta name=description content="쓰레드 안전성   객체의 상태(object&rsquo;s state) = 인스턴스나 static 변수 같은 상태 변수에 저장된 객체의 데이터
+  공유되었다(shared) = 여러 쓰레드가 특정 변수에 접근할 수 있다
+  변경할 수 있다(mutable) = 해당 변수 값이 변경될 수 있다
+  쓰레드 안전성(Thread safety) = 데이터에 제한 없이 동시에 접근하는걸 막으려는 것
+  하나 이상의 쓰레드가 상태 변수에 접근하고, 하나라도 변수에 값을 쓰면 해당 변수에 접근할 때 관련 쓰레드는 동기화 사용해야 함">
+<meta name=generator content="Hugo 0.88.1">
+<meta name=ROBOTS content="NOINDEX, NOFOLLOW">
+<link rel=stylesheet href=/TIL/ananke/css/main.min.css>
+<meta property="og:title" content>
+<meta property="og:description" content="쓰레드 안전성   객체의 상태(object&rsquo;s state) = 인스턴스나 static 변수 같은 상태 변수에 저장된 객체의 데이터
+  공유되었다(shared) = 여러 쓰레드가 특정 변수에 접근할 수 있다
+  변경할 수 있다(mutable) = 해당 변수 값이 변경될 수 있다
+  쓰레드 안전성(Thread safety) = 데이터에 제한 없이 동시에 접근하는걸 막으려는 것
+  하나 이상의 쓰레드가 상태 변수에 접근하고, 하나라도 변수에 값을 쓰면 해당 변수에 접근할 때 관련 쓰레드는 동기화 사용해야 함">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/posts/concurrency/ch02_thread_safety/"><meta property="article:section" content="posts">
+<meta itemprop=name content>
+<meta itemprop=description content="쓰레드 안전성   객체의 상태(object&rsquo;s state) = 인스턴스나 static 변수 같은 상태 변수에 저장된 객체의 데이터
+  공유되었다(shared) = 여러 쓰레드가 특정 변수에 접근할 수 있다
+  변경할 수 있다(mutable) = 해당 변수 값이 변경될 수 있다
+  쓰레드 안전성(Thread safety) = 데이터에 제한 없이 동시에 접근하는걸 막으려는 것
+  하나 이상의 쓰레드가 상태 변수에 접근하고, 하나라도 변수에 값을 쓰면 해당 변수에 접근할 때 관련 쓰레드는 동기화 사용해야 함">
+<meta itemprop=wordCount content="1579">
+<meta itemprop=keywords content><meta name=twitter:card content="summary">
+<meta name=twitter:title content>
+<meta name=twitter:description content="쓰레드 안전성   객체의 상태(object&rsquo;s state) = 인스턴스나 static 변수 같은 상태 변수에 저장된 객체의 데이터
+  공유되었다(shared) = 여러 쓰레드가 특정 변수에 접근할 수 있다
+  변경할 수 있다(mutable) = 해당 변수 값이 변경될 수 있다
+  쓰레드 안전성(Thread safety) = 데이터에 제한 없이 동시에 접근하는걸 막으려는 것
+  하나 이상의 쓰레드가 상태 변수에 접근하고, 하나라도 변수에 값을 쓰면 해당 변수에 접근할 때 관련 쓰레드는 동기화 사용해야 함">
+</head>
+<body class="ma0 avenir bg-near-white">
+<header>
+<div class=bg-black>
+<nav class="pv3 ph3 ph4-ns" role=navigation>
+<div class="flex-l justify-between items-center center">
+<a href=/TIL/ class="f3 fw2 hover-white no-underline white-90 dib">
+Sangmoon's TIL
+</a>
+<div class="flex-l items-center">
+</div>
+</div>
+</nav>
+</div>
+</header>
+<main class=pb7 role=main>
+<article class="flex-l flex-wrap justify-between mw8 center ph3">
+<header class="mt4 w-100">
+<aside class="instapaper_ignoref b helvetica tracked">
+POSTS
+</aside>
+<div id=sharing class=mt3>
+<a href="https://www.facebook.com/sharer.php?u=https://sangmoon.github.io/TIL/posts/concurrency/ch02_thread_safety/" class="facebook no-underline" aria-label="share on Facebook"><svg height="32" style="enable-background:new 0 0 67 67" viewBox="0 0 67 67" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M28.765 50.32h6.744V33.998h4.499l.596-5.624h-5.095l.007-2.816c0-1.466.14-2.253 2.244-2.253h2.812V17.68h-4.5c-5.405.0-7.307 2.729-7.307 7.317v3.377h-3.369v5.625h3.369V50.32zM33 64C16.432 64 3 50.569 3 34S16.432 4 33 4s30 13.431 30 30S49.568 64 33 64z" style="fill-rule:evenodd;clip-rule:evenodd"/></svg>
+</a>
+<a href="https://twitter.com/share?url=https://sangmoon.github.io/TIL/posts/concurrency/ch02_thread_safety/&text=" class="twitter no-underline" aria-label="share on Twitter"><svg height="32" style="enable-background:new 0 0 67 67" viewBox="0 0 67 67" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167 22.283c-2.619.953-4.274 3.411-4.086 6.101l.063 1.038-1.048-.127c-3.813-.487-7.145-2.139-9.974-4.915l-1.383-1.377-.356 1.017c-.754 2.267-.272 4.661 1.299 6.271.838.89.649 1.017-.796.487-.503-.169-.943-.296-.985-.233-.146.149.356 2.076.754 2.839.545 1.06 1.655 2.097 2.871 2.712l1.027.487-1.215.021c-1.173.0-1.215.021-1.089.467.419 1.377 2.074 2.839 3.918 3.475l1.299.444-1.131.678c-1.676.976-3.646 1.526-5.616 1.568C19.775 43.256 19 43.341 19 43.405c0 .211 2.557 1.397 4.044 1.864 4.463 1.377 9.765.783 13.746-1.568 2.829-1.673 5.657-5 6.978-8.221.713-1.716 1.425-4.851 1.425-6.354.0-.975.063-1.102 1.236-2.267.692-.678 1.341-1.419 1.467-1.631.21-.403.188-.403-.88-.043-1.781.636-2.033.551-1.152-.402.649-.678 1.425-1.907 1.425-2.267.0-.063-.314.042-.671.233-.377.212-1.215.53-1.844.72l-1.131.361-1.027-.7c-.566-.381-1.361-.805-1.781-.932C39.766 21.902 38.131 21.944 37.167 22.283zM33 64C16.432 64 3 50.569 3 34S16.432 4 33 4s30 13.431 30 30S49.568 64 33 64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:"/></svg>
+</a>
+<a href="https://www.linkedin.com/shareArticle?mini=true&url=https://sangmoon.github.io/TIL/posts/concurrency/ch02_thread_safety/&title=" class="linkedin no-underline" aria-label="share on LinkedIn"><svg height="32" style="enable-background:new 0 0 65 65" viewBox="0 0 65 65" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M50.837 48.137V36.425c0-6.275-3.35-9.195-7.816-9.195-3.604.0-5.219 1.983-6.119 3.374V27.71h-6.79c.09 1.917.0 20.427.0 20.427h6.79V36.729c0-.609.044-1.219.224-1.655.49-1.22 1.607-2.483 3.482-2.483 2.458.0 3.44 1.873 3.44 4.618v10.929H50.837zM22.959 24.922c2.367.0 3.842-1.57 3.842-3.531-.044-2.003-1.475-3.528-3.797-3.528s-3.841 1.524-3.841 3.528c0 1.961 1.474 3.531 3.753 3.531H22.959zM34 64C17.432 64 4 50.568 4 34 4 17.431 17.432 4 34 4s30 13.431 30 30c0 16.568-13.432 30-30 30zM26.354 48.137V27.71h-6.789v20.427h6.789z" style="fill-rule:evenodd;clip-rule:evenodd;fill:"/></svg>
+</a>
+</div>
+<h1 class="f1 athelas mt3 mb1"></h1>
+</header>
+<div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><h1 id=쓰레드-안전성>쓰레드 안전성</h1>
+<ul>
+<li>
+<p>객체의 상태(object&rsquo;s state) = 인스턴스나 static 변수 같은 상태 변수에 저장된 객체의 데이터</p>
+</li>
+<li>
+<p>공유되었다(shared) = 여러 쓰레드가 특정 변수에 접근할 수 있다</p>
+</li>
+<li>
+<p>변경할 수 있다(mutable) = 해당 변수 값이 변경될 수 있다</p>
+</li>
+<li>
+<p>쓰레드 안전성(Thread safety) = 데이터에 제한 없이 동시에 접근하는걸 막으려는 것</p>
+</li>
+<li>
+<p>하나 이상의 쓰레드가 상태 변수에 접근하고, 하나라도 변수에 값을 쓰면 해당 변수에 접근할 때 관련 쓰레드는 동기화 사용해야 함</p>
+</li>
+<li>
+<p>자바에서 동기화 수단: <code>synchronized</code>, <code>volaitile</code>, <code>명시적 락</code>, <code>atomic variable</code></p>
+</li>
+</ul>
+<blockquote>
+<p>여러 쓰레드가 동기화 없이 변경 가능한 하나의 상태 변수에 접근하면 잘못된 프로그램임. 이를 고치려면
+상태 변수를 쓰레드 간 공유하지 않거나(thread-local, single-threaded)
+상태 변수를 변경 불가능하게 하거나(immutable)
+상태 변수를 접근할 땐 언제나 동기화 한다(synchronization)</p>
+</blockquote>
+<blockquote>
+<p>쓰레드 안전한 클래스를 설계할 때 , 캡슐화, 불변 객체를 잘 활용하고 불변 조건을 명확히 기술해야 한다.</p>
+</blockquote>
+<h2 id=21-쓰레드-안전성thread-safety이란>2.1 쓰레드 안전성(thread safety)이란</h2>
+<blockquote>
+<p>여러 쓰레드가 한 클래스에 접근할 때, 실행 환경(OS..?)이 해당 쓰레드들을 어떻게 스케줄하든 호출하는 쪽(Caller)에서 추가적인 동기화나 다른 조율 없이도 <em><strong>정확하게</strong></em> 동작하면 해당 클래스는 쓰레드 안전하다고 말한다. (&lsquo;정확하게&rsquo; 라는건 클래스가 명세대로 동작함을 의미한다.)</p>
+</blockquote>
+<blockquote>
+<p>쓰레드 안전한 클래스는 클라이언트 쪽에서 별도로 동기화할 필요 없도록 동기화 기능이 캡슐화 되어 있다.</p>
+</blockquote>
+<h3 id=211-상태없는-서블릿-stateless-servlet>2.1.1 상태없는 서블릿 (stateless servlet)</h3>
+<p>인수분해할 숫자를 request에서 가져와 인수분해하고 response에 담는다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@ThreadSafe</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>StatelesFactorizer</span> implments Servlet  <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>service</span><span style=color:#f92672>(</span>ServletRequest req<span style=color:#f92672>,</span> ServletResponse resp<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        BigInteger i <span style=color:#f92672>=</span> extractFromRequest<span style=color:#f92672>(</span>req<span style=color:#f92672>);</span>
+        BigInteger<span style=color:#f92672>[]</span> factors <span style=color:#f92672>=</span> factor<span style=color:#f92672>(</span>i<span style=color:#f92672>);</span>
+        encodeIntoResponse<span style=color:#f92672>(</span>resp<span style=color:#f92672>,</span> factors<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><ul>
+<li>맴버 변수 없음</li>
+<li>다른 클래스 맴버변수 참조 안함</li>
+<li>일시적 상태는 local variable에 저장</li>
+</ul>
+<p>따라서 stateless 하기 때문에 항상 thread-safe 하다.</p>
+<blockquote>
+<p>Stateless Objects 는 항상 Thread-safe 하다</p>
+</blockquote>
+<h2 id=22-단일-연산-atomicity>2.2 단일 연산 (Atomicity)</h2>
+<p>위 클래스에 요청 횟수를 기록하는 접속 카운터를 추가.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@NotThreadSafe</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>UnsafeCountingFactorizer</span> implments Servlet  <span style=color:#f92672>{</span>
+
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>long</span> count <span style=color:#f92672>=</span> 0<span style=color:#f92672>;</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>getCount</span><span style=color:#f92672>(){</span> <span style=color:#66d9ef>return</span> count<span style=color:#f92672>;}</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>service</span><span style=color:#f92672>(</span>ServletRequest req<span style=color:#f92672>,</span> ServletResponse resp<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        BigInteger i <span style=color:#f92672>=</span> extractFromRequest<span style=color:#f92672>(</span>req<span style=color:#f92672>);</span>
+        BigInteger<span style=color:#f92672>[]</span> factors <span style=color:#f92672>=</span> factor<span style=color:#f92672>(</span>i<span style=color:#f92672>);</span>
+        <span style=color:#f92672>++</span>count<span style=color:#f92672>;</span>  <span style=color:#75715e>// critical section
+</span><span style=color:#75715e></span>        encodeIntoResponse<span style=color:#f92672>(</span>resp<span style=color:#f92672>,</span> factors<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+</code></pre></div><ul>
+<li><code>++</code> 연산은 내부적으로 3개의 단일 연산의 시퀀스로 구성( 현재 값 가져오기/1더하기/새 값 저장하기) (load, add, mov 아마도..?)</li>
+<li>이 부분에서 여러 쓰레드가 접근하면 문제 발생 가능</li>
+<li>경쟁 조건(race condition) 생김.</li>
+</ul>
+<h3 id=221-경쟁-조건-race-condition>2.2.1 경쟁 조건 (race condition)</h3>
+<p>UnsafeCountingFactorizer 는 경쟁 조건이 나타나기 때문에 결과를 신뢰할 수 없다. 경쟁 조건은 상대적인 시점이나, 런타임이 여러 쓰레드를 교차해서 실행하는 상황에 따라 계산의 정확성이 달라질 때 나타난다. 가장 일반적인 경쟁 조건 형태는 점검 후 행동(<code>check-then-act</code>) 이다.
+(점검 후 행동은 stale data가 다음 행동을 결정하는 형태)</p>
+<h3 id=222-늦은-초기화-시-경쟁-조건>2.2.2 늦은 초기화 시 경쟁 조건</h3>
+<p>점검 후 행동하는 가장 흔한 예제는 늦은 초기화(<code>lazy initialization</code>) 가 있다. 늦은 초기화는 필요한 시점에 딱 한 번만 초기화 하기 위한 프로그래밍 기법.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@NotThreadSafe</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>LazyInitRace</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> ExpensiveObject instance <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+
+    <span style=color:#66d9ef>public</span> ExpensiveObject <span style=color:#a6e22e>getInstance</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>if</span><span style=color:#f92672>(</span>instance <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span> <span style=color:#75715e>//critical seciton
+</span><span style=color:#75715e></span>            instance <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> ExpensiveObject<span style=color:#f92672>();</span>
+        <span style=color:#f92672>}</span>
+        <span style=color:#66d9ef>return</span> instance<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>쓰레드 A, B가 같은 LazyInitRace 객체에 접근해서 getInstance()를 호출하면 문제 발생할 수 있음
+여러 쓰레드가 getInstance 메소드에 접근하면 경쟁 조건 발생함.</p>
+<p><strong>UnsafeCountingFactoriezer</strong> 은 도 따른 형턔의 race-condition 이다. <code>read-modify-write</code>
+는 이전 상태를 기준으로 객체 상태를 변경하는 동작이다.</p>
+<p>race condition은 항상 실패하진 않는다. 하지만 치명적인 문제를 야기할 수 있다.</p>
+<h3 id=223-복합-동작-compound-actions>2.2.3 복합 동작 (compound actions)</h3>
+<blockquote>
+<p>작업 A를 실행 중인 쓰레드 관점에서 다른 쓰레드가 작업 B를 실행할 때 작업 B가 모두 수행됐거나 또는 전혀 수행되지 않은 두가지 state 로만 파악된다면 작업 A의 눈으로 볼 때 작업 B는 단일 연산이다. 단일 연산은 자신을 포함해 같은 state를 다루는 모든 작업이 단일 연산인 작업을 지칭한다.</p>
+</blockquote>
+<ul>
+<li>UnsafeCountingFactorizer 에서 <code>++count</code> 가 단일 연산이었다면? 경쟁 조건 생길 수 없음</li>
+<li>점검 후 행동, 읽고 수정하고 쓰기 등과 같은 일련의 동작을 복합 동작이라고 함</li>
+<li>쓰레드에 안전하기 위해선 단일 연산이 수반되어야 함</li>
+</ul>
+<p>다음은 쓰레드 안전한 기존 클래스 이용해 Count 예제를 고친 것</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@ThreadSafe</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>CountingFactorizer</span> <span style=color:#66d9ef>implements</span> Servlet <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>final</span> AtomicLong count <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> AtomicLong<span style=color:#f92672>(</span>0<span style=color:#f92672>);</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>long</span> <span style=color:#a6e22e>getCount</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>return</span> count<span style=color:#f92672>.</span><span style=color:#a6e22e>get</span><span style=color:#f92672>();}</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>service</span><span style=color:#f92672>(</span>ServletRequest req<span style=color:#f92672>,</span> ServletResponse resp<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        BigInteger i <span style=color:#f92672>=</span> extractFromRequest<span style=color:#f92672>(</span>req<span style=color:#f92672>);</span>
+        BigInteger<span style=color:#f92672>[]</span> factors <span style=color:#f92672>=</span> factor<span style=color:#f92672>(</span>i<span style=color:#f92672>);</span>
+        count<span style=color:#f92672>.</span><span style=color:#a6e22e>incrementAndGet</span><span style=color:#f92672>();</span>
+        encodeIntoResponse<span style=color:#f92672>(</span>resp<span style=color:#f92672>,</span> factors<span style=color:#f92672>)</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><ul>
+<li><code>java.util.concurrent.atomic</code> 패키지에는 숫자 및 객체 참조에 대해 상태를 단일 연산으로 변경할 수 있는 <code>atomic variable</code> class 가 있음</li>
+<li>servlet 의 상태는 count 이고 이 count가 쓰레드 안전하므로 servlet도 쓰레드 안전하다.</li>
+</ul>
+<blockquote>
+<p>가능하면 클래스 상태는 <code>AtomicLong</code> 처럼 이미 안전하게 만들어 둔 것을 사용하는 것이 좋다.</p>
+</blockquote>
+<h4 id=concurrentatomic-패키지-jdk8>concurrent.atomic 패키지 (jdk8)</h4>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// AtomicBoolean, AtomicInteger, AtomicLong, AtomicReference&lt;V&gt;, AtomiStampedReference&lt;V&gt;, AtomicMarkableReference  //A-B-A 문제 풀기위해...
+</span><span style=color:#75715e>// AtomicIntegerArray, AtomicIntegerFieldUpdater&lt;T&gt;, AtomicLongArray, AtomicLongFieldUpdater&lt;T&gt;, AtomicReferenceArray, AtomicReferenceFieldUpdater&lt;T,V&gt;
+</span><span style=color:#75715e>// DoubleAdder, LongAdder, DoubleAccumulator, LongAccumulator
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>AtomicBoolean</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>compareAndSet</span><span style=color:#f92672>(</span><span style=color:#66d9ef>boolean</span> expected<span style=color:#f92672>,</span> <span style=color:#66d9ef>boolean</span> update<span style=color:#f92672>);</span> <span style=color:#75715e>// expected와 맞아야지만 update 함
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>get</span><span style=color:#f92672>();</span>
+    <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>getAndSet</span><span style=color:#f92672>(</span><span style=color:#66d9ef>boolean</span> newValue<span style=color:#f92672>);</span>
+    <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>lazySet</span><span style=color:#f92672>(</span><span style=color:#66d9ef>boolean</span> newValue<span style=color:#f92672>);</span> <span style=color:#75715e>// memory-model 에서 store-load 를 store-store 로 해서 퍼포먼스 향상...  GC 위한 nullable 할 때 많이 쓴다고 함
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>set</span><span style=color:#f92672>(</span><span style=color:#66d9ef>boolean</span> newValue<span style=color:#f92672>);</span>
+    <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>weakCompareAndSet</span><span style=color:#f92672>(</span><span style=color:#66d9ef>boolean</span> expected<span style=color:#f92672>,</span> <span style=color:#66d9ef>boolean</span> update<span style=color:#f92672>);</span> <span style=color:#75715e>// 거의 안 씀..
+</span><span style=color:#75715e></span><span style=color:#f92672>}</span>
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>//https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/package-summary.html
+</span><span style=color:#75715e></span>The memory effects <span style=color:#66d9ef>for</span> accesses and updates of atomics generally follow the rules <span style=color:#66d9ef>for</span> volatiles<span style=color:#f92672>,</span> as stated in section 17<span style=color:#f92672>.</span><span style=color:#a6e22e>4</span> of The Java<span style=color:#960050;background-color:#1e0010>™</span> Language Specification<span style=color:#f92672>.</span>
+
+get has the memory effects of reading a <span style=color:#66d9ef>volatile</span> variable<span style=color:#f92672>.</span>
+
+set has the memory effects of <span style=color:#a6e22e>writing</span> <span style=color:#f92672>(</span>assigning<span style=color:#f92672>)</span> a <span style=color:#66d9ef>volatile</span> variable<span style=color:#f92672>.</span>
+
+lazySet has the memory effects of <span style=color:#a6e22e>writing</span> <span style=color:#f92672>(</span>assigning<span style=color:#f92672>)</span> a <span style=color:#66d9ef>volatile</span> variable except that it permits reorderings with <span style=color:#a6e22e>subsequent</span> <span style=color:#f92672>(</span>but not previous<span style=color:#f92672>)</span> memory actions that <span style=color:#66d9ef>do</span> not themselves impose reordering constraints with ordinary non<span style=color:#f92672>-</span><span style=color:#66d9ef>volatile</span> writes<span style=color:#f92672>.</span> Among other usage contexts<span style=color:#f92672>,</span> lazySet may apply when nulling out<span style=color:#f92672>,</span> <span style=color:#66d9ef>for</span> the sake of garbage collection<span style=color:#f92672>,</span> a reference that is never accessed again<span style=color:#f92672>.</span>
+
+weakCompareAndSet atomically reads and conditionally writes a variable but does not create any happens<span style=color:#f92672>-</span>before orderings<span style=color:#f92672>,</span> so provides no guarantees with respect to previous or subsequent reads and writes of any variables other than the target of the weakCompareAndSet<span style=color:#f92672>.</span> compareAndSet and all other read<span style=color:#f92672>-</span>and<span style=color:#f92672>-</span>update operations such as getAndIncrement have the memory effects of both reading and writing <span style=color:#66d9ef>volatile</span> variables<span style=color:#f92672>.</span>
+</code></pre></div><h2 id=23-락>2.3 락</h2>
+<ul>
+<li>인수분해 결과를 캐시하려함</li>
+<li>가장 마지막 인수분해한 숫자를 <code>lastNumber</code>, 그 결과를 <code>lastFactors</code> 에 담는다.</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@NotThreadSafe</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>UnsafeCachingFactorizer</span> <span style=color:#66d9ef>implements</span> Servlet <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>final</span> AtomicReference<span style=color:#f92672>&lt;</span>BigInteger<span style=color:#f92672>&gt;</span> lastNumber
+        <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> AtomicReference<span style=color:#f92672>&lt;&gt;();</span>
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>final</span> AtomicReference<span style=color:#f92672>&lt;</span>BigInteger<span style=color:#f92672>[]&gt;</span> lastFactors
+        <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> AtomicReference<span style=color:#f92672>&lt;&gt;();</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>service</span><span style=color:#f92672>(</span>ServletRequest req<span style=color:#f92672>,</span> ServletResponse resp<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        BigInteger i <span style=color:#f92672>=</span> extractFromRequest<span style=color:#f92672>(</span>req<span style=color:#f92672>);</span>
+
+        <span style=color:#75715e>// 첫번째 취약점
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>i<span style=color:#f92672>.</span><span style=color:#a6e22e>equals</span><span style=color:#f92672>(</span>lastNumber<span style=color:#f92672>.</span><span style=color:#a6e22e>get</span><span style=color:#f92672>()))</span> <span style=color:#f92672>{</span>
+            encodeIntoResponse<span style=color:#f92672>(</span>resp<span style=color:#f92672>,</span> lastFactors<span style=color:#f92672>.</span><span style=color:#a6e22e>get</span><span style=color:#f92672>());</span>
+        <span style=color:#f92672>}</span> <span style=color:#66d9ef>else</span> <span style=color:#f92672>{</span>
+            BigInteger<span style=color:#f92672>[]</span> factors <span style=color:#f92672>=</span> factor<span style=color:#f92672>(</span>i<span style=color:#f92672>);</span>
+            <span style=color:#75715e>// 두번째 취약점
+</span><span style=color:#75715e></span>            lastNumber<span style=color:#f92672>.</span><span style=color:#a6e22e>set</span><span style=color:#f92672>(</span>i<span style=color:#f92672>);</span>
+            lastFactors<span style=color:#f92672>.</span><span style=color:#a6e22e>set</span><span style=color:#f92672>(</span>factors<span style=color:#f92672>);</span>
+            encodeIntoResponse<span style=color:#f92672>(</span>resp<span style=color:#f92672>,</span> factors<span style=color:#f92672>);</span>
+        <span style=color:#f92672>}</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><ul>
+<li>참조 자체는 쓰레드 안전하지만 결과는 틀릴 수 있다.</li>
+<li>set() 과 get() 이 2개의 메소드이기 때문에 Atomic하지 않다.</li>
+</ul>
+<blockquote>
+<p>상태를 일관성 있게 유지하려면 관련 있는 변수들을 하나의 단일 연산으로 갱신해야 한다.</p>
+</blockquote>
+<h3 id=231-암묵적인-락intrinsic-lock>2.3.1 암묵적인 락(intrinsic lock)</h3>
+<ul>
+<li>자바에서는 단일 연산 보장 위해 <code>synchronized</code> 키워드 제공</li>
+<li>락으로 사용될 객체의 참조와 락으로 보호하려는 코드 블록으로 구성</li>
+<li>메소드 선언에 synchronized 를 지정하면 매소드 내부 전체를 포함하며 메소드가 포함된 클래스의 인스턴스를 락으로 사용(static method는 클래스 객체를 락으로 사용)</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>synchronized</span> <span style=color:#f92672>(</span>lock<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    <span style=color:#75715e>// lock으로 보호된 영역
+</span><span style=color:#75715e></span><span style=color:#f92672>}</span>
+</code></pre></div><ul>
+<li>모든 자바 객체는 락으로 사용 가능</li>
+<li>락은 thread 가 synchronized 블록 들어가기 전에 자동으로 확보되어 해당 블록 벗어날 때 자동으로 해제됨</li>
+<li>자바의 경우 mutex로 구현</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@Threadsafe</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>SnchronizedFactorizer</span> <span style=color:#66d9ef>implements</span> Servlet <span style=color:#f92672>{</span>
+    <span style=color:#a6e22e>@GuardedBy</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;this&#34;</span><span style=color:#f92672>)</span> <span style=color:#66d9ef>private</span> BigInteger lastNumber<span style=color:#f92672>;</span>
+    <span style=color:#a6e22e>@GuardedBy</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;this&#34;</span><span style=color:#f92672>)</span> <span style=color:#66d9ef>private</span> BigInteger<span style=color:#f92672>[]</span> lastFactors<span style=color:#f92672>;</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>synchronized</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>service</span><span style=color:#f92672>(</span>ServletRequest req<span style=color:#f92672>,</span> ServletResponse resp<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+               BigInteger i <span style=color:#f92672>=</span> extractFromRequest<span style=color:#f92672>(</span>req<span style=color:#f92672>);</span>
+
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>i<span style=color:#f92672>.</span><span style=color:#a6e22e>equals</span><span style=color:#f92672>(</span>lastNumber<span style=color:#f92672>.</span><span style=color:#a6e22e>get</span><span style=color:#f92672>()))</span> <span style=color:#f92672>{</span>
+            encodeIntoResponse<span style=color:#f92672>(</span>resp<span style=color:#f92672>,</span> lastFactors<span style=color:#f92672>.</span><span style=color:#a6e22e>get</span><span style=color:#f92672>());</span>
+        <span style=color:#f92672>}</span> <span style=color:#66d9ef>else</span> <span style=color:#f92672>{</span>
+            BigInteger<span style=color:#f92672>[]</span> factors <span style=color:#f92672>=</span> factor<span style=color:#f92672>(</span>i<span style=color:#f92672>);</span>
+            lastNumber<span style=color:#f92672>.</span><span style=color:#a6e22e>set</span><span style=color:#f92672>(</span>i<span style=color:#f92672>);</span>
+            lastFactors<span style=color:#f92672>.</span><span style=color:#a6e22e>set</span><span style=color:#f92672>(</span>factors<span style=color:#f92672>);</span>
+            encodeIntoResponse<span style=color:#f92672>(</span>resp<span style=color:#f92672>,</span> factors<span style=color:#f92672>);</span>
+        <span style=color:#f92672>}</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><ul>
+<li>메소드에 synchronized 달아서 쉽게 고칠 수 있음.</li>
+<li>성능 매우 떨어질 수 있음</li>
+</ul>
+<h3 id=232-재진입성reentrant>2.3.2 재진입성(reentrant)</h3>
+<ul>
+<li>암묵적인락은 재진입 가능하기 때문에 자기가 이미 획득한 락을 다시 확보할 수 있음</li>
+<li>락 동작을 쉽게 캡슐화 가능</li>
+<li>재진입성 없으면 자식 class 에서 override 한 후 부모 class 메소드 호출하면 데드락 걸릴 수 있음</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Widget</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>synchronized</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>doSomething</span><span style=color:#f92672>(){}</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>LoggingWidget</span> extents Widget <span style=color:#f92672>{</span>
+    pbulic <span style=color:#66d9ef>synchronized</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>doSomething</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>super</span><span style=color:#f92672>.</span><span style=color:#a6e22e>doSomething</span><span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h2 id=24-락으로-상태-보호하기>2.4 락으로 상태 보호하기</h2>
+<blockquote>
+<p>여러 쓰레드에서 접근할 수 있고 변경 가능한 모든 변수를 대상으로 해당 변수에 접근할 때는 항상 동일한 락을 먼저 확보한 상태여야 한다. 이 경우 해당 변수는 확보된 락에 의해 보호된다고 한다.</p>
+</blockquote>
+<ul>
+<li>객체의 암묵적인 락과 그 객체의 상태에는 특별한 관계는 없음</li>
+<li>쓰기 쉬워서 default로 해놓은 것일 뿐임</li>
+<li>공유 상태에 안전하게 접근할 수 있도록 락 규칙이나 동기화 정책을 만들고 프로그램 내에서 규칙과 정책을 일관성 있게 따르는 건순전히 개발자에게 달림</li>
+</ul>
+<blockquote>
+<p>모든 변경할 수 있는 공유 변수는 정확하게 단 하나의 락으로 보호해야 한다. 유지 보수하는 사람이 알 수 있게 어느 락으로 보호하고 있는지를 명확하게 표시하라(<code>@GuardedBy</code>)</p>
+</blockquote>
+<ul>
+<li>synchronized 동기화의 해법은 아님</li>
+<li><code>Vector</code> 는 모든 메소드가 단순 동기화되어 있음. 여러 메소드를 섞으면 또 다른 락이 필요함</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>if</span> <span style=color:#f92672>(!</span>vector<span style=color:#f92672>.</span><span style=color:#a6e22e>contains</span><span style=color:#f92672>(</span>element<span style=color:#f92672>))</span> <span style=color:#f92672>{</span>
+    vector<span style=color:#f92672>.</span><span style=color:#a6e22e>add</span><span style=color:#f92672>(</span>elements<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><ul>
+<li>동기화를 통해 메소드 각각을 단일 연산화 시킬 수 있지만,여러 메소드를 복합으로 사용하려면 추가 동기화 필요.</li>
+<li>모든 메소드를 동기화 하면 성능에 문제 생길 수 있음</li>
+</ul>
+<h2 id=25-활동성과-성능>2.5 활동성과 성능</h2>
+<ul>
+<li>동기화를 단순하고 큰 단위로 접근하면 안전하지만 성능 감소가 매우 큼</li>
+<li><code>SynchronizedFactorizer</code> 예제의 경우 service 실행을 한번에 한 쓰레드만 할 수 있음</li>
+<li>병렬처리 능력이 떨어지게 됨</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@ThreadSafe</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>CachedFactorizer</span> <span style=color:#66d9ef>implements</span> Servlet <span style=color:#f92672>{</span>
+    <span style=color:#a6e22e>@GuardedBy</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;this&#34;</span><span style=color:#f92672>)</span> <span style=color:#66d9ef>private</span> BigInteger lastNumber<span style=color:#f92672>;</span>
+    <span style=color:#a6e22e>@GuardedBy</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;this&#34;</span><span style=color:#f92672>)</span> <span style=color:#66d9ef>private</span> BigInteger<span style=color:#f92672>[]</span> lastFactors<span style=color:#f92672>;</span>
+    <span style=color:#a6e22e>@GuardedBy</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;this&#34;</span><span style=color:#f92672>)</span> <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>long</span> hits<span style=color:#f92672>;</span>
+    <span style=color:#a6e22e>@GuardedBy</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;this&#34;</span><span style=color:#f92672>)</span> <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>long</span> cacheHits<span style=color:#f92672>;</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>synchronized</span> <span style=color:#66d9ef>long</span> <span style=color:#a6e22e>getHits</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>return</span> hits<span style=color:#f92672>;}</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>synchronized</span> <span style=color:#66d9ef>double</span> <span style=color:#a6e22e>getCacheHitRatio</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>return</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>double</span><span style=color:#f92672>)</span> cacheHits <span style=color:#f92672>/</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>double</span><span style=color:#f92672>)</span> hits<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>service</span><span style=color:#f92672>(</span>ServletRequest req<span style=color:#f92672>,</span> ServletResponse resp<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        BigInteger i <span style=color:#f92672>=</span> extractFromRequest<span style=color:#f92672>(</span>req<span style=color:#f92672>);</span>
+        BigInteger<span style=color:#f92672>[]</span> factors <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+        <span style=color:#66d9ef>synchronized</span> <span style=color:#f92672>(</span><span style=color:#66d9ef>this</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#f92672>++</span>hits<span style=color:#f92672>;</span>
+            <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>i<span style=color:#f92672>.</span><span style=color:#a6e22e>equals</span><span style=color:#f92672>(</span>lastNumber<span style=color:#f92672>))</span> <span style=color:#f92672>{</span>
+                <span style=color:#f92672>++</span>cacheHits<span style=color:#f92672>;</span>
+                factors <span style=color:#f92672>=</span> lastFactors<span style=color:#f92672>.</span><span style=color:#a6e22e>clone</span><span style=color:#f92672>();</span>
+            <span style=color:#f92672>}</span>
+        <span style=color:#f92672>}</span>
+
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>factors <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            factors <span style=color:#f92672>=</span> factor<span style=color:#f92672>(</span>i<span style=color:#f92672>);</span>
+            <span style=color:#66d9ef>synchronized</span><span style=color:#f92672>(</span><span style=color:#66d9ef>this</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+                lastNumber <span style=color:#f92672>=</span> i<span style=color:#f92672>;</span>
+                lastFactors <span style=color:#f92672>=</span> factors<span style=color:#f92672>.</span><span style=color:#a6e22e>clone</span><span style=color:#f92672>();</span>
+            <span style=color:#f92672>}</span>
+        <span style=color:#f92672>}</span>
+        encodeIntoResponse<span style=color:#f92672>(</span>resp<span style=color:#f92672>,</span> factors<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><ul>
+<li>접속카운터(<code>hits</code>) 를 AtomicLong 대신 long으로 사용. 이미 synchronized 블럭 내에서 처리하기 때문에 성능이나 안전성 측면에서 이득이 없음</li>
+<li>단순성(전체 메소드 동기화) 병렬 처리 능력(짧은 부분만 동기화) 사이에 균형을 맞춤</li>
+<li>락을 잡고 놓는 것 자체도 부하가 있음. 너무 짧게 sync 블럭을 나누는 것도 좋지 않음</li>
+<li>위의 경우 오래 걸릴 가능성이 높은 인수분해 시에는 락을 놓는다. 이렇게 하므로써 병렬 처리 능력에 영향을 주지 않으면서 쓰레드 안전성 확보.</li>
+<li>각 sync block 은 충분히 짧다(어떻게 계산하지..?)</li>
+</ul>
+<blockquote>
+<p>종종 단순성과 성능이 서로 상출할 때가 있다. 동기화 정책을 구현할 때는 성능을 위해 조급하게 단순성(잠재적으로 안전성을 훼손하면서)을 희생하고픈 유혹을 버려야 한다.</p>
+</blockquote>
+<ul>
+<li>락을 사용할 땐 블록 안 코드가 수행하는 일과 수행 예측 시간을 파악해야 함. 계산량이 많거나 쓰레드가 잠들 수 있는 작업을 하느라 락을 오래 잡고 있으면 성능 문제가 야기 될 수 있다.</li>
+</ul>
+<blockquote>
+<p>복잡하고 오래 걸리는 계산 작업, 네트워크 작업, 사용자 입출력 작업과 같이 빨리 끝나지 않을 수 있는 작업을 하는 부분에서는 가능한 락을 잡지 마라</p>
+</blockquote>
+<ul class=pa0>
+</ul>
+<div class="mt6 instapaper_ignoref">
+</div>
+</div>
+<aside class="w-30-l mt6-l">
+</aside>
+</article>
+</main>
+<footer class="bg-black bottom-0 w-100 pa3" role=contentinfo>
+<div class="flex justify-between">
+<a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href=https://sangmoon.github.io/TIL>
+&copy; Sangmoon's TIL 2021
+</a>
+<div>
+</div>
+</div>
+</footer>
+</body>
+</html>

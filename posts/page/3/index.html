@@ -1,0 +1,238 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge,chrome=1">
+<title>Sangmoon's TIL</title>
+<meta name=viewport content="width=device-width,minimum-scale=1">
+<meta name=description content>
+<meta name=generator content="Hugo 0.88.1">
+<meta name=ROBOTS content="NOINDEX, NOFOLLOW">
+<link rel=stylesheet href=/TIL/ananke/css/main.min.css>
+<link href=/TIL/posts/index.xml rel=alternate type=application/rss+xml title="Sangmoon's TIL">
+<link href=/TIL/posts/index.xml rel=feed type=application/rss+xml title="Sangmoon's TIL">
+<meta property="og:title" content="Posts">
+<meta property="og:description" content>
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/posts/">
+<meta itemprop=name content="Posts">
+<meta itemprop=description content><meta name=twitter:card content="summary">
+<meta name=twitter:title content="Posts">
+<meta name=twitter:description content>
+</head>
+<body class="ma0 avenir bg-near-white">
+<header>
+<div class="pb3-m pb6-l bg-black">
+<nav class="pv3 ph3 ph4-ns" role=navigation>
+<div class="flex-l justify-between items-center center">
+<a href=/TIL/ class="f3 fw2 hover-white no-underline white-90 dib">
+Sangmoon's TIL
+</a>
+<div class="flex-l items-center">
+</div>
+</div>
+</nav>
+<div class="tc-l pv3 ph3 ph4-ns">
+<h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
+Posts
+</h1>
+</div>
+</div>
+</header>
+<main class=pb7 role=main>
+<article class="pa3 pa4-ns nested-copy-line-height nested-img">
+<section class="cf ph3 ph5-l pv3 pv4-l f4 tc-l center measure-wide lh-copy mid-gray"></section>
+<section class="flex-ns flex-wrap justify-around mt5">
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/designpattern/structualpatterns/decorator/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Decorator Pattern Intent 상속을 받아 기능성을 확장하는 것 말고, 다른 방식으로 객체에 추가적 기능을 부여한다. (상속의 단점 보완)Wapper라고도 불린다. 직장인 클래스를 기준으로 해보자&mldr;
+Implementation public interface Employee{ public int getSalary(); } public class Researcher implements Employee{ private int year; @Override public int getSalary(){ return 10 + year; } } abstract public class EmployeeDecorator implements Employee{ protected Emplyee decoratedEmployee; public EmplyeeDecorator(Employee decoratedEmployee){ this.decoratedEmplyee = decoratedEmployee; } public int getSalary(){ return decoratedEmployee.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/designpattern/structualpatterns/proxy/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Proxy Pattern Intent 일반적으로 프록시는 다른 무언가와 이어지는 인터페이스의 역할을 하는 클래스이다. 프록시는 어떠한 것(이를테면 네트워크 연결, 메모리 안의 커다란 객체, 파일, 또 복제할 수 없거나 수요가 많은 리소스)과도 인터페이스의 역할을 수행 할 수 있다.
+참가자 : client, subject, real subject, proxy
+같은 인터페이스를 상속 받기 때문에 실제 client는 real subject와 proxy 를 구분하지 않는다.
+proxy 는 real subject에 대한 reference를 가지고 있다.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/django/django-urlconf/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+django2.0 부터 path, re_path 함수로 라우팅을 한다.
+(django_docs_link)[https://docs.djangoproject.com/en/2.0/topics/http/urls/#how-django-processes-a-request]
+from django.conf.urls import path, re_path from . import views urlpatterns = [ path('index/&lt;int:index_id>', views.index, name='index'), re_path(r'^index/(?P&lt;index_id>\d+)/$'), ] 위의 path()와 re_path는 같은 url을 나타낸 것이다. path에서는 정규식을 명시적으로 사용하지 않고 &lt;> 로 단순한 패턴들을 매칭한다. int, str,slug, uuid, path 가 default path converter 이다. custom conveter 도 등록 가능하다. re_path의 경우 기존 urls.url 함수의 이름이 바뀐 것이다. 정규식으로 패턴을 표현한다.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/django/request-post/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+view에서 user의 request를 보통 GET 과 POST로 받는다. browser에서 ajax POST request를 보낼 때 request.POST로 받으면 될 거라고 생각했는데, request.body로 바로 접근해야 한다. django에서 request.POST는 form data 같은 걸 받을 때 사용하는 것이다.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/docker/docker-cmd/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+docker의 기본 명령어를 정리하자 도커 이미지 빌드
+docker build -t cholsoo22001/orly . container 실행
+docker run \ --env AZURE_ACCOUNT_NAME="" \ --env AZURE_ACCOUNT_KEY="" \ -p 8080:8080 \ cholsoo22001/orly Docker Hub에 이미지 배포
+docker push cholsoo22001/orly Docker images 확인
+docker images Docker image 삭제
+docker rmi [image id] 모든 Container 확인
+docker ps -a Container 삭제
+docker rm [container id | container name] Container shell로 들어가기
+docker exec -it [container id| container name] /bin/bash
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/effectivejava/classesandinterfaces/item15/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Item 15: Minimize the accessibility of classess and members 잘 설계된 컴포넌트는 상세 구현을 숨기고 API와 완벽히 분리해야 한다. Information hiding or encapsulation 으로 알려진 이 생각은 소프트웨어 디자인의 기본이다.
+캡슐화의 장점 병렬 개발을 통한 개발 속도 증가 독립적인 컴포넌트 분리로 인한 관리 비용 감소 성능 최적화에 도움 재사용성 증가 제작 난이도 감소 룰은 간단하다. 모든 클래스와 멤버의 접근성을 가능한 한 좁혀야 한다.
+java에서 가능한 access level private: 멤버들은 오직 해당 클래스에서만 접근 가능하다 package-private: 멤버는 해당 클래스가 선언되어 있는 패키지에서 접근 가능하다(접근자를 안쓰면 되는데, interface는 기본 public 이라 예외) protected: 패키지 내와 상속받은 클래스에서만 접근 가능하다 public: 어디서든 접근 가능하다 total In the class Same package Extended class Another area private O X X X package-private O O X X protected O O O X public O O O O public class의 객체 필드는 public 이어선 안 된다.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/effectivejava/classesandinterfaces/item16/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Item 16: In public classes, use accessor methods, not public fields 가끔 필드 조합의 모음 정도의 클래스를 쓸 때가 있다.
+class Point { public double x; public double y; } 이 때 필드는 public 이어선 안된다. 필드에 직접 접근이 가능해서 캡슐화의 이점을 전혀 얻을 수 없다. API를 바꾸지 않고는 아무것도 변경할 수 없다. getter와 setter로 바꿔야 한다.
+class Point { private double x; private double y; public Point(double x, double y) { this.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/effectivejava/classesandinterfaces/item17/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Item 17: Minimize mutability immutable class 는 변경될 수 없는 인스턴스들의 클래스 이다. String, boxed primitive type, BigInteger 나 BigDecimal 등이 immutable class의 예이다. mutable class 보다 설계하기 쉽고 에러도 적고 더 안전하다.
+immutable class 만들기 위한 규칙 객체의 상태를 바꾸는 메소드(Mutator)를 제공하지마라 클래스를 상속할 수 없게 만들어라 모든 필드를 final로 선언해라 모든 필드를 private로 만들어라. mutable object에 대한 접근 제한을 확실히 해라. 클래스가 mutable object 가지고 있으면 client는 절대 접근할 수 없게 해야 한다.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/effectivejava/classesandinterfaces/item18/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Item 18: 상속보다는 컴포지션을 사용해라 상속은 캡슐화를 깨뜨린다. 상위 클래스 구현에 따라 하위 클래스의 동작이 이상해 질 수 있다.
+상속 사용 public class InstrumentedHashSet&lt;E> extends HashSet&lt;E> { private int addCount = 0; public InstrumentedHashSet() {} public InstrumentedHashSet(int initCap, float loadFactor) { super(initCap, loadFactor); } @Override public boolean add(E e) { addCount++; return super.add(e); } @Override public boolean addAll(Collection&lt;? extends E> c) { addCount += c.size(); return super.addAll(c); } public int getAddCount() { return addCount; } InstrumentedHashSet&lt;Stirng> s = new InstrumentedHashSet&lt;>(); s.
+</div>
+</div>
+</div>
+</div>
+<div class="relative w-100 w-30-l mb4 bg-white"><div class="relative w-100 mb4 bg-white nested-copy-line-height">
+<div class="bg-white mb3 pa4 gray overflow-hidden">
+<span class="f6 db">Posts</span>
+<h1 class="f3 near-black">
+<a href=/TIL/posts/effectivejava/classesandinterfaces/item19/ class="link black dim">
+</a>
+</h1>
+<div class="nested-links f5 lh-copy nested-copy-line-height">
+Item 19: 상속을 고려해 설계하고 문서화해라. 그러지 않았다면 상속을 금지하라 상속용 클래스는 재정의할 수 있는 메서드들을 내부적으로 어덯게 이용하는지 문서로 남겨야 한다. 클래스를 안전하게 상속할 수 있도록 하려면 내부 구현 방식을 설명해야 한다.
+상속용 클래스를 시험하는 방법은 직접 하위 클래스를 만들어보는 것이 &lsquo;유일&rsquo;하다.
+상속용 클래스의 생성자는 재정의 가능 메서드를 호출해서는 안 된다 // 상속 시 문제 발생 가능한 클래스 public class Super { public Super() { overrideMe(); } public void overrideMe() {} } public final class Sub extendss Super { private final Instant instant; Sub() { instant = Instant.
+</div>
+</div>
+</div>
+</div>
+</section>
+<ul class="pagination pagination-default">
+<li class=page-item>
+<a href=/TIL/posts/ aria-label=First class=page-link role=button><span aria-hidden=true>&#171;&#171;</span></a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/2/ aria-label=Previous class=page-link role=button><span aria-hidden=true>&#171;</span></a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/ aria-label="Page 1" class=page-link role=button>1</a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/2/ aria-label="Page 2" class=page-link role=button>2</a>
+</li>
+<li class="page-item active">
+<a href=# aria-current=page aria-label="Page 3" class=page-link role=button>3</a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/4/ aria-label="Page 4" class=page-link role=button>4</a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/5/ aria-label="Page 5" class=page-link role=button>5</a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/4/ aria-label=Next class=page-link role=button><span aria-hidden=true>&#187;</span></a>
+</li>
+<li class=page-item>
+<a href=/TIL/posts/page/10/ aria-label=Last class=page-link role=button><span aria-hidden=true>&#187;&#187;</span></a>
+</li>
+</ul></article>
+</main>
+<footer class="bg-black bottom-0 w-100 pa3" role=contentinfo>
+<div class="flex justify-between">
+<a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href=https://sangmoon.github.io/TIL>
+&copy; Sangmoon's TIL 2021
+</a>
+<div>
+</div>
+</div>
+</footer>
+</body>
+</html>

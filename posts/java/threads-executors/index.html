@@ -1,0 +1,133 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge,chrome=1">
+<title>Sangmoon's TIL</title>
+<meta name=viewport content="width=device-width,minimum-scale=1">
+<meta name=description content="Thread Excecutor Executor는 thread 생성 및 관리를 해주는 클래스이다. thread 를 직접 생성 하고 제어 하는 데에서 나올 수 있는 복잡성을 줄여준다. Executors 라는 Factory class 를 활용하거나 또는 직접 생성해줄 수도 있다.
+ExecutorService executor = Executors.newFixedThreadPool(10); // by Executors  ExecutorService executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>()); // directly ExecutorService 는 interface 이다.
+ newFixedThreadPool : 고정된 갯수의 thread를 유지하는 executor이다. newSingleThreadExecutor : 1개의 thread만 유지하는 executor이다.">
+<meta name=generator content="Hugo 0.88.1">
+<meta name=ROBOTS content="NOINDEX, NOFOLLOW">
+<link rel=stylesheet href=/TIL/ananke/css/main.min.css>
+<meta property="og:title" content>
+<meta property="og:description" content="Thread Excecutor Executor는 thread 생성 및 관리를 해주는 클래스이다. thread 를 직접 생성 하고 제어 하는 데에서 나올 수 있는 복잡성을 줄여준다. Executors 라는 Factory class 를 활용하거나 또는 직접 생성해줄 수도 있다.
+ExecutorService executor = Executors.newFixedThreadPool(10); // by Executors  ExecutorService executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>()); // directly ExecutorService 는 interface 이다.
+ newFixedThreadPool : 고정된 갯수의 thread를 유지하는 executor이다. newSingleThreadExecutor : 1개의 thread만 유지하는 executor이다.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/posts/java/threads-executors/"><meta property="article:section" content="posts">
+<meta itemprop=name content>
+<meta itemprop=description content="Thread Excecutor Executor는 thread 생성 및 관리를 해주는 클래스이다. thread 를 직접 생성 하고 제어 하는 데에서 나올 수 있는 복잡성을 줄여준다. Executors 라는 Factory class 를 활용하거나 또는 직접 생성해줄 수도 있다.
+ExecutorService executor = Executors.newFixedThreadPool(10); // by Executors  ExecutorService executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>()); // directly ExecutorService 는 interface 이다.
+ newFixedThreadPool : 고정된 갯수의 thread를 유지하는 executor이다. newSingleThreadExecutor : 1개의 thread만 유지하는 executor이다.">
+<meta itemprop=wordCount content="254">
+<meta itemprop=keywords content><meta name=twitter:card content="summary">
+<meta name=twitter:title content>
+<meta name=twitter:description content="Thread Excecutor Executor는 thread 생성 및 관리를 해주는 클래스이다. thread 를 직접 생성 하고 제어 하는 데에서 나올 수 있는 복잡성을 줄여준다. Executors 라는 Factory class 를 활용하거나 또는 직접 생성해줄 수도 있다.
+ExecutorService executor = Executors.newFixedThreadPool(10); // by Executors  ExecutorService executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>()); // directly ExecutorService 는 interface 이다.
+ newFixedThreadPool : 고정된 갯수의 thread를 유지하는 executor이다. newSingleThreadExecutor : 1개의 thread만 유지하는 executor이다.">
+</head>
+<body class="ma0 avenir bg-near-white">
+<header>
+<div class=bg-black>
+<nav class="pv3 ph3 ph4-ns" role=navigation>
+<div class="flex-l justify-between items-center center">
+<a href=/TIL/ class="f3 fw2 hover-white no-underline white-90 dib">
+Sangmoon's TIL
+</a>
+<div class="flex-l items-center">
+</div>
+</div>
+</nav>
+</div>
+</header>
+<main class=pb7 role=main>
+<article class="flex-l flex-wrap justify-between mw8 center ph3">
+<header class="mt4 w-100">
+<aside class="instapaper_ignoref b helvetica tracked">
+POSTS
+</aside>
+<div id=sharing class=mt3>
+<a href="https://www.facebook.com/sharer.php?u=https://sangmoon.github.io/TIL/posts/java/threads-executors/" class="facebook no-underline" aria-label="share on Facebook"><svg height="32" style="enable-background:new 0 0 67 67" viewBox="0 0 67 67" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M28.765 50.32h6.744V33.998h4.499l.596-5.624h-5.095l.007-2.816c0-1.466.14-2.253 2.244-2.253h2.812V17.68h-4.5c-5.405.0-7.307 2.729-7.307 7.317v3.377h-3.369v5.625h3.369V50.32zM33 64C16.432 64 3 50.569 3 34S16.432 4 33 4s30 13.431 30 30S49.568 64 33 64z" style="fill-rule:evenodd;clip-rule:evenodd"/></svg>
+</a>
+<a href="https://twitter.com/share?url=https://sangmoon.github.io/TIL/posts/java/threads-executors/&text=" class="twitter no-underline" aria-label="share on Twitter"><svg height="32" style="enable-background:new 0 0 67 67" viewBox="0 0 67 67" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167 22.283c-2.619.953-4.274 3.411-4.086 6.101l.063 1.038-1.048-.127c-3.813-.487-7.145-2.139-9.974-4.915l-1.383-1.377-.356 1.017c-.754 2.267-.272 4.661 1.299 6.271.838.89.649 1.017-.796.487-.503-.169-.943-.296-.985-.233-.146.149.356 2.076.754 2.839.545 1.06 1.655 2.097 2.871 2.712l1.027.487-1.215.021c-1.173.0-1.215.021-1.089.467.419 1.377 2.074 2.839 3.918 3.475l1.299.444-1.131.678c-1.676.976-3.646 1.526-5.616 1.568C19.775 43.256 19 43.341 19 43.405c0 .211 2.557 1.397 4.044 1.864 4.463 1.377 9.765.783 13.746-1.568 2.829-1.673 5.657-5 6.978-8.221.713-1.716 1.425-4.851 1.425-6.354.0-.975.063-1.102 1.236-2.267.692-.678 1.341-1.419 1.467-1.631.21-.403.188-.403-.88-.043-1.781.636-2.033.551-1.152-.402.649-.678 1.425-1.907 1.425-2.267.0-.063-.314.042-.671.233-.377.212-1.215.53-1.844.72l-1.131.361-1.027-.7c-.566-.381-1.361-.805-1.781-.932C39.766 21.902 38.131 21.944 37.167 22.283zM33 64C16.432 64 3 50.569 3 34S16.432 4 33 4s30 13.431 30 30S49.568 64 33 64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:"/></svg>
+</a>
+<a href="https://www.linkedin.com/shareArticle?mini=true&url=https://sangmoon.github.io/TIL/posts/java/threads-executors/&title=" class="linkedin no-underline" aria-label="share on LinkedIn"><svg height="32" style="enable-background:new 0 0 65 65" viewBox="0 0 65 65" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M50.837 48.137V36.425c0-6.275-3.35-9.195-7.816-9.195-3.604.0-5.219 1.983-6.119 3.374V27.71h-6.79c.09 1.917.0 20.427.0 20.427h6.79V36.729c0-.609.044-1.219.224-1.655.49-1.22 1.607-2.483 3.482-2.483 2.458.0 3.44 1.873 3.44 4.618v10.929H50.837zM22.959 24.922c2.367.0 3.842-1.57 3.842-3.531-.044-2.003-1.475-3.528-3.797-3.528s-3.841 1.524-3.841 3.528c0 1.961 1.474 3.531 3.753 3.531H22.959zM34 64C17.432 64 4 50.568 4 34 4 17.431 17.432 4 34 4s30 13.431 30 30c0 16.568-13.432 30-30 30zM26.354 48.137V27.71h-6.789v20.427h6.789z" style="fill-rule:evenodd;clip-rule:evenodd;fill:"/></svg>
+</a>
+</div>
+<h1 class="f1 athelas mt3 mb1"></h1>
+</header>
+<div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><h1 id=thread-excecutor>Thread Excecutor</h1>
+<p>Executor는 thread 생성 및 관리를 해주는 클래스이다. thread 를 직접 생성 하고 제어 하는 데에서 나올 수 있는
+복잡성을 줄여준다. <code>Executors</code> 라는 Factory class 를 활용하거나 또는 직접 생성해줄 수도 있다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>ExecutorService executor <span style=color:#f92672>=</span> Executors<span style=color:#f92672>.</span><span style=color:#a6e22e>newFixedThreadPool</span><span style=color:#f92672>(</span>10<span style=color:#f92672>);</span> <span style=color:#75715e>// by Executors
+</span><span style=color:#75715e></span>
+ExecutorService executor <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> ThreadPoolExecutor<span style=color:#f92672>(</span>1<span style=color:#f92672>,</span> 1<span style=color:#f92672>,</span> 0L<span style=color:#f92672>,</span> TimeUnit<span style=color:#f92672>.</span><span style=color:#a6e22e>MILLISECONDS</span><span style=color:#f92672>,</span> 
+                                <span style=color:#66d9ef>new</span> LinkedBlockingQueue<span style=color:#f92672>&lt;</span>Runnable<span style=color:#f92672>&gt;());</span> <span style=color:#75715e>// directly 
+</span></code></pre></div><p>ExecutorService 는 interface 이다.</p>
+<ul>
+<li>newFixedThreadPool : 고정된 갯수의 thread를 유지하는 executor이다.</li>
+<li>newSingleThreadExecutor : 1개의 thread만 유지하는 executor이다.</li>
+<li>newCachedThreadPool : thread 를 적당한 시간 동안만 cache 하는 executor이다.</li>
+<li>newScheduledThreadPool : 일정 기간이나, 주기적으로 작업하는 thread pool 을 생성한다.</li>
+<li>newSingleThreadScheduledExecutor : thread가 1개인 scheduledThreadPool 이다.</li>
+</ul>
+<h2 id=runnable>Runnable</h2>
+<p>ExecutorService 에서 thread 들이 할 일을 queue에 넣는다. 이 일을 Runnable 또는 Callable interface 로 만들 수 있다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>Runnable runnableTask <span style=color:#f92672>=</span> <span style=color:#f92672>()</span> <span style=color:#f92672>-&gt;</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>try</span> <span style=color:#f92672>{</span>
+        TimeUnit<span style=color:#f92672>.</span><span style=color:#a6e22e>MILLISECONDS</span><span style=color:#f92672>.</span><span style=color:#a6e22e>sleep</span><span style=color:#f92672>(</span>1000<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span> <span style=color:#66d9ef>catch</span> <span style=color:#f92672>(</span>InterruptedExecption e<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        e<span style=color:#f92672>.</span><span style=color:#a6e22e>printStackTrace</span><span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>};</span>
+
+Callable<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> callableTask <span style=color:#f92672>=</span> <span style=color:#f92672>()</span> <span style=color:#f92672>-&gt;</span> <span style=color:#f92672>{</span>
+    TimeUnit<span style=color:#f92672>.</span><span style=color:#a6e22e>MILLISECONDS</span><span style=color:#f92672>.</span><span style=color:#a6e22e>sleep</span><span style=color:#f92672>(</span>1000<span style=color:#f92672>);</span>
+    <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#34;Task&#39;s execution&#34;</span><span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>ExecutorService의 API를 살펴보면</p>
+<ul>
+<li>execute()</li>
+<li>submit()</li>
+<li>invokeAny()</li>
+<li>invokeAll()</li>
+</ul>
+<p>등이 있다. <code>execute</code> 는 void 타입으로, task가 실행 중인지 끝났는지 확인 할 방법이 없다.
+<code>submit</code> 은 Callable 이나 Runnable task 를 받아서 Future type을 return 한다. 이 Future을 통해 진행 상황을 알 수 있다.
+<code>invokeAny</code> 와 <code>invokeAll</code> 의 경우 <code>Collection&lt;Callable></code> 를 input으로 받아서 any의 경우 아무거나 1개의 return 값을 return 해주고
+all은 모든 callable의 future를 return 해준다.</p>
+<h2 id=shutdown-executor>Shutdown Executor</h2>
+<p>Executorservice는 기본적으로 GC되지 않는다. 그래서 필요할 때는 명시적으로 destory 해야 한다.
+<code>shutdown</code> 과 <code>shutdownNow</code> 가 있는데, 둘 다 바로 thread가 꺼짐을 보장하지는 않는다.
+따라서 다음과 같은 방법을 추천한다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>executorService<span style=color:#f92672>.</span><span style=color:#a6e22e>shutdown</span><span style=color:#f92672>();</span>
+<span style=color:#66d9ef>try</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>if</span> <span style=color:#f92672>(!</span>executorService<span style=color:#f92672>.</span><span style=color:#a6e22e>awaitTermination</span><span style=color:#f92672>(</span>800<span style=color:#f92672>,</span> TimeUnit<span style=color:#f92672>.</span><span style=color:#a6e22e>MILLISECONDS</span><span style=color:#f92672>))</span> <span style=color:#f92672>{</span>
+        executorService<span style=color:#f92672>.</span><span style=color:#a6e22e>shutdownNow</span><span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span> <span style=color:#66d9ef>catch</span> <span style=color:#f92672>(</span>InterruptedException e<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    executorService<span style=color:#f92672>.</span><span style=color:#a6e22e>shutdownNow</span><span style=color:#f92672>();</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h2 id=future-interface>Future interface</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>
+</code></pre></div><ul class=pa0>
+</ul>
+<div class="mt6 instapaper_ignoref">
+</div>
+</div>
+<aside class="w-30-l mt6-l">
+</aside>
+</article>
+</main>
+<footer class="bg-black bottom-0 w-100 pa3" role=contentinfo>
+<div class="flex justify-between">
+<a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href=https://sangmoon.github.io/TIL>
+&copy; Sangmoon's TIL 2021
+</a>
+<div>
+</div>
+</div>
+</footer>
+</body>
+</html>
