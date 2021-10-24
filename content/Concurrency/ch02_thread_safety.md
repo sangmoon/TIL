@@ -1,8 +1,8 @@
 ---
 title: "Thread Safety"
-date: 2021-10-24T08:47:11+01:00
+date: 2021-10-23T08:47:11+01:00
+summary: 쓰레드 안정성에 대해 알아보자
 draft: false
-menu: concurrency
 ---
 
 # 쓰레드 안전성
