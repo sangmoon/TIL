@@ -1,3 +1,10 @@
+---
+title: "Thread Safety"
+date: 2021-10-24T08:47:11+01:00
+draft: false
+menu: concurrency
+---
+
 # 쓰레드 안전성
 
 - 객체의 상태(object's state) = 인스턴스나 static 변수 같은 상태 변수에 저장된 객체의 데이터

@@ -1,3 +1,9 @@
+---
+title: "Test pararrel program"
+date: 2021-10-24T08:47:11+01:00
+draft: false
+---
+
 # Ch12 병렬 프로그램 테스트
 
 - 정확성 테스트
