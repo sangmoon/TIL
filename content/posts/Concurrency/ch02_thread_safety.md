@@ -1,23 +1,24 @@
 # 쓰레드 안전성
 
-- 객체의 상태 = 인스턴스나 static 변수 같은상태 변수에 저장된 객체의 데이터
-- 공유되었다 = 여러 쓰레드가 특정 변수에 접근할 수 있다
+- 객체의 상태(object's state) = 인스턴스나 static 변수 같은 상태 변수에 저장된 객체의 데이터
+- 공유되었다(shared) = 여러 쓰레드가 특정 변수에 접근할 수 있다
 - 변경할 수 있다(mutable) = 해당 변수 값이 변경될 수 있다
-- 쓰레드 안전성 = 데이터에 제어 없이 동시에 접근하는걸 막으려는 것
+- 쓰레드 안전성(Thread safety) = 데이터에 제한 없이 동시에 접근하는걸 막으려는 것
 
 - 하나 이상의 쓰레드가 상태 변수에 접근하고, 하나라도 변수에 값을 쓰면 해당 변수에 접근할 때 관련 쓰레드는 동기화 사용해야 함
 
-- 자바에서 동기화 수단: synchronized, volaitile, 명시적 락, atomic variable
+- 자바에서 동기화 수단: ``synchronized``, ``volaitile``, ``명시적 락``, ``atomic variable``
 
-> 여러 쓰레드가 동기화 없이 변경 가능한 하나의 상태 변수에 접근하면 잘못된 프로그램임. 이를 고치려면 </br>
-상태 변수를 스레드 간 공유하지 않거나(thread-local, single-threaded) </br>
-상태 변수를 변경 불가능하게 하거나</br>
-상태 변수를 접근할 땐 언제나 동기화 한다</br>
+> 여러 쓰레드가 동기화 없이 변경 가능한 하나의 상태 변수에 접근하면 잘못된 프로그램임.<br> 이를 고치려면 </br>
+상태 변수를 쓰레드 간 공유하지 않거나(thread-local, single-threaded) </br>
+상태 변수를 변경 불가능하게 하거나(immutable)</br>
+상태 변수를 접근할 땐 언제나 동기화 한다(synchronization)</br>
+
+>  쓰레드 안전한 클래스를 설계할 때 , 캡슐화, 불변 객체를 잘 활용하고 불변 조건을 명확히 기술해야 한다.
 
 ## 2.1 쓰레드 안전성(thread safety)이란
 
-> 여러 쓰레드가 클래스에 접근할 때, 실행 환경이 해당 쓰레드들의 실행을 어떻게 스케줄하든 호출하는 쪽에서
-> 추가적인 동기화나 다른 조율 없이도 정확하게 동작하면 해당 클래스는 쓰레드 안전하다고 말한다.
+> 여러 쓰레드가 한 클래스에 접근할 때, 실행 환경(OS..?)이 해당 쓰레드들을 어떻게 스케줄하든 <br>호출하는 쪽(Caller)에서 추가적인 동기화나 다른 조율 없이도 ***정확하게*** 동작하면 해당 클래스는 쓰레드 안전하다고 말한다. ('정확하게' 라는건 클래스가 명세대로 동작함을 의미한다.)
 
 > 쓰레드 안전한 클래스는 클라이언트 쪽에서 별도로 동기화할 필요 없도록 동기화 기능이 캡슐화 되어 있다.
 
@@ -40,12 +41,14 @@ public class StatelesFactorizer implments Servlet  {
 - 일시적 상태는 local variable에 저장
 
 따라서 stateless 하기 때문에 항상 thread-safe 하다.
+> Stateless Objects 는 항상 Thread-safe 하다
 
-## 2.2 단일 연산
+## 2.2 단일 연산 (Atomicity)
 
 위 클래스에 요청 횟수를 기록하는 접속 카운터를 추가.
 
 ```java
+@NotThreadSafe
 public class UnsafeCountingFactorizer implments Servlet  {
 
     private long count = 0;
@@ -60,38 +63,43 @@ public class UnsafeCountingFactorizer implments Servlet  {
     }
 ```
 
-- ``++`` 연산은 내부적으로 3개의 단일 연산의 시퀀스로 구성( 현재 값 가져오기/1더하기/새 값 저장하기)
+- ``++`` 연산은 내부적으로 3개의 단일 연산의 시퀀스로 구성( 현재 값 가져오기/1더하기/새 값 저장하기) (load, add, mov 아마도..?)
 - 이 부분에서 여러 쓰레드가 접근하면 문제 발생 가능
-- 경쟁 조건 생김. 이전 상태를 기준으로 객체 상태를 변경하는 동작(read-modify-write)
+- 경쟁 조건(race condition) 생김. 
 
 ### 2.2.1 경쟁 조건 (race condition)
 
-UnsafeCountingFactorizer 는 경쟁 조건이 나타나기 때문에 결과를 신뢰할 수 없다. 경쟁 조건은 상대적인 시점이나, JVM이 여러 쓰레드를
-교차해서 실행하는 상황에 따라 계산의 정확성이 달라질 때 나타난다. 가장 일반적인 경쟁 조건 형태는 점검 후 행동(check-then-act) 이다.
+UnsafeCountingFactorizer 는 경쟁 조건이 나타나기 때문에 결과를 신뢰할 수 없다. 경쟁 조건은 상대적인 시점이나, 런타임이 여러 쓰레드를 교차해서 실행하는 상황에 따라 계산의 정확성이 달라질 때 나타난다. 가장 일반적인 경쟁 조건 형태는 점검 후 행동(``check-then-act``) 이다.
+(점검 후 행동은 stale data가 다음 행동을 결정하는 형태)
 
 ### 2.2.2 늦은 초기화 시 경쟁 조건
 
-점검 후 행동하는 가장 흔한 예제는 늦은 초기화(lazy initialization) 가 있다. 늦은 초기화는 필요한 시점에 딱 한 번만 초기화 하기 위한 프로그래밍 기법.
+점검 후 행동하는 가장 흔한 예제는 늦은 초기화(``lazy initialization``) 가 있다. 늦은 초기화는 필요한 시점에 딱 한 번만 초기화 하기 위한 프로그래밍 기법.
 
 ```java
+@NotThreadSafe
 public class LazyInitRace {
-    private ExepensiveObject instance = null;
+    private ExpensiveObject instance = null;
 
-    public ExepensiveObject getInstance() {
-        if(instance == null) {
-            instance = new ExepensiveObject();
+    public ExpensiveObject getInstance() {
+        if(instance == null) { //critical seciton
+            instance = new ExpensiveObject();
         }
         return instance;
     }
 }
 ```
-
+쓰레드 A, B가 같은 LazyInitRace 객체에 접근해서 getInstance()를 호출하면 문제 발생할 수 있음 
 여러 쓰레드가 getInstance 메소드에 접근하면 경쟁 조건 발생함.
 
-### 2.2.3 복합 동작 (compound action)
+**UnsafeCountingFactoriezer** 은 도 따른 형턔의 race-condition 이다. ``read-modify-write``
+는 이전 상태를 기준으로 객체 상태를 변경하는 동작이다.
 
-> 작업 A를 실행 중인 쓰레드 관점에서 다른 쓰레드가 작업 B를 실행할 때 작업 B가 모두 수행됐거나 또는 전혀 수행되지 않은 두가지
-상태로만 파악된다면 작업 A의 눈으로 볼 때 작업 B는 단일 연산이다. 단일 연산 작업은 자신을 포함해 같은 상태를 다루는 모든 작업이 단일 연산인 작업을 지칭한다.
+race condition은 항상 실패하진 않는다. 하지만 치명적인 문제를 야기할 수 있다.
+
+### 2.2.3 복합 동작 (compound actions)
+
+> 작업 A를 실행 중인 쓰레드 관점에서 다른 쓰레드가 작업 B를 실행할 때 작업 B가 모두 수행됐거나 또는 전혀 수행되지 않은 두가지 state 로만 파악된다면 작업 A의 눈으로 볼 때 작업 B는 단일 연산이다. 단일 연산은 자신을 포함해 같은 state를 다루는 모든 작업이 단일 연산인 작업을 지칭한다.
 
 - UnsafeCountingFactorizer 에서 ``++count`` 가 단일 연산이었다면? 경쟁 조건 생길 수 없음
 - 점검 후 행동, 읽고 수정하고 쓰기 등과 같은 일련의 동작을 복합 동작이라고 함
@@ -130,10 +138,23 @@ public class AtomicBoolean {
     boolean compareAndSet(boolean expected, boolean update); // expected와 맞아야지만 update 함
     boolean get();
     boolean getAndSet(boolean newValue);
-    boolean lazySet(boolean newValue); // memory-model 에서 store- load 를 store-store 로 해서 퍼포먼스 향상...
+    boolean lazySet(boolean newValue); // memory-model 에서 store-load 를 store-store 로 해서 퍼포먼스 향상...  GC 위한 nullable 할 때 많이 쓴다고 함
     boolean set(boolean newValue);
     boolean weakCompareAndSet(boolean expected, boolean update); // 거의 안 씀..
 }
+```
+
+```java
+//https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/package-summary.html
+The memory effects for accesses and updates of atomics generally follow the rules for volatiles, as stated in section 17.4 of The Java™ Language Specification.
+
+get has the memory effects of reading a volatile variable.
+
+set has the memory effects of writing (assigning) a volatile variable.
+
+lazySet has the memory effects of writing (assigning) a volatile variable except that it permits reorderings with subsequent (but not previous) memory actions that do not themselves impose reordering constraints with ordinary non-volatile writes. Among other usage contexts, lazySet may apply when nulling out, for the sake of garbage collection, a reference that is never accessed again.
+
+weakCompareAndSet atomically reads and conditionally writes a variable but does not create any happens-before orderings, so provides no guarantees with respect to previous or subsequent reads and writes of any variables other than the target of the weakCompareAndSet. compareAndSet and all other read-and-update operations such as getAndIncrement have the memory effects of both reading and writing volatile variables.
 ```
 
 ## 2.3 락
