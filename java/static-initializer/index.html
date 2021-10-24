@@ -1,0 +1,103 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="어디서 봤는지는 모르지만 일단 Java">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Java">
+<meta property="og:description" content="어디서 봤는지는 모르지만 일단 Java">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/java/static-initializer/"><meta property="article:section" content="Java">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Java | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Java</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents></nav>
+</aside>
+</header>
+<article class=markdown><h1 id=initializer>
+initializer
+<a class=anchor href=#initializer>#</a>
+</h1>
+<p>enum을 조사하던 중 enum class를 컴파일 하면
+<code>static {};</code> block이 static 내부에 생기는 것을 발견하였다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Abc</span><span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>static</span> <span style=color:#f92672>{</span>
+        <span style=color:#75715e>// static initializer
+</span><span style=color:#75715e></span>    <span style=color:#f92672>}</span>
+
+    <span style=color:#f92672>{</span>
+        <span style=color:#75715e>// instance initializer
+</span><span style=color:#75715e></span>    <span style=color:#f92672>}</span>
+
+    Abc<span style=color:#f92672>(){</span>
+        <span style=color:#75715e>// constructor
+</span><span style=color:#75715e></span>    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>class 에서 크게 3가지의 초기화 method를 생각할 수 있다. <code>constructor</code>, <code>static initializer</code>, <code>instance initializer</code> 이다.
+<code>static initializer</code>는 class가 불리는 시점 즉 class loader에서 불릴 때 호출 되는 method 이다.
+Final static 변수를 초기화 해줄 때 로직이 필요하다면 여기서 해주어야 한다.</p>
+<p><code>instance initializer</code>의 경우 생성자와 비슷한데, 컴파일 과정에서 생성자 앞쪽으로 자동으로 복사가 된다. 여러 생성자가 있을 때
+공통되는 로직을 instance initializer로 해놓을 경우 코드 중복을 막을 수 있다.
+3가지 rule이 있는데</p>
+<ol>
+<li>instance initializer는 instance 생성 시에 실행</li>
+<li>super(); 뒤에 실행</li>
+<li><code>{ }</code> 이 여러 개가 있다면 차례 대로 실행</li>
+</ol>
+<p>이다.</p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents></nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

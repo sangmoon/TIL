@@ -1,0 +1,136 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="디자인 패턴에 대해 알아보자">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Design Pattern">
+<meta property="og:description" content="디자인 패턴에 대해 알아보자">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/designpattern/behavioralpatterns/chain-of-responsibility/"><meta property="article:section" content="DesignPattern">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Design Pattern | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Design Pattern</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#chain-of-responsibility>Chain of responsibility</a>
+<ul>
+<li><a href=#intent-br>Intent </a></li>
+<li><a href=#implementation-br>Implementation </a></li>
+<li><a href=#consequences-br>Consequences </a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h2 id=chain-of-responsibility>
+Chain of responsibility
+<a class=anchor href=#chain-of-responsibility>#</a>
+</h2>
+<p>어떤 프로세스가 일어 났을때 그 책임을 적당한 대상한테 넘겨주게 됩니다.
+이 패턴은 하나의 클래스의 인스턴스들 간의 체인이라기보다는 여러 클래스 간에 걸쳐 이루어지는 일이기 때문에 구조가
+다른 클래스에 대해서 낮은 결합도로 동일한 이벤트에 대한 핸들링을 가능하게 한다는 점에서 주목할 만합니다.
+사슬에 들어가는 객체를 바꾸거나 순서를 바꿈으로써 역할을 동적으로 추가/제거 할 수 있습니다.</p>
+<h3 id=intent-br>
+Intent
+<a class=anchor href=#intent-br>#</a>
+</h3>
+<p>둘 이상의 오브젝트에 요청을 처리 할 수있는 기회를 주면 요청 송신자와 수신자를 연결하지 마십시오.
+수신 객체를 연결하고 객체가 처리 할 때까지 체인을 따라 요청을 전달합니다.</p>
+<h3 id=implementation-br>
+Implementation
+<a class=anchor href=#implementation-br>#</a>
+</h3>
+<p>class Handler{
+private int id;
+private Handler nextChain;</p>
+<pre><code>public Handler add(Handler next) {
+	if (!nextChain){
+        nextChain = next;
+	} else {
+        nextChain.add(next);
+	}
+}
+</code></pre>
+<p>}
+// main(client) 에서는 handler의 종류를 알 필요가 없으므로
+// manager class를 두어 chain을 생성하거나, 맨 앞 chain만 외부로 노출시킨다.
+// 하지만 여기선 복잡해져서 그런건 생각하지 않았다</p>
+<h3 id=consequences-br>
+Consequences
+<a class=anchor href=#consequences-br>#</a>
+</h3>
+<ol>
+<li>결합도를 감소시킨다. 이 패턴은 어떤 object가 request를 처리하는지 몰라도 된다.
+모든 object에 대한 참조를 갖지 않고, 하나의 successor에 대한 참조만 하면 된다.</li>
+<li>객체에 책임을 주는데 유연성이 생긴다.</li>
+<li>요청이 수행된다는 보장이 없다.</li>
+<li>처리하는데 걸리는 시간을 정확히 예측할 수 없다.</li>
+</ol>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#chain-of-responsibility>Chain of responsibility</a>
+<ul>
+<li><a href=#intent-br>Intent </a></li>
+<li><a href=#implementation-br>Implementation </a></li>
+<li><a href=#consequences-br>Consequences </a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="자바 잘 짜보자">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Effective Java">
+<meta property="og:description" content="자바 잘 짜보자">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/effectivejava/creatinhanddestoryinhobjects/item5/"><meta property="article:section" content="EffectiveJava">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Effective Java | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Effective Java</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#item-5-prefer-dependency-injection-to-hardwiring-resources>Item 5 Prefer dependency injection to hardwiring resources</a></li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h2 id=item-5-prefer-dependency-injection-to-hardwiring-resources>
+Item 5 Prefer dependency injection to hardwiring resources
+<a class=anchor href=#item-5-prefer-dependency-injection-to-hardwiring-resources>#</a>
+</h2>
+<p>Static utility 클래스와 싱글톤은 리소스에 따라 달라져야하는 클래스에는 적합하지 않다.
+static utility 와 싱글톤은 테스트와도 어울리지 않는다.
+바람직한 방식은 생성자에 인자로써 건내주는 것이다. 이는 Dependency Injection의 한 형태이다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// static utility
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>SpellChecker</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>final</span> Lexicon dictionary <span style=color:#f92672>=</span> <span style=color:#f92672>...;</span>
+    <span style=color:#66d9ef>private</span> <span style=color:#a6e22e>SpellChecker</span><span style=color:#f92672>(){}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// singleton
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>SpellChecker</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>final</span> Lexicon dictionary <span style=color:#f92672>=</span> <span style=color:#f92672>...;</span>
+    <span style=color:#66d9ef>private</span> <span style=color:#a6e22e>SpellChecker</span><span style=color:#f92672>(){}</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> INSTANCE <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> SpellChecker<span style=color:#f92672>(...);</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// DI gives flexibility and testability
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>SpellChecker</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>final</span> Lexicon dictionary <span style=color:#f92672>=</span> <span style=color:#f92672>...;</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>SpellChecker</span><span style=color:#f92672>(</span>Lexicon dictionary<span style=color:#f92672>){</span>
+        <span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>dictionary</span> <span style=color:#f92672>=</span> Objects<span style=color:#f92672>.</span><span style=color:#a6e22e>requireNonNull</span><span style=color:#f92672>(</span>dictionary<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>Depenency Injection은 Immutability(Item 17) 도 만족하기에 client가 같은 객체를 공유할 수 있다.
+도한 생성자, static factories(Item 1), builder(Item 2) 에도 적용할 만하다.</p>
+<p>이 패턴의 또 다른 사용 방식은 생성자에 <code>resource factory</code> 를 넘기는 것이다. java8의 <code>Supplier&lt;T></code> 를 사용하면 딱 좋다. 보통 API에서는 parameterized Type으로 bounded wild card(Item 31) 를 사용하는데, 이는 사용자가 해당 T type을 상속해서 사용할 수 있게 하기 위함이다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>Mosaic <span style=color:#a6e22e>create</span><span style=color:#f92672>(</span>Supplier<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> Tile<span style=color:#f92672>&gt;</span> tileFactory<span style=color:#f92672>){}</span>
+</code></pre></div><p>Dependency Injection이 유연성과 테스트성을 엄청 좋게 하긴하는데, 프로젝트가 커지면 어수선해질 수가 있습니다. 이런 경우 DI framework를 사용하면 모두 제거할 수 있습니다. Dagger, Guice, Spring 같은 녀석이 Framework의 예시입니다.</p>
+<p>요약하면 다른 resource나 클래스의 영향을 받는 녀석들은 Static Util이나 싱글톤으로 만들지 말고 생성자에 인자를 넘기는 방식으로 하는게 좋습니다.</p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#item-5-prefer-dependency-injection-to-hardwiring-resources>Item 5 Prefer dependency injection to hardwiring resources</a></li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

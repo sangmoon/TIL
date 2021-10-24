@@ -1,0 +1,688 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="자바 잘 짜보자">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Effective Java">
+<meta property="og:description" content="자바 잘 짜보자">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/effectivejava/generic/"><meta property="article:section" content="EffectiveJava">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Effective Java | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Effective Java</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#2판의-경우-27-28-29-로-되어-있음>2판의 경우 27, 28 ,29 로 되어 있음</a></li>
+<li><a href=#item-30-favor-generic-methods-가능하면-제네릭-메서드로-만들-것>Item 30: Favor generic methods 가능하면 제네릭 메서드로 만들 것</a>
+<ul>
+<li><a href=#type-parameter에-대한-convention>type parameter에 대한 convention</a></li>
+<li><a href=#제너릭-싱클톤-패턴>제너릭 싱클톤 패턴</a></li>
+<li><a href=#재귀적-자료형-한정rescursive-type-bound>재귀적 자료형 한정(rescursive type bound)</a></li>
+<li><a href=#요약>요약</a></li>
+</ul>
+</li>
+<li><a href=#item-31-use-bounded-wildcards-to-increase-api-flexibility-한정적-와일드카드를-써서-api의-유연성을-높여라>Item 31: Use bounded wildcards to increase API flexibility 한정적 와일드카드를 써서 API의 유연성을 높여라</a>
+<ul>
+<li><a href=#한정적-와일드카드>한정적 와일드카드</a></li>
+<li><a href=#pecs-produce---extends-consumer---super>PECS (Produce - Extends, Consumer - Super)</a></li>
+<li><a href=#return-type-으로--와일드-카드를-쓰지-말-것>return type 으로 와일드 카드를 쓰지 말 것</a></li>
+<li><a href=#명시적-형인자>명시적 형인자</a></li>
+<li><a href=#형인자-vs-와일드카드-에선-와일드카드를-쓰자>형인자 vs 와일드카드 에선 와일드카드를 쓰자</a></li>
+<li><a href=#요약-1>요약</a></li>
+</ul>
+</li>
+<li><a href=#item-32-combine-generics-and-varargs-judiciously-generic-과-다인자변수를-잘-조합하자>Item 32: Combine generics and varargs judiciously generic 과 다인자변수를 잘 조합하자</a>
+<ul>
+<li></li>
+</ul>
+</li>
+<li><a href=#item-33-consider-typesafe-heterogeneous-containers-형-안전-다형성-컨테이너를-쓰면-어떨지-따져보라>Item 33: Consider typesafe heterogeneous containers 형 안전 다형성 컨테이너를 쓰면 어떨지 따져보라</a>
+<ul>
+<li><a href=#해결책>해결책</a></li>
+<li><a href=#한정적-자료형-토큰bound-type-parameter>한정적 자료형 토큰(bound type parameter)</a></li>
+<li><a href=#요오오오약>요오오오약</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h1 id=generics>
+Generics
+<a class=anchor href=#generics>#</a>
+</h1>
+<h2 id=2판의-경우-27-28-29-로-되어-있음>
+2판의 경우 27, 28 ,29 로 되어 있음
+<a class=anchor href=#2%ed%8c%90%ec%9d%98-%ea%b2%bd%ec%9a%b0-27-28-29-%eb%a1%9c-%eb%90%98%ec%96%b4-%ec%9e%88%ec%9d%8c>#</a>
+</h2>
+<h2 id=item-30-favor-generic-methods-가능하면-제네릭-메서드로-만들-것>
+Item 30: Favor generic methods 가능하면 제네릭 메서드로 만들 것
+<a class=anchor href=#item-30-favor-generic-methods-%ea%b0%80%eb%8a%a5%ed%95%98%eb%a9%b4-%ec%a0%9c%eb%84%a4%eb%a6%ad-%eb%a9%94%ec%84%9c%eb%93%9c%eb%a1%9c-%eb%a7%8c%eb%93%a4-%ea%b2%83>#</a>
+</h2>
+<p>클래스가 generic 일 수 있는 것 처럼 method 도 generic 할 수 있음
+예를 들어 collections 에 있는 알고리즘 관련 method(sort, binarysearch) 는 generic 하다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// use raw types - 문제 있음
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> Set <span style=color:#a6e22e>union</span><span style=color:#f92672>(</span>Set s1<span style=color:#f92672>,</span> Set s2<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    <span style=color:#75715e>// Warning! HashSet(Collection&lt;? extends E&gt;)
+</span><span style=color:#75715e></span>    Set result <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> HashSet<span style=color:#f92672>(</span>s1<span style=color:#f92672>);</span>
+    <span style=color:#75715e>// Warning! result.addAll(Collections&lt;? extends E&gt;)
+</span><span style=color:#75715e></span>    result<span style=color:#f92672>.</span><span style=color:#a6e22e>addAll</span><span style=color:#f92672>(</span>s2<span style=color:#f92672>);</span>
+    <span style=color:#66d9ef>return</span> result<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><ul>
+<li><code>형인자 목록(type parameter list)</code> 는 접근 제어자와 return type 사이에 위치</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> Set<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>union</span><span style=color:#f92672>(</span>Set<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> s1<span style=color:#f92672>,</span> Set<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> s2<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    Set<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> result <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> HashSet<span style=color:#f92672>(</span>s1<span style=color:#f92672>);</span>
+    result<span style=color:#f92672>.</span><span style=color:#a6e22e>addAll</span><span style=color:#f92672>(</span>s2<span style=color:#f92672>);</span>
+    <span style=color:#66d9ef>return</span> result<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#75715e>// client 잘 동작함!
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span><span style=color:#f92672>(</span>String<span style=color:#f92672>[]</span> args<span style=color:#f92672>){</span>
+    Set<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> guys <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> HashSet<span style=color:#f92672>&lt;&gt;(</span>Arrays<span style=color:#f92672>.</span><span style=color:#a6e22e>asList</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;Tom&#34;</span><span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;Dean&#34;</span><span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;Harry&#34;</span><span style=color:#f92672>));</span>
+    Set<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> stooges <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> HashSet<span style=color:#f92672>&lt;&gt;(</span>Arrays<span style=color:#f92672>.</span><span style=color:#a6e22e>asList</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;Larry&#34;</span><span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;Moe&#34;</span><span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;Curly&#34;</span><span style=color:#f92672>));</span>
+    Set<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> aflCio <span style=color:#f92672>=</span> union<span style=color:#f92672>(</span>guys<span style=color:#f92672>,</span> stooges<span style=color:#f92672>);</span>
+    System<span style=color:#f92672>.</span><span style=color:#a6e22e>out</span><span style=color:#f92672>.</span><span style=color:#a6e22e>println</span><span style=color:#f92672>(</span>aflCio<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>위의 union의 단점은 input set 2개와 output이 정확히 같은 타입이라는 것(<code>T</code>)
+<code>bounded wildcard type</code> 을 사용해서 좀 더 유연하게 구연 가능 뒤에 나옴</p>
+<h3 id=type-parameter에-대한-convention>
+type parameter에 대한 convention
+<a class=anchor href=#type-parameter%ec%97%90-%eb%8c%80%ed%95%9c-convention>#</a>
+</h3>
+<ul>
+<li><code>T</code> (임의의 타입)</li>
+<li><code>E</code> (collection의 element)</li>
+<li><code>K,V</code> (key, value)</li>
+<li><code>X</code> (exception)</li>
+<li><code>R</code> (function의 return type)</li>
+<li><code>T, U, V</code> || <code>T1, T2, T3</code> (연속된 임의의 타입)</li>
+</ul>
+<h3 id=제너릭-싱클톤-패턴>
+제너릭 싱클톤 패턴
+<a class=anchor href=#%ec%a0%9c%eb%84%88%eb%a6%ad-%ec%8b%b1%ed%81%b4%ed%86%a4-%ed%8c%a8%ed%84%b4>#</a>
+</h3>
+<p>변경이 불가능하지만 많은 자료형에 적용 가능한 객체를 만들어야 할 때가 있다.
+모든 필요한 형인자화 과정에서 동일 객체를 활용할 수 있는데, 그러려면 우선 필요한 형인자화 과정 마다 같은 객체를 나눠주는 정적 팩토리 메서드 필요 </p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> UnaryOperator<span style=color:#f92672>&lt;</span>Object<span style=color:#f92672>&gt;</span> IDENTITY_FN <span style=color:#f92672>=</span> t <span style=color:#f92672>-&gt;</span> t<span style=color:#f92672>;</span>
+
+<span style=color:#75715e>//IDENTITY_FN 은 stateless 객체이고 형인자는 unbounded 이므로 모든 자료형이 같은 객체를 공유해도 된다.
+</span><span style=color:#75715e>// 팩토리 메소드
+</span><span style=color:#75715e></span><span style=color:#a6e22e>@SuppressWarnings</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;unchecked&#34;</span><span style=color:#f92672>)</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> UnaryOperator<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>identityFunction</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>return</span> <span style=color:#f92672>(</span>UnaryOperator<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;)</span> IDENTITY_FN<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p><code>UnaryOperator&lt;Object></code> 를 <code>UnaryOperator&lt;T></code> 로 캐스팅 하는 부분에서 warning 발생하지만
+항등함수는 특별히 인자를 수정없이 반환하므로 형 안정성이 보장</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span><span style=color:#f92672>(</span>String<span style=color:#f92672>[]</span> args<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    String <span style=color:#f92672>[]</span> strings <span style=color:#f92672>=</span> <span style=color:#f92672>{</span><span style=color:#e6db74>&#34;jute&#34;</span><span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;hemp&#34;</span><span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;nylon&#34;</span><span style=color:#f92672>};</span>
+    UnaryOperator<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> sameString <span style=color:#f92672>=</span> identityFunction<span style=color:#f92672>();</span> <span style=color:#75715e>//같은 IDENTITY_FN 객체 사용
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>for</span><span style=color:#f92672>(</span>String s<span style=color:#f92672>:</span> strings<span style=color:#f92672>){</span>
+        System<span style=color:#f92672>.</span><span style=color:#a6e22e>out</span><span style=color:#f92672>.</span><span style=color:#a6e22e>println</span><span style=color:#f92672>(</span>sameString<span style=color:#f92672>.</span><span style=color:#a6e22e>apply</span><span style=color:#f92672>(</span>s<span style=color:#f92672>));</span>
+    <span style=color:#f92672>}</span>
+
+    Number<span style=color:#f92672>[]</span> numbers <span style=color:#f92672>=</span> <span style=color:#f92672>{</span>1<span style=color:#f92672>,</span> 2<span style=color:#f92672>.</span><span style=color:#a6e22e>0</span><span style=color:#f92672>,</span> 3l<span style=color:#f92672>};</span>
+    UnaryOperator<span style=color:#f92672>&lt;</span>Number<span style=color:#f92672>&gt;</span> sameNumber <span style=color:#f92672>=</span> identityFunction<span style=color:#f92672>();</span>
+    <span style=color:#66d9ef>for</span><span style=color:#f92672>(</span>Number n<span style=color:#f92672>:</span> numbers<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        System<span style=color:#f92672>.</span><span style=color:#a6e22e>out</span><span style=color:#f92672>.</span><span style=color:#a6e22e>println</span><span style=color:#f92672>(</span>sameNumber<span style=color:#f92672>.</span><span style=color:#a6e22e>apply</span><span style=color:#f92672>(</span>n<span style=color:#f92672>));</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>이 패턴은 함수객체 구현에 많이 쓰임</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>//Collections.java
+</span><span style=color:#75715e>// 예시 Arrays.sort(a, Collections.reverseOrder());
+</span><span style=color:#75715e></span><span style=color:#a6e22e>@SuppressWarnings</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;unchecked&#34;</span><span style=color:#f92672>)</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> Comparator<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>reverseOrder</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>return</span> <span style=color:#f92672>(</span>Comparator<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;)</span> ReverseComparator<span style=color:#f92672>.</span><span style=color:#a6e22e>REVERSE_ORDER</span><span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#75715e>/// 중략 ...
+</span><span style=color:#75715e></span>
+<span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ReverseComparator</span>
+    <span style=color:#66d9ef>implements</span> Comparator<span style=color:#f92672>&lt;</span>Comparable<span style=color:#f92672>&lt;</span>Object<span style=color:#f92672>&gt;&gt;,</span> Serializable <span style=color:#f92672>{</span>
+
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>final</span> <span style=color:#66d9ef>long</span> serialVersionUID <span style=color:#f92672>=</span> 7207038068494060240L<span style=color:#f92672>;</span>
+
+    <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>final</span> ReverseComparator REVERSE_ORDER
+        <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> ReverseComparator<span style=color:#f92672>();</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>compare</span><span style=color:#f92672>(</span>Comparable<span style=color:#f92672>&lt;</span>Object<span style=color:#f92672>&gt;</span> c1<span style=color:#f92672>,</span> Comparable<span style=color:#f92672>&lt;</span>Object<span style=color:#f92672>&gt;</span> c2<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>return</span> c2<span style=color:#f92672>.</span><span style=color:#a6e22e>compareTo</span><span style=color:#f92672>(</span>c1<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#66d9ef>private</span> Object <span style=color:#a6e22e>readResolve</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span> <span style=color:#66d9ef>return</span> Collections<span style=color:#f92672>.</span><span style=color:#a6e22e>reverseOrder</span><span style=color:#f92672>();</span> <span style=color:#f92672>}</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> Comparator<span style=color:#f92672>&lt;</span>Comparable<span style=color:#f92672>&lt;</span>Object<span style=color:#f92672>&gt;&gt;</span> <span style=color:#a6e22e>reversed</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>return</span> Comparator<span style=color:#f92672>.</span><span style=color:#a6e22e>naturalOrder</span><span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h3 id=재귀적-자료형-한정rescursive-type-bound>
+재귀적 자료형 한정(rescursive type bound)
+<a class=anchor href=#%ec%9e%ac%ea%b7%80%ec%a0%81-%ec%9e%90%eb%a3%8c%ed%98%95-%ed%95%9c%ec%a0%95rescursive-type-bound>#</a>
+</h3>
+<p>형인자가 포함된 표현식으로 형인자를 한정할 수 있다.
+<code>Comparable</code> 인터페이스와 흔히 쓰인다</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Comparable</span><span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>compareTo</span><span style=color:#f92672>(</span>T o<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>정렬, 탐색, 최대 최소값 method 들은 컬렉션 내 원소들이 서로 비교 가능해야 한다.
+이러한 작업이 가능하려면 Comparable을 구현한 원소들의 컬랙션을 인자로 받아야 한다.
+아래 표현은 &ldquo;자기 자신과 비교가능한 모든 자료형 T&rdquo; 를 나타낸다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#f92672>&lt;</span>E <span style=color:#66d9ef>extends</span> Comparable<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;&gt;</span> E <span style=color:#a6e22e>max</span><span style=color:#f92672>(</span>Collection<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> c<span style=color:#f92672>){...}</span>
+</code></pre></div><blockquote>
+<p>E 는 <code>compareTo(E o)</code> 를 구현했음을 보장한다.</p>
+</blockquote>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#f92672>&lt;</span>E <span style=color:#66d9ef>extends</span> Comparable<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;&gt;</span> E <span style=color:#a6e22e>max</span><span style=color:#f92672>(</span>Collection<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> c<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>c<span style=color:#f92672>.</span><span style=color:#a6e22e>isEmpty</span><span style=color:#f92672>())</span>
+            <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> IllegalArgumentException<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;Empty collection&#34;</span><span style=color:#f92672>);</span>
+
+        E result <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+        <span style=color:#66d9ef>for</span> <span style=color:#f92672>(</span>E e <span style=color:#f92672>:</span> c<span style=color:#f92672>){</span>
+            <span style=color:#66d9ef>if</span><span style=color:#f92672>(</span>result <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>||</span> e<span style=color:#f92672>.</span><span style=color:#a6e22e>compareTo</span><span style=color:#f92672>(</span>result<span style=color:#f92672>)</span> <span style=color:#f92672>&gt;</span> 0<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+                result <span style=color:#f92672>=</span> e<span style=color:#f92672>;</span>
+            <span style=color:#f92672>}</span>
+        <span style=color:#f92672>}</span>
+        <span style=color:#66d9ef>return</span> result<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+</code></pre></div><p>이 보다 복잡한 건 뒤에서&mldr;</p>
+<h3 id=요약>
+요약
+<a class=anchor href=#%ec%9a%94%ec%95%bd>#</a>
+</h3>
+<ul>
+<li>제네릭 자료형과 마찬가지로 제네릭 메서드는 클라이언트가 직접 형변환 해야하는 메서드 보다 사용하기 쉽고 안정성 높음</li>
+<li>새로운 메서드 고안할 때는 형변환 없이도 사용할 수 있는지 판단해라</li>
+<li>시간 날 때 기존 메서드 제네릭하게 바꾸면 기존 클라이언트와 호환되면서 더 좋은 API 제공 가능</li>
+</ul>
+<h2 id=item-31-use-bounded-wildcards-to-increase-api-flexibility-한정적-와일드카드를-써서-api의-유연성을-높여라>
+Item 31: Use bounded wildcards to increase API flexibility 한정적 와일드카드를 써서 API의 유연성을 높여라
+<a class=anchor href=#item-31-use-bounded-wildcards-to-increase-api-flexibility-%ed%95%9c%ec%a0%95%ec%a0%81-%ec%99%80%ec%9d%bc%eb%93%9c%ec%b9%b4%eb%93%9c%eb%a5%bc-%ec%8d%a8%ec%84%9c-api%ec%9d%98-%ec%9c%a0%ec%97%b0%ec%84%b1%ec%9d%84-%eb%86%92%ec%97%ac%eb%9d%bc>#</a>
+</h2>
+<p>앞에서 했다시피 형인자 자료형(prameterized types) 는 불변형.
+때로는 불변 자료형 보다 유연한 자료형이 필요 할 수 있다. 이때 와일드 카드를 사용하자.</p>
+<h3 id=한정적-와일드카드>
+한정적 와일드카드
+<a class=anchor href=#%ed%95%9c%ec%a0%95%ec%a0%81-%ec%99%80%ec%9d%bc%eb%93%9c%ec%b9%b4%eb%93%9c>#</a>
+</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// 스택 API
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Stack</span><span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>Stack</span><span style=color:#f92672>();</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>push</span><span style=color:#f92672>(</span>E e<span style=color:#f92672>);</span>
+    <span style=color:#66d9ef>public</span> E <span style=color:#a6e22e>pop</span><span style=color:#f92672>();</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>isEmpty</span><span style=color:#f92672>();</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>엘리먼트 집합 받아서 다 stack 에 넣는 pushAll 을 생각해보자</p>
+<h4 id=생산자-문제>
+생산자 문제
+<a class=anchor href=#%ec%83%9d%ec%82%b0%ec%9e%90-%eb%ac%b8%ec%a0%9c>#</a>
+</h4>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// producer.. 문제!
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>pushAll</span><span style=color:#f92672>(</span>Iterable<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> src<span style=color:#f92672>){</span>
+    <span style=color:#66d9ef>for</span><span style=color:#f92672>(</span>E e<span style=color:#f92672>:</span> src<span style=color:#f92672>){</span>
+        push<span style=color:#f92672>(</span>e<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>실제 하려고 하면 컴파일 에러&mldr;</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span><span style=color:#f92672>(</span>String<span style=color:#f92672>[]</span> args<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    WildcardStack<span style=color:#f92672>&lt;</span>Number<span style=color:#f92672>&gt;</span> ws <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> WildcardStack<span style=color:#f92672>&lt;&gt;();</span>
+    Iterable<span style=color:#f92672>&lt;</span>Integer<span style=color:#f92672>&gt;</span> integers <span style=color:#f92672>=</span> Arrays<span style=color:#f92672>.</span><span style=color:#a6e22e>asList</span><span style=color:#f92672>(</span>1<span style=color:#f92672>,</span>2<span style=color:#f92672>,</span>3<span style=color:#f92672>,</span>4<span style=color:#f92672>,</span>5<span style=color:#f92672>);</span>
+    ws<span style=color:#f92672>.</span><span style=color:#a6e22e>push</span><span style=color:#f92672>(</span>1<span style=color:#f92672>);</span> <span style=color:#75715e>//OK
+</span><span style=color:#75715e></span>    ws<span style=color:#f92672>.</span><span style=color:#a6e22e>pushAll</span><span style=color:#f92672>(</span>integers<span style=color:#f92672>);</span> <span style=color:#75715e>//compile error incompatible types..
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// Iterable&lt;Integer&gt; is not subtype of Iterable&lt;Number&gt; ...
+</span><span style=color:#75715e></span><span style=color:#f92672>}</span>
+</code></pre></div><p>Integer 는 Number의 하위 타입이지만 Iterable 는 Iterable 의 하위 타입(subtype)이 아니기 때문
+<code>한정적 와일드카드 자료형 (bounded wildcard type)</code> 을 활용하면 해결</p>
+<ul>
+<li><code>Iterable&lt;E></code> -> E 의 Iterable</li>
+<li><code>Iterable&lt;? exends E></code> -> E 의 하위 자료형의 Iterable</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>pushAll</span><span style=color:#f92672>(</span>Iterable<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> E<span style=color:#f92672>&gt;</span> src<span style=color:#f92672>){</span>
+    <span style=color:#66d9ef>for</span><span style=color:#f92672>(</span>E e<span style=color:#f92672>:</span> src<span style=color:#f92672>){</span>
+        push<span style=color:#f92672>(</span>e<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h4 id=소비자-문제>
+소비자 문제
+<a class=anchor href=#%ec%86%8c%eb%b9%84%ec%9e%90-%eb%ac%b8%ec%a0%9c>#</a>
+</h4>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// consumer... 문제!
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>popAll</span><span style=color:#f92672>(</span>Collection<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> dst<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>while</span><span style=color:#f92672>(!</span>isEmpty<span style=color:#f92672>())</span> <span style=color:#f92672>{</span>
+        dst<span style=color:#f92672>.</span><span style=color:#a6e22e>add</span><span style=color:#f92672>(</span>pop<span style=color:#f92672>());</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span><span style=color:#f92672>(</span>String<span style=color:#f92672>[]</span> args<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    WildcardStack<span style=color:#f92672>&lt;</span>Number<span style=color:#f92672>&gt;</span> ws <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> WildcardStack<span style=color:#f92672>&lt;&gt;();</span>
+    Iterable<span style=color:#f92672>&lt;</span>Integer<span style=color:#f92672>&gt;</span> integers <span style=color:#f92672>=</span> Arrays<span style=color:#f92672>.</span><span style=color:#a6e22e>asList</span><span style=color:#f92672>(</span>1<span style=color:#f92672>,</span>2<span style=color:#f92672>,</span>3<span style=color:#f92672>,</span>4<span style=color:#f92672>,</span>5<span style=color:#f92672>);</span>
+
+    Collection<span style=color:#f92672>&lt;</span>Object<span style=color:#f92672>&gt;</span>  objects <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> ArrayList<span style=color:#f92672>&lt;&gt;();</span>
+    ws<span style=color:#f92672>.</span><span style=color:#a6e22e>popAll</span><span style=color:#f92672>(</span>objects<span style=color:#f92672>);</span> <span style=color:#75715e>// 컴파일 에러
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// Collection&lt;Object&gt; is not subtype of Collection&lt;Number&gt;
+</span><span style=color:#75715e></span><span style=color:#f92672>}</span>
+</code></pre></div><p>이 때는 E의 컬렉션이 아니라 E의 상위 자료형(supertpye) 컬렉션 이라고 해야 한다.</p>
+<ul>
+<li><code>Collection&lt;E></code> -> E의 컬렉션</li>
+<li><code>Collection&lt;? super E></code> -> E의 상위 타입의 컬렉션</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>popAll</span><span style=color:#f92672>(</span>Collection<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>super</span> E<span style=color:#f92672>&gt;</span> dst<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>while</span><span style=color:#f92672>(!</span>isEmpty<span style=color:#f92672>())</span> <span style=color:#f92672>{</span>
+        dst<span style=color:#f92672>.</span><span style=color:#a6e22e>add</span><span style=color:#f92672>(</span>pop<span style=color:#f92672>());</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><ul>
+<li>객체의 생산자나 소비자 역할을 하는 메서드 인자의 자료형은 와일드카드로 해라</li>
+<li>둘을 동시에 하는 메서드 인자는 와일드 카드 무쓸모 자료형이 정확히 일치해야 하기 때문</li>
+</ul>
+<h3 id=pecs-produce---extends-consumer---super>
+PECS (Produce - Extends, Consumer - Super)
+<a class=anchor href=#pecs-produce---extends-consumer---super>#</a>
+</h3>
+<ul>
+<li>인자가 T 생산자 라면 <code>&lt;? extends T></code>, T 소비자라면 <code>&lt;? super T></code></li>
+</ul>
+<p>Stack 예를 들자면 pushAll의 인자 src 는 스택에 사용될 E 형의 객체 만드는 생산자이므로 extends
+<code>public void pushAll(Iterable&lt;? extends E> src)</code> </p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>E a <span style=color:#f92672>=</span> <span style=color:#f92672>?</span> producer<span style=color:#f92672>;</span>
+</code></pre></div><p>popAll 의 인자 dst 는 스택 내의 객체를 소비하므로 super..
+<code>public void popAll(Collection&lt;? super E> dst)</code> </p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#f92672>?</span> consumer <span style=color:#f92672>=</span> E a<span style=color:#f92672>;</span>
+</code></pre></div><p>앞서 했던 <code>union(Set&lt;E> e1, Set&lt;E> e2)</code> method 는 producer 이므로
+<code>union(Set&lt;? extends E> e1, Set&lt;? extends E> e2)</code> 로 하는게 좋다.</p>
+<h3 id=return-type-으로--와일드-카드를-쓰지-말-것>
+return type 으로 와일드 카드를 쓰지 말 것
+<a class=anchor href=#return-type-%ec%9c%bc%eb%a1%9c--%ec%99%80%ec%9d%bc%eb%93%9c-%ec%b9%b4%eb%93%9c%eb%a5%bc-%ec%93%b0%ec%a7%80-%eb%a7%90-%ea%b2%83>#</a>
+</h3>
+<p>반환형으로 와일드카드가 나가면 사용자가 명시적 형변환을 해주어야 한다. 적절히만 쓰면 와일드 카드 자료형이 쓰인 것은
+사용자에게 거의 노출되지 않음.</p>
+<blockquote>
+<p>사용자가 와일드카드에 대해 고민한다면 클래스 API 설계가 잘못된 것이다.</p>
+</blockquote>
+<h3 id=명시적-형인자>
+명시적 형인자
+<a class=anchor href=#%eb%aa%85%ec%8b%9c%ec%a0%81-%ed%98%95%ec%9d%b8%ec%9e%90>#</a>
+</h3>
+<p>위의 union 함수를 실제로 쓰면 컴파일 에러 발생 (java8 부턴 컴파일러 똑똑해져서 됨)</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>Set<span style=color:#f92672>&lt;</span>Integer<span style=color:#f92672>&gt;</span> integers <span style=color:#f92672>=</span> <span style=color:#f92672>...;</span>
+Set<span style=color:#f92672>&lt;</span>Double<span style=color:#f92672>&gt;</span> doubles <span style=color:#f92672>=</span> <span style=color:#f92672>...;</span>
+Set<span style=color:#f92672>&lt;</span>Number<span style=color:#f92672>&gt;</span> numbers <span style=color:#f92672>=</span> union<span style=color:#f92672>(</span>integers<span style=color:#f92672>,</span> doubles<span style=color:#f92672>);</span>
+<span style=color:#75715e>// return type 추측을 못함...
+</span><span style=color:#75715e></span>
+Set<span style=color:#f92672>&lt;</span>Number<span style=color:#f92672>&gt;</span> numbers <span style=color:#f92672>=</span> Uniom<span style=color:#f92672>.&lt;</span>Number<span style=color:#f92672>&gt;</span>union<span style=color:#f92672>(</span>integers<span style=color:#f92672>,</span> doubles<span style=color:#f92672>);</span> <span style=color:#75715e>// 명시적 형인자 전달
+</span></code></pre></div><p>앞서 했던 max 는 다음과 같이 고칠 수 있다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#f92672>&lt;</span>T <span style=color:#66d9ef>extends</span> Comparable<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>super</span> T<span style=color:#f92672>&gt;&gt;</span> T <span style=color:#a6e22e>max</span><span style=color:#f92672>(</span>Collection<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> T<span style=color:#f92672>&gt;</span> c<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>c<span style=color:#f92672>.</span><span style=color:#a6e22e>isEmpty</span><span style=color:#f92672>())</span>
+            <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> IllegalArgumentException<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;Empty collection&#34;</span><span style=color:#f92672>);</span>
+
+        T result <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+        <span style=color:#66d9ef>for</span> <span style=color:#f92672>(</span>T t <span style=color:#f92672>:</span> c<span style=color:#f92672>){</span>
+            <span style=color:#66d9ef>if</span><span style=color:#f92672>(</span>result <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>||</span> t<span style=color:#f92672>.</span><span style=color:#a6e22e>compareTo</span><span style=color:#f92672>(</span>result<span style=color:#f92672>)</span> <span style=color:#f92672>&gt;</span> 0<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+                result <span style=color:#f92672>=</span> t<span style=color:#f92672>;</span>
+            <span style=color:#f92672>}</span>
+        <span style=color:#f92672>}</span>
+        <span style=color:#66d9ef>return</span> result<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+</code></pre></div><p>2번 PECS 적용</p>
+<ul>
+<li>argument c에 적용한 것은 직관적. T 객체의 생산자 이므로</li>
+<li><code>Comparable&lt;T></code> 는 언제나 T 인자를 소비해서 int 값을 반환함 따라서 consumer 니까 super 로 해야 함 . Comparable 과 Comparator는 모두 comsumer!
+책의 예시로는 <code>ScheduledFuture&lt;?></code> 나옴. 이 인터페이스는 Future와 Delayed 인터페이스를 상속받는데
+Delayed 인터페이스가 Comparable 을 extends 하고 있음. 즉 <code>&lt;T extends Comparable&lt;T>></code> 이거로는 <code>&lt;ScheduledFuture extends Comparable&lt;ScheduledFuture>></code>
+이걸 추론할 수 있고 <code>&lt;T extends Comparable&lt;? super T>></code> 이거로는 <code>&lt;ScheduledFuture extends Comparable&lt;Delayed (super ScheduledFuture)>></code>
+를 추론 할 수 있다.</li>
+</ul>
+<h3 id=형인자-vs-와일드카드-에선-와일드카드를-쓰자>
+형인자 vs 와일드카드 에선 와일드카드를 쓰자
+<a class=anchor href=#%ed%98%95%ec%9d%b8%ec%9e%90-vs-%ec%99%80%ec%9d%bc%eb%93%9c%ec%b9%b4%eb%93%9c-%ec%97%90%ec%84%a0-%ec%99%80%ec%9d%bc%eb%93%9c%ec%b9%b4%eb%93%9c%eb%a5%bc-%ec%93%b0%ec%9e%90>#</a>
+</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>swap</span><span style=color:#f92672>(</span>List<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> list<span style=color:#f92672>,</span> <span style=color:#66d9ef>int</span> i<span style=color:#f92672>,</span> <span style=color:#66d9ef>int</span> j<span style=color:#f92672>);</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>swap</span><span style=color:#f92672>(</span>List<span style=color:#f92672>&lt;?&gt;</span> list<span style=color:#f92672>,</span> <span style=color:#66d9ef>int</span> i <span style=color:#f92672>,</span><span style=color:#66d9ef>int</span> j<span style=color:#f92672>);</span>
+</code></pre></div><p>많은 method 가 형인자 형태와 와일드카드 형태 두가지로 표현 가능
+public API 에서는 와일드카드가 좋음. 간단하기 때문에.</p>
+<blockquote>
+<p>형인자가 메소드 선언에서만 나타나면 와일드카드로 바꾸자</p>
+</blockquote>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// 문제 있음
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>swap</span><span style=color:#f92672>(</span>List<span style=color:#f92672>&lt;?&gt;</span> list<span style=color:#f92672>,</span> <span style=color:#66d9ef>int</span> i<span style=color:#f92672>,</span> <span style=color:#66d9ef>int</span> j<span style=color:#f92672>){</span>
+    list<span style=color:#f92672>.</span><span style=color:#a6e22e>set</span><span style=color:#f92672>(</span>i<span style=color:#f92672>,</span> list<span style=color:#f92672>.</span><span style=color:#a6e22e>set</span><span style=color:#f92672>(</span>j<span style=color:#f92672>,</span> list<span style=color:#f92672>.</span><span style=color:#a6e22e>get</span><span style=color:#f92672>(</span>i<span style=color:#f92672>)));</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>컴파일 에러 발생. List&lt;?> 에는 null 말고 어떤 것도 넣을 수 없기 때문
+해결 방법으로 helper method 에서 타입 추론 도와주도록 함</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>swap</span><span style=color:#f92672>(</span>List<span style=color:#f92672>&lt;?&gt;</span> list<span style=color:#f92672>,</span> <span style=color:#66d9ef>int</span> i<span style=color:#f92672>,</span> <span style=color:#66d9ef>int</span> j<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    swapHelper<span style=color:#f92672>(</span>list<span style=color:#f92672>,</span> i<span style=color:#f92672>,</span> j<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> <span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>swapHelper</span><span style=color:#f92672>(</span>List<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> list<span style=color:#f92672>,</span> <span style=color:#66d9ef>int</span> i<span style=color:#f92672>,</span> <span style=color:#66d9ef>int</span> j<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    list<span style=color:#f92672>.</span><span style=color:#a6e22e>set</span><span style=color:#f92672>(</span>i<span style=color:#f92672>,</span> list<span style=color:#f92672>.</span><span style=color:#a6e22e>set</span><span style=color:#f92672>(</span>j<span style=color:#f92672>,</span> list<span style=color:#f92672>.</span><span style=color:#a6e22e>get</span><span style=color:#f92672>(</span>i<span style=color:#f92672>)));</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h3 id=요약-1>
+요약
+<a class=anchor href=#%ec%9a%94%ec%95%bd-1>#</a>
+</h3>
+<ul>
+<li>와일드카드 쓰면 좀 더 유연한 API 구현 가능</li>
+<li>널리 쓰일 라이브러리라면 필수적으로 고려해야 한다</li>
+<li>PECS 암기하자 암기하자</li>
+<li>모든 Comparable 과 Comparator 는 Consumer 이다</li>
+</ul>
+<h2 id=item-32-combine-generics-and-varargs-judiciously-generic-과-다인자변수를-잘-조합하자>
+Item 32: Combine generics and varargs judiciously generic 과 다인자변수를 잘 조합하자
+<a class=anchor href=#item-32-combine-generics-and-varargs-judiciously-generic-%ea%b3%bc-%eb%8b%a4%ec%9d%b8%ec%9e%90%eb%b3%80%ec%88%98%eb%a5%bc-%ec%9e%98-%ec%a1%b0%ed%95%a9%ed%95%98%ec%9e%90>#</a>
+</h2>
+<p>varargs 는 method args 를 다인자로 받을 수 있게 한 것</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>func</span><span style=color:#f92672>(</span><span style=color:#66d9ef>int</span><span style=color:#f92672>...</span> ints<span style=color:#f92672>);</span>
+
+<span style=color:#75715e>//client
+</span><span style=color:#75715e></span>func<span style=color:#f92672>(</span>1<span style=color:#f92672>,</span>2<span style=color:#f92672>,</span>3<span style=color:#f92672>,</span>4<span style=color:#f92672>);</span>
+</code></pre></div><p>내부적으로 인자를 <code>array</code> 에 보관. 인자가 generic 이면 Heap Pollution 문제 생길 수 있다.</p>
+<ul>
+<li>Heap Pollution : 형인자 자료형 변수가 형인자 자료형이 아닌 객체를 참조할 때 상황.. runtime 에서 <code>ClassCastException</code> 날 가능성 높음.</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>dangerous</span><span style=color:#f92672>(</span>List<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;...</span> stringLists<span style=color:#f92672>){</span> <span style=color:#75715e>// 형인자 자료형 array 가 생겨서 heap pollution
+</span><span style=color:#75715e></span>    List<span style=color:#f92672>&lt;</span>Integer<span style=color:#f92672>&gt;</span> intList <span style=color:#f92672>=</span> Arrays<span style=color:#f92672>.</span><span style=color:#a6e22e>asList</span><span style=color:#f92672>(</span>42<span style=color:#f92672>,</span> 11<span style=color:#f92672>);</span>
+    Object<span style=color:#f92672>[]</span> objects <span style=color:#f92672>=</span> stringLists<span style=color:#f92672>;</span>
+    objects<span style=color:#f92672>[</span>0<span style=color:#f92672>]</span> <span style=color:#f92672>=</span> intList<span style=color:#f92672>;</span>
+    String s <span style=color:#f92672>=</span> stringLists<span style=color:#f92672>[</span>0<span style=color:#f92672>].</span><span style=color:#a6e22e>get</span><span style=color:#f92672>(</span>0<span style=color:#f92672>);</span> <span style=color:#75715e>// ClassCastException 발생
+</span><span style=color:#75715e></span><span style=color:#f92672>}</span>
+
+<span style=color:#75715e>// client
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span><span style=color:#f92672>(</span>String<span style=color:#f92672>...</span> args<span style=color:#f92672>){</span>
+    dangerous<span style=color:#f92672>(</span>Arrays<span style=color:#f92672>.</span><span style=color:#a6e22e>asList</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;a&#34;</span><span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;b&#34;</span><span style=color:#f92672>),</span> Arrays<span style=color:#f92672>.</span><span style=color:#a6e22e>asList</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;c&#34;</span><span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;d&#34;</span><span style=color:#f92672>));</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><ul>
+<li>generic varargs array parameter 에 값 저장하는 건 좋지 않다.</li>
+</ul>
+<p>의문 1 : generic array 만드는 건 못하게 하면서 method 에 generic varargs parameter 허용하는 이유는??</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>List<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;[]</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> ArrayList<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;[</span>10<span style=color:#f92672>];</span> <span style=color:#75715e>// 불가능 error
+</span><span style=color:#75715e></span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>dangerous</span><span style=color:#f92672>(</span>List<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;...</span> stringLists<span style=color:#f92672>){</span> <span style=color:#f92672>...}</span> <span style=color:#75715e>//가능 warning
+</span></code></pre></div><p>위험을 감수하고 서라도 유용할 때가 있어서 java 언어 설계자들이 남겨둠
+Java library 들은 generic + varargs 이미 많이 쓰고 있다. Arrays.asList(T&mldr; a), Collections.addAll(Collection&lt;? super T> c) 등등.
+이 Method 들은 typesafe 하다.</p>
+<p>method를 typesafe 하게 만들었어도 java 7 이전에는 warning 무시하던지, 호출할 때마다 <code>@SuppressWarnings("unchecked")</code> 붙여야 했다.
+java7 에 <code>@SafeVarags</code> 어노테이션 나와서 method 선언부에 붙여주면 warning은 안 뜬다. 중요한 건 정말 typesafe 할 때만 붙여주어야 한다는 것. </p>
+<h4 id=typesafe-조건>
+typesafe 조건
+<a class=anchor href=#typesafe-%ec%a1%b0%ea%b1%b4>#</a>
+</h4>
+<ol>
+<li>generic varargs array에 아무 것도 새로 저장하지 말 것(overwrite 하지 말 것)</li>
+<li>그 array의 reference 를 method 밖으로 노출시키지 말 것(해당 method 외의 다른 code 가 1번을 위반할 수 있다)</li>
+</ol>
+<p>typesafe 의 예
+input 으로 들어온 리스트의 배열의 원소들을 하나의 리스트로 만들어서 내보냄. </p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@SafeVarargs</span>
+<span style=color:#66d9ef>static</span> <span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> List<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>flatten</span><span style=color:#f92672>(</span>List<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> T<span style=color:#f92672>&gt;...</span> Lists<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    List<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> result <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> ArrayList<span style=color:#f92672>&lt;&gt;();</span>
+    <span style=color:#66d9ef>for</span><span style=color:#f92672>(</span>List<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span>  T<span style=color:#f92672>&gt;</span> list <span style=color:#f92672>:</span> lists<span style=color:#f92672>){</span>
+        <span style=color:#66d9ef>return</span><span style=color:#f92672>.</span><span style=color:#a6e22e>addAll</span><span style=color:#f92672>(</span>list<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+    <span style=color:#66d9ef>return</span> result
+<span style=color:#f92672>}</span>
+</code></pre></div><p>중요한게 Override 안 될 메소드에만 <code>@SafeVarargs</code> 다는게 중요
+가능한 모든 override된 method 들이 safe 한 지 보장하는 것은 불가능하기 때문
+Java8 에서는 static method나 final instance method 에만 저 annotation을 달 수 있고,
+Java9 에서는 private instance method 도 가능해졌다.</p>
+<p>또 다른 대안은 varargs 사용하지 않고 List parameter를 사용하는 것</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>static</span> <span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> List<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>flatten</span><span style=color:#f92672>(</span>List<span style=color:#f92672>&lt;</span>List<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> T<span style=color:#f92672>&gt;&gt;</span> Lists<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    List<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> result <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> ArrayList<span style=color:#f92672>&lt;&gt;();</span>
+    <span style=color:#66d9ef>for</span><span style=color:#f92672>(</span>List<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span>  T<span style=color:#f92672>&gt;</span> list <span style=color:#f92672>:</span> lists<span style=color:#f92672>){</span>
+        result<span style=color:#f92672>.</span><span style=color:#a6e22e>addAll</span><span style=color:#f92672>(</span>list<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+    <span style=color:#66d9ef>return</span> result
+<span style=color:#f92672>}</span>
+</code></pre></div><h4 id=요야야야약>
+요야야야약
+<a class=anchor href=#%ec%9a%94%ec%95%bc%ec%95%bc%ec%95%bc%ec%95%bd>#</a>
+</h4>
+<ul>
+<li>varargs 랑 generic은 잘 안 맞는다</li>
+<li>generic varargs parameter 는 typesafe 하지는 않지만, 문법적으로는 맞다.</li>
+<li>method의 parameter 로 generic varargs parameter 쓸 꺼면 typesafe 한지 확인하고 <code>@SafeVarargs</code> 꼭 달아라</li>
+</ul>
+<h2 id=item-33-consider-typesafe-heterogeneous-containers-형-안전-다형성-컨테이너를-쓰면-어떨지-따져보라>
+Item 33: Consider typesafe heterogeneous containers 형 안전 다형성 컨테이너를 쓰면 어떨지 따져보라
+<a class=anchor href=#item-33-consider-typesafe-heterogeneous-containers-%ed%98%95-%ec%95%88%ec%a0%84-%eb%8b%a4%ed%98%95%ec%84%b1-%ec%bb%a8%ed%85%8c%ec%9d%b4%eb%84%88%eb%a5%bc-%ec%93%b0%eb%a9%b4-%ec%96%b4%eb%96%a8%ec%a7%80-%eb%94%b0%ec%a0%b8%eb%b3%b4%eb%9d%bc>#</a>
+</h2>
+<p>Generic은 Set 이나 Map 같은 collection 이나 ThreadLocal 이나 AtomicReference 같은 하나의 원소만을 담는 컨테이너에
+많이 쓰인다. 이 때 형인자를 받는 부분은 컨테이너임. 보통은 컨테이너당 type parameter 가 정해져 있다.
+이것을 유연하게 하나의 컨테이너에 여러 Type 이 담기면서도 형안정성을 유지할 수 있게 해보자.
+즉 컨테이너가 아니라 key 값에 형인자를 지정하자.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// Typesafe heterogeneous container pattern 형 안전 다형성 컨테이너
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Favorites</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Map<span style=color:#f92672>&lt;</span>Class<span style=color:#f92672>&lt;?&gt;,</span> Object<span style=color:#f92672>&gt;</span> favorites <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> HashMap<span style=color:#f92672>&lt;&gt;();</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>putFavorite</span><span style=color:#f92672>(</span>Class<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> type<span style=color:#f92672>,</span> T instance<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        favorites<span style=color:#f92672>.</span><span style=color:#a6e22e>put</span><span style=color:#f92672>(</span>Objects<span style=color:#f92672>.</span><span style=color:#a6e22e>requireNonNull</span><span style=color:#f92672>(</span>type<span style=color:#f92672>),</span> instance<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> T <span style=color:#a6e22e>getFavorite</span><span style=color:#f92672>(</span>Class<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> type<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>return</span> type<span style=color:#f92672>.</span><span style=color:#a6e22e>cast</span><span style=color:#f92672>(</span>favorites<span style=color:#f92672>.</span><span style=color:#a6e22e>get</span><span style=color:#f92672>(</span>type<span style=color:#f92672>));</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#75715e>// client 부분
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span><span style=color:#f92672>(</span>String<span style=color:#f92672>[]</span> args<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    Favorites f <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Favorites<span style=color:#f92672>();</span>
+    f<span style=color:#f92672>.</span><span style=color:#a6e22e>putFavorite</span><span style=color:#f92672>(</span>String<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;Java&#34;</span><span style=color:#f92672>);</span>
+    f<span style=color:#f92672>.</span><span style=color:#a6e22e>putFavorite</span><span style=color:#f92672>(</span>Integer<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>,</span> 12345<span style=color:#f92672>);</span>
+
+    String favoriteString <span style=color:#f92672>=</span> f<span style=color:#f92672>.</span><span style=color:#a6e22e>getFavorite</span><span style=color:#f92672>(</span>String<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+    String favoriteInteger <span style=color:#f92672>=</span> f<span style=color:#f92672>.</span><span style=color:#a6e22e>getFavorite</span><span style=color:#f92672>(</span>Integer<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>Favorites 객체는 형 안전(type 에 맞게 캐스팅해서 돌려줌 <code>Class.cast</code>), 다형성(하나의 type 이 아닌 여러 type을 컨테이너 내부에 보관 <code>Class&lt;?></code>)</p>
+<ul>
+<li><code>private Map&lt;Class&lt;?>, Object> favorites</code> 여기서 map에 unbounded wildcard 쓰면 아무것도 못하지 않나요?</li>
+</ul>
+<blockquote>
+<p>여기서 와일드 카드는 map(컨테이너)이 아니라 key에 사용된다. 모든 키가 상이한 형인자 자료형 가질 수 있다는 의미.</p>
+</blockquote>
+<ul>
+<li>favorites 의 value가 그냥 Object 인데 괜찮나?</li>
+</ul>
+<blockquote>
+<p>type은 <code>key</code> 이고 해당 해당 type으로 알아서 <code>value</code>를 캐스팅해주면 좋겠지만 java type system 이 그렇게 강력하진 않다. 하지만 우리는 그걸 알고 있으니 꺼내올 때 적용 해주면 됨</p>
+</blockquote>
+<p>현재 Favorites 2가지 문제 있음</p>
+<ol>
+<li>악의적인 클라이언트가 형 안전성을 꺠뜨릴 수 있다.</li>
+</ol>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// client 부분
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span><span style=color:#f92672>(</span>String<span style=color:#f92672>[]</span> args<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    Favorites f <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Favorites<span style=color:#f92672>();</span>
+    Class a <span style=color:#f92672>=</span> String<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>;</span> <span style=color:#75715e>// use raw type Class!
+</span><span style=color:#75715e></span>    f<span style=color:#f92672>.</span><span style=color:#a6e22e>putFavorite</span><span style=color:#f92672>(</span>a<span style=color:#f92672>,</span> 1234<span style=color:#f92672>);</span> <span style=color:#75715e>// putFavorite 잘 작동함... key: String.class value: Integer
+</span><span style=color:#75715e></span><span style=color:#f92672>}</span>
+</code></pre></div><p>raw type을 사용하면 generic 을 passing 하기 때문에 문제 발생. dynamic type checking 을 해주어야 한다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>    <span style=color:#66d9ef>public</span> <span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>putFavorite</span><span style=color:#f92672>(</span>Class<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> type<span style=color:#f92672>,</span> T instance<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        favorites<span style=color:#f92672>.</span><span style=color:#a6e22e>put</span><span style=color:#f92672>(</span>Objects<span style=color:#f92672>.</span><span style=color:#a6e22e>requireNonNull</span><span style=color:#f92672>(</span>type<span style=color:#f92672>),</span> type<span style=color:#f92672>.</span><span style=color:#a6e22e>cast</span><span style=color:#f92672>(</span>instance<span style=color:#f92672>));</span>
+    <span style=color:#f92672>}</span>
+</code></pre></div><p>같은 전략을 쓰는 컬랙션 wrapper class: checkedSet, checkedList, checkedMap</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>List safeList <span style=color:#f92672>=</span> Collections<span style=color:#f92672>.</span><span style=color:#a6e22e>checkedList</span><span style=color:#f92672>(</span><span style=color:#66d9ef>new</span> ArrayList<span style=color:#f92672>(),</span> String<span style=color:#f92672>.</span><span style=color:#a6e22e>clss</span><span style=color:#f92672>);</span>
+safeList<span style=color:#f92672>.</span><span style=color:#a6e22e>add</span><span style=color:#f92672>(</span>123<span style=color:#f92672>);</span> <span style=color:#75715e>// ClassCastException 발생
+</span></code></pre></div><ol start=2>
+<li>실체 불가능한 자료형(non-reifiable type) 에는 쓰일 수 없다.</li>
+</ol>
+<ul>
+<li><code>reifiable type</code> : type 정보를 runtime 에서 전부 사용 가능. ex) primitive, non-generic, raw type, invocations of unbound wildcards</li>
+<li><code>non-reifiable type</code> : type erasure 에 의해 type 정보가 compile time 에서 지워짐 ex) unbound wildcard 를 제외한 generic</li>
+</ul>
+<p>따라서 key로 <code>String</code> <code>String[]</code> 은 쓰일 수 있지만 <code>List&lt;String></code> 은 쓰일 수 없다. <code>List&lt;String></code> 의 class 객체를 얻을 수 없기 때문.
+<code>List&lt;String></code> 이랑 <code>List&lt;Integer></code> 는 같은 class 객체 <code>List.class</code>를 공유한다.
+만일 자료형 리터럴(<code>List&lt;String>.class</code>)이 가능하면 Favorites 객체는 올바르게 동작 못할 것 </p>
+<h3 id=해결책>
+해결책
+<a class=anchor href=#%ed%95%b4%ea%b2%b0%ec%b1%85>#</a>
+</h3>
+<ul>
+<li>상위 자료형 토큰(super type token)
+상속과 reflection 사용해서 구현</li>
+</ul>
+<p><code>String.class</code>(클래스 리터럴) -> <code>Class&lt;String></code> (타입 토큰)
+<code>???</code> -> <code>Class&lt;List&lt;String>></code> 얻을 수 있다면 가능</p>
+<h4 id=classgetgenericsuperclass>
+Class.getGenericSuperClass()
+<a class=anchor href=#classgetgenericsuperclass>#</a>
+</h4>
+<ul>
+<li>바로 위 수퍼 클래스의 타입을 반환</li>
+<li>수퍼 클래스가 parameterized type 이면 실제 타입 파라미터를 반영한 타입을 반환</li>
+</ul>
+<h4 id=parameterizedtypegetactualtypearguments>
+ParameterizedType.getActualTypeArguments()
+<a class=anchor href=#parameterizedtypegetactualtypearguments>#</a>
+</h4>
+<ul>
+<li>실제 파라미터 정보를 구한다.</li>
+</ul>
+<p>즉 다음과 같이 실제 타입을 구할 수 있다</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Super</span><span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> <span style=color:#f92672>{}</span>
+<span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Sub</span> <span style=color:#66d9ef>extends</span> Super<span style=color:#f92672>&lt;</span>List<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;&gt;</span> <span style=color:#f92672>{}</span>
+Sub sub <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Sub<span style=color:#f92672>();</span>
+Type typeOfGenericSuperclass <span style=color:#f92672>=</span> sub<span style=color:#f92672>.</span><span style=color:#a6e22e>getClass</span><span style=color:#f92672>().</span><span style=color:#a6e22e>getGenericSuperclass</span><span style=color:#f92672>();</span> <span style=color:#75715e>//Super&lt;List&lt;String&gt;&gt;
+</span><span style=color:#75715e></span>Type actualType <span style=color:#f92672>=</span> <span style=color:#f92672>((</span>ParameterizedType<span style=color:#f92672>)</span> typeOfGenericSuperclass<span style=color:#f92672>).</span><span style=color:#a6e22e>getActualTypeArguments</span><span style=color:#f92672>()[</span>0<span style=color:#f92672>];</span> <span style=color:#75715e>// List&lt;String&gt;
+</span></code></pre></div><p>코드 구현도 찾아서 했는데 복잡해서&mldr;</p>
+<h3 id=한정적-자료형-토큰bound-type-parameter>
+한정적 자료형 토큰(bound type parameter)
+<a class=anchor href=#%ed%95%9c%ec%a0%95%ec%a0%81-%ec%9e%90%eb%a3%8c%ed%98%95-%ed%86%a0%ed%81%b0bound-type-parameter>#</a>
+</h3>
+<p>Favorites 가 사용하는 자료형 토큰은 비한정적(unbound). get put 에 전달되는 argument를 제한 하고 싶을 때에는 한정적 자료형</p>
+<p>annotation API: 한정적 자료형 토큰 많이 씀</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#f92672>&lt;</span>T <span style=color:#66d9ef>extends</span> Annotation<span style=color:#f92672>&gt;</span> T <span style=color:#a6e22e>getAnnotation</span><span style=color:#f92672>(</span>Class<span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> annotationType<span style=color:#f92672>)</span>
+</code></pre></div><ul>
+<li><code>getAnnotation</code> : 프로그램 실행 중에 어노테이션을 읽은 메소드. <code>AnnotatedElement</code> 인터페이스에 있음</li>
+<li><code>AnnotatedElement</code> : 클래스나 메서드, 필드 등 프로그램 요소들, 즉 리플렉션 객체를 표현하는 리플렉션 자료형들이 구현하는 인터페이스</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// 컴파일 시점에는 자료형을 알 수 없는 어노테이션을 실행시간에 읽어내는 메서드
+</span><span style=color:#75715e>// 방식 1 무점검 형변환
+</span><span style=color:#75715e></span><span style=color:#66d9ef>static</span> Annotation <span style=color:#a6e22e>getAnnotation</span><span style=color:#f92672>(</span>AnnotatedElement element<span style=color:#f92672>,</span> String annotationTypeName<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    Class<span style=color:#f92672>&lt;?&gt;</span> annotationType <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>try</span> <span style=color:#f92672>{</span>
+        <span style=color:#a6e22e>@SuppressWarnings</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;unchecked&#34;</span><span style=color:#f92672>)</span>
+        annonationType <span style=color:#f92672>=</span> <span style=color:#f92672>(</span>Class<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> Annotation<span style=color:#f92672>&gt;)</span> Class<span style=color:#f92672>.</span><span style=color:#a6e22e>forName</span><span style=color:#f92672>(</span>annotationTypeName<span style=color:#f92672>);</span> <span style=color:#75715e>//무점검 형변환 이므로 warning 발생
+</span><span style=color:#75715e></span>    <span style=color:#f92672>}</span> <span style=color:#66d9ef>catch</span> <span style=color:#f92672>(</span>Exception ex<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> IllegalArgumentException<span style=color:#f92672>(</span>ex<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+    <span style=color:#66d9ef>return</span> element<span style=color:#f92672>.</span><span style=color:#a6e22e>getAnnotation</span><span style=color:#f92672>(</span>annotationType<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>클래스 Class 는 이런 종류 형변환 안전하게 동적으로 처리해주는 객체 메서드 <code>asSubclass</code> 가 이미 있다. 특정 객체를 하위 클래스의 class 객체로 형변환시켜줌.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// 컴파일 시점에는 자료형을 알 수 없는 어노테이션을 실행시간에 읽어내는 메서드
+</span><span style=color:#75715e>// 방식 2 dynamic 형변환 메서드 사용
+</span><span style=color:#75715e></span><span style=color:#66d9ef>static</span> Annotation <span style=color:#a6e22e>getAnnotation</span><span style=color:#f92672>(</span>AnnotatedElement element<span style=color:#f92672>,</span> String annotationTypeName<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    Class<span style=color:#f92672>&lt;?&gt;</span> annotationType <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>try</span> <span style=color:#f92672>{</span>
+        annonationType <span style=color:#f92672>=</span> Class<span style=color:#f92672>.</span><span style=color:#a6e22e>forName</span><span style=color:#f92672>(</span>annotationTypeName<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span> <span style=color:#66d9ef>catch</span> <span style=color:#f92672>(</span>Exception ex<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> IllegalArgumentException<span style=color:#f92672>(</span>ex<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+    <span style=color:#66d9ef>return</span> element<span style=color:#f92672>.</span><span style=color:#a6e22e>getAnnotation</span><span style=color:#f92672>(</span>
+        annotationType<span style=color:#f92672>.</span><span style=color:#a6e22e>asSubclass</span><span style=color:#f92672>(</span>Annotation<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+    <span style=color:#f92672>)</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>//asSubclass 구현 ..
+</span><span style=color:#75715e></span><span style=color:#a6e22e>@SuppressWarnings</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;unchecked&#34;</span><span style=color:#f92672>)</span>
+<span style=color:#66d9ef>public</span> <span style=color:#f92672>&lt;</span>U<span style=color:#f92672>&gt;</span> Class<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> U<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>asSubclass</span><span style=color:#f92672>(</span>Class<span style=color:#f92672>&lt;</span>U<span style=color:#f92672>&gt;</span> clazz<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>clazz<span style=color:#f92672>.</span><span style=color:#a6e22e>isAssignableFrom</span><span style=color:#f92672>(</span><span style=color:#66d9ef>this</span><span style=color:#f92672>))</span>
+        <span style=color:#66d9ef>return</span> <span style=color:#f92672>(</span>Class<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> U<span style=color:#f92672>&gt;)</span> <span style=color:#66d9ef>this</span><span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>else</span>
+        <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> ClassCastException<span style=color:#f92672>(</span><span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>toString</span><span style=color:#f92672>());</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h3 id=요오오오약>
+요오오오약
+<a class=anchor href=#%ec%9a%94%ec%98%a4%ec%98%a4%ec%98%a4%ec%95%bd>#</a>
+</h3>
+<ul>
+<li>컨테이너 대신 키를 제네릭으로 하면 형인자 개수의 제약이 없는 형 안전 다형성 컨테이너를 만들 수 있다.</li>
+<li>그런 컨테이너는 Class 객체를 키로 쓰는데 그러한 객체를 자료형 토큰(type token) 이라고 한다.</li>
+<li>키 자료형을 직접 구현하는 것도 가능하다. 예를 들어 DB 레코드를 표현하는 DataBaseRow 클래스(컨테이너) 는 제네릭 자료형 Column 를 키로 사용할 수 있다.</li>
+</ul>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#2판의-경우-27-28-29-로-되어-있음>2판의 경우 27, 28 ,29 로 되어 있음</a></li>
+<li><a href=#item-30-favor-generic-methods-가능하면-제네릭-메서드로-만들-것>Item 30: Favor generic methods 가능하면 제네릭 메서드로 만들 것</a>
+<ul>
+<li><a href=#type-parameter에-대한-convention>type parameter에 대한 convention</a></li>
+<li><a href=#제너릭-싱클톤-패턴>제너릭 싱클톤 패턴</a></li>
+<li><a href=#재귀적-자료형-한정rescursive-type-bound>재귀적 자료형 한정(rescursive type bound)</a></li>
+<li><a href=#요약>요약</a></li>
+</ul>
+</li>
+<li><a href=#item-31-use-bounded-wildcards-to-increase-api-flexibility-한정적-와일드카드를-써서-api의-유연성을-높여라>Item 31: Use bounded wildcards to increase API flexibility 한정적 와일드카드를 써서 API의 유연성을 높여라</a>
+<ul>
+<li><a href=#한정적-와일드카드>한정적 와일드카드</a></li>
+<li><a href=#pecs-produce---extends-consumer---super>PECS (Produce - Extends, Consumer - Super)</a></li>
+<li><a href=#return-type-으로--와일드-카드를-쓰지-말-것>return type 으로 와일드 카드를 쓰지 말 것</a></li>
+<li><a href=#명시적-형인자>명시적 형인자</a></li>
+<li><a href=#형인자-vs-와일드카드-에선-와일드카드를-쓰자>형인자 vs 와일드카드 에선 와일드카드를 쓰자</a></li>
+<li><a href=#요약-1>요약</a></li>
+</ul>
+</li>
+<li><a href=#item-32-combine-generics-and-varargs-judiciously-generic-과-다인자변수를-잘-조합하자>Item 32: Combine generics and varargs judiciously generic 과 다인자변수를 잘 조합하자</a>
+<ul>
+<li></li>
+</ul>
+</li>
+<li><a href=#item-33-consider-typesafe-heterogeneous-containers-형-안전-다형성-컨테이너를-쓰면-어떨지-따져보라>Item 33: Consider typesafe heterogeneous containers 형 안전 다형성 컨테이너를 쓰면 어떨지 따져보라</a>
+<ul>
+<li><a href=#해결책>해결책</a></li>
+<li><a href=#한정적-자료형-토큰bound-type-parameter>한정적 자료형 토큰(bound type parameter)</a></li>
+<li><a href=#요오오오약>요오오오약</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

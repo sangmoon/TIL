@@ -1,0 +1,127 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="어디서 봤는지는 모르지만 일단 Java">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Java">
+<meta property="og:description" content="어디서 봤는지는 모르지만 일단 Java">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/java/enum/"><meta property="article:section" content="Java">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Java | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Java</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents></nav>
+</aside>
+</header>
+<article class=markdown><h1 id=enum>
+enum
+<a class=anchor href=#enum>#</a>
+</h1>
+<p>다음과 같은 enum class 가 있다고 하자.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>enum</span> Season<span style=color:#f92672>{</span>
+  Spring<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;March through May&#34;</span><span style=color:#f92672>),</span>
+  Summer<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;Jun throuh August&#34;</span><span style=color:#f92672>),</span>
+  Fall<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;September through November&#34;</span><span style=color:#f92672>),</span>
+  Winter<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;Decomber through Febnruary&#34;</span><span style=color:#f92672>);</span>
+
+  <span style=color:#66d9ef>private</span> String span<span style=color:#f92672>;</span>
+
+  Season<span style=color:#f92672>(</span>String months<span style=color:#f92672>){</span>
+    <span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>span</span> <span style=color:#f92672>=</span> months<span style=color:#f92672>;</span>
+  <span style=color:#f92672>}</span>
+
+  <span style=color:#66d9ef>public</span> String <span style=color:#a6e22e>getSpan</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>span</span><span style=color:#f92672>;</span>
+  <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>이를 컴파일 할 경우</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>final</span> <span style=color:#66d9ef>enum</span> Season <span style=color:#f92672>{</span>
+  
+
+  <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>final</span> <span style=color:#66d9ef>enum</span> Season Spring<span style=color:#f92672>;</span>
+  <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>final</span> <span style=color:#66d9ef>enum</span> Season Summer<span style=color:#f92672>;</span>
+  <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>final</span> <span style=color:#66d9ef>enum</span> Season Fall<span style=color:#f92672>;</span>
+  <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>final</span> <span style=color:#66d9ef>enum</span> Season Winter<span style=color:#f92672>;</span>
+
+  <span style=color:#66d9ef>private</span> java<span style=color:#f92672>.</span><span style=color:#a6e22e>lang</span><span style=color:#f92672>.</span><span style=color:#a6e22e>String</span> span<span style=color:#f92672>;</span>
+
+  <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>final</span> synthetic Season<span style=color:#f92672>[]</span> ENUM$VALUES<span style=color:#f92672>;</span>
+  
+  <span style=color:#66d9ef>static</span> <span style=color:#f92672>{};</span>
+
+  <span style=color:#66d9ef>private</span> <span style=color:#a6e22e>Season</span><span style=color:#f92672>(</span>java<span style=color:#f92672>.</span><span style=color:#a6e22e>lang</span><span style=color:#f92672>.</span><span style=color:#a6e22e>String</span> arg0<span style=color:#f92672>,</span> <span style=color:#66d9ef>int</span> arg1<span style=color:#f92672>,</span> java<span style=color:#f92672>.</span><span style=color:#a6e22e>lang</span><span style=color:#f92672>.</span><span style=color:#a6e22e>String</span> months<span style=color:#f92672>);</span>
+
+  <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> Season<span style=color:#f92672>[]</span> <span style=color:#a6e22e>values</span><span style=color:#f92672>();</span>
+
+  <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> Season <span style=color:#a6e22e>valueOf</span><span style=color:#f92672>(</span>java<span style=color:#f92672>.</span><span style=color:#a6e22e>lang</span><span style=color:#f92672>.</span><span style=color:#a6e22e>String</span> arg0<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>이런 코드가 나온다.</p>
+<p>enum은 Enum class를 상속받게 된다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>abstract</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Enum</span><span style=color:#f92672>&lt;</span>E <span style=color:#66d9ef>extends</span> Enum<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;&gt;</span>
+<span style=color:#66d9ef>extends</span> Object
+<span style=color:#66d9ef>implements</span> Comparable<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;,</span> Serializable
+</code></pre></div><p>즉</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>final</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Season</span> <span style=color:#66d9ef>extends</span> Enum<span style=color:#f92672>&lt;</span>Season<span style=color:#f92672>&gt;{</span>
+    <span style=color:#75715e>//...
+</span><span style=color:#75715e></span><span style=color:#f92672>}</span>
+</code></pre></div><p>라고 볼 수 있다.
+enum은 결국 final class가 되므로 상속이 불가능하고, 선언한 변수들 또한 static final이기 때문에 <code>static{}</code> 이 부분에서 초기화되고
+수정이 불가능하다. instance가 1개로 제한되므로 오류의 경우가 줄어든다.</p>
+<p>참조: <a href=https://docs.oracle.com/javase/7/docs/api/java/lang/Enum.html>oracle docs</a></p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents></nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

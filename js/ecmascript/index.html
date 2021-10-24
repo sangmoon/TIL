@@ -1,0 +1,300 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="자바스크립트 공부하자">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="JavaScript">
+<meta property="og:description" content="자바스크립트 공부하자">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/js/ecmascript/"><meta property="article:section" content="Js">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>JavaScript | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>JavaScript</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li>
+<ul>
+<li><a href=#constants>Constants</a></li>
+<li><a href=#scoping>Scoping</a></li>
+<li><a href=#arrow-functions>Arrow Functions</a></li>
+<li><a href=#extended-parameter-handling>Extended Parameter Handling</a></li>
+<li><a href=#template-literals>Template Literals</a></li>
+<li><a href=#extended-literals>Extended Literals</a></li>
+<li><a href=#enhanced-regular-expression>Enhanced Regular Expression</a></li>
+<li><a href=#enhanced-object-properties>Enhanced Object Properties</a></li>
+<li><a href=#destructuring-assignment>Destructuring Assignment</a></li>
+<li><a href=#modules>Modules</a></li>
+<li><a href=#classes>Classes</a></li>
+<li><a href=#symbol-type>Symbol Type</a></li>
+<li><a href=#iterators>Iterators</a></li>
+<li><a href=#mapset--weakmapweakset>Map/Set & WeakMap/WeakSet</a></li>
+<li><a href=#typed-arrays>Typed Arrays</a></li>
+<li><a href=#new-built-in-methods>New Built-In Methods</a></li>
+<li><a href=#promises>Promises</a></li>
+<li><a href=#meta-programming>Meta-Programming</a></li>
+<li><a href=#internationalization--localization>Internationalization & Localization</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h3 id=constants>
+Constants
+<a class=anchor href=#constants>#</a>
+</h3>
+<ul>
+<li>Constants</li>
+</ul>
+<h3 id=scoping>
+Scoping
+<a class=anchor href=#scoping>#</a>
+</h3>
+<ul>
+<li>Block-Scoped Variables</li>
+<li>Block-Scoped Functions</li>
+</ul>
+<h3 id=arrow-functions>
+Arrow Functions
+<a class=anchor href=#arrow-functions>#</a>
+</h3>
+<ul>
+<li>Expression Bodies</li>
+<li>Statement Bodies</li>
+<li>Lexical this</li>
+</ul>
+<h3 id=extended-parameter-handling>
+Extended Parameter Handling
+<a class=anchor href=#extended-parameter-handling>#</a>
+</h3>
+<ul>
+<li>Default Parameter Values</li>
+<li>Rest Parameter</li>
+<li>Spread Operator</li>
+</ul>
+<h3 id=template-literals>
+Template Literals
+<a class=anchor href=#template-literals>#</a>
+</h3>
+<ul>
+<li>String Interpolation</li>
+<li>Custom Interpolation</li>
+<li>Raw String Access</li>
+</ul>
+<h3 id=extended-literals>
+Extended Literals
+<a class=anchor href=#extended-literals>#</a>
+</h3>
+<ul>
+<li>Binary & Octal Literal</li>
+<li>Unicode String & RegExp Literal</li>
+</ul>
+<h3 id=enhanced-regular-expression>
+Enhanced Regular Expression
+<a class=anchor href=#enhanced-regular-expression>#</a>
+</h3>
+<ul>
+<li>Regular Expression Sticky Matching</li>
+</ul>
+<h3 id=enhanced-object-properties>
+Enhanced Object Properties
+<a class=anchor href=#enhanced-object-properties>#</a>
+</h3>
+<ul>
+<li>Property Shorthand</li>
+<li>Computed Property Names</li>
+<li>Method Properties</li>
+</ul>
+<h3 id=destructuring-assignment>
+Destructuring Assignment
+<a class=anchor href=#destructuring-assignment>#</a>
+</h3>
+<ul>
+<li>Array Matching</li>
+<li>Object Matching, Shorthand Notation</li>
+<li>Object Matching, Deep Matching</li>
+<li>Object And Array Matching, Default Values</li>
+<li>Parameter Context Matching</li>
+<li>Fail-Soft Destructuring</li>
+</ul>
+<h3 id=modules>
+Modules
+<a class=anchor href=#modules>#</a>
+</h3>
+<ul>
+<li>Value Export/Import</li>
+<li>Default & Wildcard</li>
+</ul>
+<h3 id=classes>
+Classes
+<a class=anchor href=#classes>#</a>
+</h3>
+<ul>
+<li>Class Definition</li>
+<li>Class Inheritance</li>
+<li>Class Inheritance, From Expressions</li>
+<li>Base Class Access</li>
+<li>Static Members</li>
+<li>Getter/Setter</li>
+</ul>
+<h3 id=symbol-type>
+Symbol Type
+<a class=anchor href=#symbol-type>#</a>
+</h3>
+<ul>
+<li>Symbol Type</li>
+<li>Global Symbols</li>
+</ul>
+<h3 id=iterators>
+Iterators
+<a class=anchor href=#iterators>#</a>
+</h3>
+<ul>
+<li>Iterator & For-Of Operator</li>
+<li>Generators</li>
+<li>Generator Function, Iterator Protocol</li>
+<li>Generator Function, Direct Use</li>
+<li>Generator Matching</li>
+<li>Generator Control-Flow</li>
+<li>Generator Methods</li>
+</ul>
+<h3 id=mapset--weakmapweakset>
+Map/Set & WeakMap/WeakSet
+<a class=anchor href=#mapset--weakmapweakset>#</a>
+</h3>
+<ul>
+<li>Set Data-Structure</li>
+<li>Map Data-Structure</li>
+<li>Weak-Link Data-Structures</li>
+</ul>
+<h3 id=typed-arrays>
+Typed Arrays
+<a class=anchor href=#typed-arrays>#</a>
+</h3>
+<ul>
+<li>Typed Arrays</li>
+</ul>
+<h3 id=new-built-in-methods>
+New Built-In Methods
+<a class=anchor href=#new-built-in-methods>#</a>
+</h3>
+<ul>
+<li>Object Property Assignment</li>
+<li>Array Element Finding</li>
+<li>String Repeating</li>
+<li>String Searching</li>
+<li>Number Type Checking</li>
+<li>Number Safety Checking</li>
+<li>Number Comparison</li>
+<li>Number Truncation</li>
+<li>Number Sign Determination</li>
+</ul>
+<h3 id=promises>
+Promises
+<a class=anchor href=#promises>#</a>
+</h3>
+<ul>
+<li>Promise Usage</li>
+<li>Promise Combination</li>
+</ul>
+<h3 id=meta-programming>
+Meta-Programming
+<a class=anchor href=#meta-programming>#</a>
+</h3>
+<ul>
+<li>Proxying</li>
+<li>Reflection</li>
+</ul>
+<h3 id=internationalization--localization>
+Internationalization & Localization
+<a class=anchor href=#internationalization--localization>#</a>
+</h3>
+<ul>
+<li>Collation</li>
+<li>Number Formatting</li>
+<li>Currency Formatting</li>
+<li>Date/Time Formatting</li>
+</ul>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li>
+<ul>
+<li><a href=#constants>Constants</a></li>
+<li><a href=#scoping>Scoping</a></li>
+<li><a href=#arrow-functions>Arrow Functions</a></li>
+<li><a href=#extended-parameter-handling>Extended Parameter Handling</a></li>
+<li><a href=#template-literals>Template Literals</a></li>
+<li><a href=#extended-literals>Extended Literals</a></li>
+<li><a href=#enhanced-regular-expression>Enhanced Regular Expression</a></li>
+<li><a href=#enhanced-object-properties>Enhanced Object Properties</a></li>
+<li><a href=#destructuring-assignment>Destructuring Assignment</a></li>
+<li><a href=#modules>Modules</a></li>
+<li><a href=#classes>Classes</a></li>
+<li><a href=#symbol-type>Symbol Type</a></li>
+<li><a href=#iterators>Iterators</a></li>
+<li><a href=#mapset--weakmapweakset>Map/Set & WeakMap/WeakSet</a></li>
+<li><a href=#typed-arrays>Typed Arrays</a></li>
+<li><a href=#new-built-in-methods>New Built-In Methods</a></li>
+<li><a href=#promises>Promises</a></li>
+<li><a href=#meta-programming>Meta-Programming</a></li>
+<li><a href=#internationalization--localization>Internationalization & Localization</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

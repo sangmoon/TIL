@@ -1,0 +1,164 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="자바 잘 짜보자">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Effective Java">
+<meta property="og:description" content="자바 잘 짜보자">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/effectivejava/creatinhanddestoryinhobjects/item1/"><meta property="article:section" content="EffectiveJava">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Effective Java | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Effective Java</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#item-1-consider-static-factory-methods-instead-of-constructors>Item 1: Consider static factory methods instead of constructors</a></li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h2 id=item-1-consider-static-factory-methods-instead-of-constructors>
+Item 1: Consider static factory methods instead of constructors
+<a class=anchor href=#item-1-consider-static-factory-methods-instead-of-constructors>#</a>
+</h2>
+<p>기본적으로 클라이언트는 어떤 객체의 퍼블릭 생성자를 얻을 수 있다. 하지만 <code>static factory method</code>를 제공할 수도 있다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// Boolean Class 에서 사용하는 static factory method 예제
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> Boolean <span style=color:#a6e22e>vaoueOf</span><span style=color:#f92672>(</span><span style=color:#66d9ef>boolean</span> b<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>return</span> b <span style=color:#f92672>?</span> Boolean<span style=color:#f92672>.</span><span style=color:#a6e22e>TRUE</span><span style=color:#f92672>:</span> Boolean<span style=color:#f92672>.</span><span style=color:#a6e22e>FALSE</span><span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><blockquote>
+<p><code>static factory method</code>와 <code>Factory Method Pattern</code>은 다르니 주의!</p>
+</blockquote>
+<p>이제 클라이언트에게 퍼블릭 생성자를 주는 대신, 팩토리 메서드를 제공한다.</p>
+<p>장점</p>
+<ol>
+<li>생성자와 다르게 이름이 있다.</li>
+</ol>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>BigInteger<span style=color:#f92672>(</span><span style=color:#66d9ef>int</span><span style=color:#f92672>,</span> <span style=color:#66d9ef>int</span><span style=color:#f92672>,</span> Random<span style=color:#f92672>);</span> <span style=color:#75715e>// 퍼블릭 생성자
+</span><span style=color:#75715e></span>BigInteger<span style=color:#f92672>.</span><span style=color:#a6e22e>probablePrime</span><span style=color:#f92672>(</span><span style=color:#66d9ef>int</span><span style=color:#f92672>,</span> <span style=color:#66d9ef>int</span><span style=color:#f92672>,</span> Random<span style=color:#f92672>)</span> <span style=color:#75715e>// 스태틱 팩토리 생성자
+</span></code></pre></div><p>위와 같이 이름을 명시함으로 써 직관적으로 이해할 수 있다. 클래스는 생성자 이름을 하나 밖에 할 수 없다. 여러 생성자가 필요한 경우 static factory method를 써서 이름간 차이를 둘 수 있다.</p>
+<ol start=2>
+<li>호출될 때마다 새로운 객체를 생성할 필요가 없다.</li>
+</ol>
+<p>이 방식으로 immutable class(Item 17) 가 미리 만들어 놓은 객체를 사용하거나, 객체를 미리 캐시해두어서 여러번 소비할 수 있도록 한다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>Boolean<span style=color:#f92672>.</span><span style=color:#a6e22e>valueOf</span><span style=color:#f92672>(</span><span style=color:#66d9ef>boolean</span><span style=color:#f92672>);</span>
+</code></pre></div><p>위의 메소드는 절대 객체를 만들지 않는다. 디자인 패턴의 <code>Flyweight Pattern</code>과 유사하다. 같은 객체가 자주 사용될 때 성능을 높이고 비용을 절감할 수 있다.
+이렇게 불릴 때마다 같은 객체를 돌려주어 언제나 객체를 엄격히 제어 하는 클래스를 <code>instance-controlled</code> 되어있다고 한다. 이 instance-controlled 방식은 해당 클래스가 <code>Singleton</code>(Item 3) 이거나 <code>noninstantiable</code>(Item 4) 함을 보장한다. 또한 immutable value class (Item 17) 에서 동일한 2개의 객체가 존재하지 않음을 가능케 한다(a.equals(b) if and only if a == b). 이것이 Flyweight pattern의 기초이고 Enum type(Item 34) 가 이것을 제공한다.</p>
+<ol start=3>
+<li>반환 타입의 어떤 자식 클래스도 반환할 수 있다.</li>
+</ol>
+<p>API가 public 하지 않은 객체를 제공하게 할 수 있다. 이런 기술은 interface-based framework(Item 20) 을 만들 수 있다. 더 나아가 사용자가 구상 객체가 아닌 인터페이스로 작업하게 강제할 수 있다(Item 64)</p>
+<ol start=4>
+<li>반환 타입으로 여러 객체를 섞어 쓸 수 있다.</li>
+</ol>
+<p>위의 3번에서 확장된 의미로, 상황에 따라 interface를 구현한 여러 객체를 알맞게 제공할 수 있다.</p>
+<ol start=5>
+<li>팩토리 메소드를 작성할 때 리턴 객체가 존재할 필요가 없다.</li>
+</ol>
+<p>이런 장점은 JDBC같은 Service provider framework를 가능케 해준다. 실제 DB에 따른 구현체는 reflection(Item 65)을 통해 사용자가 설정한 내용에 따라 채워지게 된다.</p>
+<p>단점</p>
+<ol>
+<li>퍼블릭 또는 프로텍티드 생성자가 없는 클래스는 상속될 수 없다.</li>
+</ol>
+<p>팩토리 메소드 내에서 해당 생성자를 호출해 주어야 하기 때문에 불가능하다. 하지만 이 때문에 오히려 상속보다 composition을 사용케 하고(Item 18), Immutable type 도 강제하는 효과가 있다(Item 17).</p>
+<ol start=2>
+<li>개발자가 찾기 힘들다.</li>
+</ol>
+<p>팩토리 메서드는 찾기가 어렵다. 직접 문서를 뒤져야 하기 때문에. 그래서 다음과 같은 네이밍 컨벤션을 통해 API 를 만들도록 한다.</p>
+<ul>
+<li>
+<p><strong>from</strong> : 1개의 parameter를 받아 해당 객체를 반환한다.</p>
+<p><code> Date d = Date.from(instant);</code></p>
+</li>
+<li>
+<p><strong>of</strong> : 여러 parameter를 받아 해당하는 객체를 반환한다.</p>
+<p><code> Set&lt;Rank> faceCards = EnumSet.of(JACK, QUEEN, KING);</code></p>
+</li>
+<li>
+<p><strong>valueOf</strong> : from이나 of의 장황한 버전</p>
+<p><code> BigInteger prime = BigInteger.valueOf(Intger.MAX_VALUE);</code></p>
+</li>
+<li>
+<p><strong>instance</strong> or <strong>getInstance</strong> : 매개변수로 설명되어있으나 동일한 값을 가질 수 없는 객체를 반환한다.</p>
+<p><code> StackWalker luke = Stackwalker.getInstance(options);</code></p>
+</li>
+<li>
+<p><strong>create</strong> or <strong>newInstance</strong> : 매번 새로운 객체를 반환함을 보장하는 것 말고는 instance와 같다.</p>
+<p><code> Object newArray = Array.newInstance(classObject, arrayLen);</code></p>
+</li>
+<li>
+<p><strong>getType</strong> : getInstance와 같으나 팩토리 메소드와 클래스가 다른 경우 사용한다. Type은 반환되는 클래스를 지칭한다.</p>
+<p><code>FileStore fs = Files.getFileStore(path);</code></p>
+</li>
+<li>
+<p><strong>newType</strong> : newInstance와 같으나 팩토리 메소드와 클래스가 다른 경우 사용한다. Type은 반환되는 클래스를 지칭한다.</p>
+<p><code>BufferedReaderbr = Files.newBufferedReader(path);</code></p>
+</li>
+<li>
+<p><strong>type</strong> : getType과 newType의 간편형</p>
+<p><code>List&lt;Complaint> litany = Collections.list(legacyLitany);</code></p>
+</li>
+</ul>
+<p>요약하자면, 스태틱 팩토리 메소드와 퍼블릭 생성자는 함께 쓰이며 상대적으로 장점이 있다.
+대부분 스태틱 팩토리 메소드가 좋으므로, 단순하게 퍼블릭 생성자를 만들지 않도록 하자.</p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#item-1-consider-static-factory-methods-instead-of-constructors>Item 1: Consider static factory methods instead of constructors</a></li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

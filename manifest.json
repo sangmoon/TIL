@@ -1,0 +1,15 @@
+{
+  "name": "Sangmoon's TIL",
+  "short_name": "Sangmoon's TIL",
+  "start_url": "/TIL/",
+  "scope": "/TIL/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/TIL/favicon.svg",
+      "sizes": "512x512"
+    }
+  ]
+}

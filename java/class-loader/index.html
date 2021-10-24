@@ -1,0 +1,147 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="어디서 봤는지는 모르지만 일단 Java">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Java">
+<meta property="og:description" content="어디서 봤는지는 모르지만 일단 Java">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/java/class-loader/"><meta property="article:section" content="Java">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Java | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Java</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#추가-조사-할-것>추가 조사 할 것</a></li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h1 id=class-loader>
+Class loader
+<a class=anchor href=#class-loader>#</a>
+</h1>
+<p>다음과 같은 test code를 돌려보자</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>printClassLoaders</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>throws</span> ClassNotFoundException <span style=color:#f92672>{</span>
+ 
+    System<span style=color:#f92672>.</span><span style=color:#a6e22e>out</span><span style=color:#f92672>.</span><span style=color:#a6e22e>println</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;Classloader of this class:&#34;</span>
+        <span style=color:#f92672>+</span> PrintClassLoader<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>.</span><span style=color:#a6e22e>getClassLoader</span><span style=color:#f92672>());</span>
+ 
+    System<span style=color:#f92672>.</span><span style=color:#a6e22e>out</span><span style=color:#f92672>.</span><span style=color:#a6e22e>println</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;Classloader of Logging:&#34;</span>
+        <span style=color:#f92672>+</span> Logging<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>.</span><span style=color:#a6e22e>getClassLoader</span><span style=color:#f92672>());</span>
+ 
+    System<span style=color:#f92672>.</span><span style=color:#a6e22e>out</span><span style=color:#f92672>.</span><span style=color:#a6e22e>println</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;Classloader of ArrayList:&#34;</span>
+        <span style=color:#f92672>+</span> ArrayList<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>.</span><span style=color:#a6e22e>getClassLoader</span><span style=color:#f92672>());</span>
+
+    <span style=color:#75715e>// result
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// Class loader of this class:sun.misc.Launcher$AppClassLoader@18b4aac2
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// Class loader of Logging:sun.misc.Launcher$ExtClassLoader@3caeaf62
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// Class loader of ArrayList:null
+</span><span style=color:#75715e></span><span style=color:#f92672>}</span>
+</code></pre></div><ul>
+<li>Bootstrap class loader (c로 구현) jvm 구동 시킬 때 작동함 getClassLoader() 시에 null 로 나옴</li>
+<li>Extension class loader</li>
+<li>Application class loader (system class loader)</li>
+</ul>
+<p>java 에서 class 들은 java.lang.ClassLoader의 instance에 의해 loading 된다. 그런데 class loader 또한 class 이다.
+그럼 class loader는 누가 load 할까? 바로 bootstrap class loader 이다. 이 것은 rt.jar나 $JAVA_HOME/jre/lib 에 있는
+core library를 loading 할 책임이 있다.또한 다른 class loader의 부모의 역할도 한다. bootstrap loader는 JVM의 core 역할을 하고,
+native code로 쓰여 있다.</p>
+<p>Extension loader는 bootstrap loader의 child이며 core java class의 extension 들을 loading 하는 역할을 한다.
+$JAVA_HOME/lib/ext 에 있거나 java.ext.dirs system property에 등록된 것들을 이 loader가 loading 한다.</p>
+<p>application level class는 application class loader가 관리한다. java.class.path property의 경로에서 clss를 찾는다. -classpath 나 -cp 옵션으로 주어지는 classpath에서 찾는 모든 file을 load한다.
+또한 Extension loader의 child 이다.</p>
+<p>class-loader의 동작을 살펴보자.</p>
+<p><code>delegation principle</code></p>
+<blockquote>
+<p><code>java.lang.ClassLoader.loadClass()</code> method는 runtime에 class definition을 loading 책임이 있다.</p>
+</blockquote>
+<pre><code>1. 이미 loading 되어 있는지 확인하고(``findLoadedClass(name)``)
+2. loading 안 됐으면 부모 loader에게 위임한다. (``parent.loadClass(name, false)`` or ```findBootstrapClassOrNull(name)`)
+3. recursive하게 부모의 부모에게 가는데, 부모에게 서 찾을 수 없으면 자기 자신의 classpath에서 찾아 본다.(``finClass(name)``)
+</code></pre>
+<p>찾지 못할 경우 <code>ClassNotFoundException</code>을 뱉어낸다.</p>
+<p><code>visibility principle</code></p>
+<blockquote>
+<p>Child classloader는 부모 classloader가 load한 class를 볼 수 있지만, 반대는 안 된다.</p>
+</blockquote>
+<p><code>uniqueness principle</code></p>
+<blockquote>
+<p>부모 class loader가 load한 class는 자식 class loader가 load 하면 안된다.</p>
+</blockquote>
+<p>코너 케이스로 JNDI의 경우 core class 는 bootstrap loader 에 의해 load 되지만, 이 core class들이 JNDI provider 를 load 해야 할 수 있습니다. JNDI provider는
+보통 classpath에 등록되어 application class loader의 담당이므로 부모 loader가 자식 class loader에서 class를 찾아야 합니다.
+일반적인 delegation model로는 풀 수 없으며 이 경우 thread context loader를 이용하여 hierachy 를 tunneling 합니다.</p>
+<p>Custom class loader</p>
+<h2 id=추가-조사-할-것>
+추가 조사 할 것
+<a class=anchor href=#%ec%b6%94%ea%b0%80-%ec%a1%b0%ec%82%ac-%ed%95%a0-%ea%b2%83>#</a>
+</h2>
+<ul>
+<li>defineClass</li>
+<li>findClass</li>
+<li>loadClass</li>
+</ul>
+<p>동 메소드..
+sync or pararell class load</p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#추가-조사-할-것>추가 조사 할 것</a></li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="디자인 패턴에 대해 알아보자">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Design Pattern">
+<meta property="og:description" content="디자인 패턴에 대해 알아보자">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/designpattern/structualpatterns/decorator/"><meta property="article:section" content="DesignPattern">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Design Pattern | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Design Pattern</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#decorator-pattern>Decorator Pattern</a>
+<ul>
+<li><a href=#intent-br>Intent </a></li>
+<li><a href=#implementation-br>Implementation </a></li>
+<li><a href=#consequences-br>Consequences </a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h2 id=decorator-pattern>
+Decorator Pattern
+<a class=anchor href=#decorator-pattern>#</a>
+</h2>
+<h3 id=intent-br>
+Intent
+<a class=anchor href=#intent-br>#</a>
+</h3>
+<p>상속을 받아 기능성을 확장하는 것 말고, 다른 방식으로 객체에 추가적 기능을 부여한다. (상속의 단점 보완)
+Wapper라고도 불린다. 직장인 클래스를 기준으로 해보자&mldr;</p>
+<h3 id=implementation-br>
+Implementation
+<a class=anchor href=#implementation-br>#</a>
+</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Employee</span><span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>getSalary</span><span style=color:#f92672>();</span>	
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Researcher</span> <span style=color:#66d9ef>implements</span> Employee<span style=color:#f92672>{</span>
+
+	<span style=color:#66d9ef>private</span> <span style=color:#66d9ef>int</span> year<span style=color:#f92672>;</span>
+	<span style=color:#a6e22e>@Override</span>
+	<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>getSalary</span><span style=color:#f92672>(){</span>
+		<span style=color:#66d9ef>return</span> 10 <span style=color:#f92672>+</span> year<span style=color:#f92672>;</span>
+	<span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>abstract</span> <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>EmployeeDecorator</span> <span style=color:#66d9ef>implements</span> Employee<span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>protected</span> Emplyee decoratedEmployee<span style=color:#f92672>;</span>
+
+	<span style=color:#66d9ef>public</span> <span style=color:#a6e22e>EmplyeeDecorator</span><span style=color:#f92672>(</span>Employee decoratedEmployee<span style=color:#f92672>){</span>
+		<span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>decoratedEmplyee</span> <span style=color:#f92672>=</span> decoratedEmployee<span style=color:#f92672>;</span>
+	<span style=color:#f92672>}</span>
+
+	<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>getSalary</span><span style=color:#f92672>(){</span>
+		<span style=color:#66d9ef>return</span> decoratedEmployee<span style=color:#f92672>.</span><span style=color:#a6e22e>getSalary</span><span style=color:#f92672>();</span>
+	<span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>팀장</span> <span style=color:#66d9ef>extends</span> EmployeeDecorator<span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>public</span> <span style=color:#a6e22e>팀장</span><span style=color:#f92672>(</span>Employee decoratedEmployee<span style=color:#f92672>){</span>
+		<span style=color:#66d9ef>super</span><span style=color:#f92672>(</span>decoratedEmployee<span style=color:#f92672>);</span>
+	<span style=color:#f92672>}</span>
+
+	<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>getSalary</span><span style=color:#f92672>(){</span>
+		<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>super</span><span style=color:#f92672>.</span><span style=color:#a6e22e>getSalary</span><span style=color:#f92672>()</span> <span style=color:#f92672>+</span> 1<span style=color:#f92672>;</span>
+	<span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>실장</span> <span style=color:#66d9ef>extends</span> EmployeeDecorator<span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>public</span> <span style=color:#a6e22e>실장</span><span style=color:#f92672>(</span>Employee decoratedEmployee<span style=color:#f92672>){</span>
+		<span style=color:#66d9ef>super</span><span style=color:#f92672>(</span>decoratedEmployee<span style=color:#f92672>);</span>
+	<span style=color:#f92672>}</span>
+
+	<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>getSalary</span><span style=color:#f92672>(){</span>
+		<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>super</span><span style=color:#f92672>.</span><span style=color:#a6e22e>getSalary</span><span style=color:#f92672>()</span> <span style=color:#f92672>+</span> 5<span style=color:#f92672>;</span>
+	<span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>세자녀부모</span> exntends EmployeeDecorator<span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>public</span> <span style=color:#a6e22e>세자녀부모</span><span style=color:#f92672>(</span>Employee decoratedEmployee<span style=color:#f92672>){</span>
+		<span style=color:#66d9ef>super</span><span style=color:#f92672>(</span>decoratedEmployee<span style=color:#f92672>);</span>
+	<span style=color:#f92672>}</span>
+
+	<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>getSalary</span><span style=color:#f92672>(){</span>
+		<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>super</span><span style=color:#f92672>.</span><span style=color:#a6e22e>getSalary</span><span style=color:#f92672>()</span> <span style=color:#f92672>+</span> 10<span style=color:#f92672>;</span>
+	<span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+
+</code></pre></div><h3 id=consequences-br>
+Consequences
+<a class=anchor href=#consequences-br>#</a>
+</h3>
+<ol>
+<li>단순 상속보다 더 유연하다.</li>
+<li>단순 기능 추가를 위해 클래스 설계를 쉽게 할 수 있다.</li>
+<li>decorator와 component 는 같지 않다.(object 관점에서)</li>
+<li>작은 오브젝트들이 매우 많이 생성된다&mldr;</li>
+</ol>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#decorator-pattern>Decorator Pattern</a>
+<ul>
+<li><a href=#intent-br>Intent </a></li>
+<li><a href=#implementation-br>Implementation </a></li>
+<li><a href=#consequences-br>Consequences </a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

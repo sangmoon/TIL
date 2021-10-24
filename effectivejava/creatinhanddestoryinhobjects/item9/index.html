@@ -1,0 +1,125 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="자바 잘 짜보자">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Effective Java">
+<meta property="og:description" content="자바 잘 짜보자">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/effectivejava/creatinhanddestoryinhobjects/item9/"><meta property="article:section" content="EffectiveJava">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Effective Java | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Effective Java</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#item-9-prefer-try-with-resources-to-try-finally>Item 9: Prefer try-with-resources to try-finally</a></li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h2 id=item-9-prefer-try-with-resources-to-try-finally>
+Item 9: Prefer try-with-resources to try-finally
+<a class=anchor href=#item-9-prefer-try-with-resources-to-try-finally>#</a>
+</h2>
+<p>InputStream이나 sql.Connection 등은 close() 를 꼭 불러주어야 한다.
+전통적으로는 try, catch 문이 이를 지원하였다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>static</span> String <span style=color:#a6e22e>firstLineOfFile</span><span style=color:#f92672>(</span>String path<span style=color:#f92672>)</span> <span style=color:#66d9ef>throws</span> IOException <span style=color:#f92672>{</span>
+    BufferedReader br <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> BufferedReader<span style=color:#f92672>(</span><span style=color:#66d9ef>new</span> FileReader<span style=color:#f92672>(</span>path<span style=color:#f92672>));</span>
+    <span style=color:#66d9ef>try</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>return</span> br<span style=color:#f92672>.</span><span style=color:#a6e22e>readLine</span><span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span> <span style=color:#66d9ef>finally</span> <span style=color:#f92672>{</span>
+        br<span style=color:#f92672>.</span><span style=color:#a6e22e>close</span><span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>하지만 자원이 여러개가 되면 굉장히 이상해진다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>copy</span><span style=color:#f92672>(</span>String src<span style=color:#f92672>,</span> String dst<span style=color:#f92672>)</span> <span style=color:#66d9ef>throws</span> IOException <span style=color:#f92672>{</span>
+    InputStream in <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> FileStream<span style=color:#f92672>(</span>src<span style=color:#f92672>);</span>
+    <span style=color:#66d9ef>try</span> <span style=color:#f92672>{</span>
+        OutputStream out <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> FileOutputStream<span style=color:#f92672>(</span>dst<span style=color:#f92672>);</span>
+        <span style=color:#66d9ef>try</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>byte</span><span style=color:#f92672>[]</span> buf <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#66d9ef>byte</span><span style=color:#f92672>[</span>BUFFER_SIZE<span style=color:#f92672>];</span>
+            <span style=color:#66d9ef>int</span> n<span style=color:#f92672>;</span>
+            <span style=color:#66d9ef>while</span><span style=color:#f92672>((</span>n <span style=color:#f92672>=</span> in<span style=color:#f92672>.</span><span style=color:#a6e22e>read</span><span style=color:#f92672>(</span>buf<span style=color:#f92672>)</span> <span style=color:#f92672>&gt;=</span> 0<span style=color:#f92672>))</span> <span style=color:#f92672>{</span>
+                out<span style=color:#f92672>.</span><span style=color:#a6e22e>write</span><span style=color:#f92672>(</span>buf<span style=color:#f92672>,</span> 0<span style=color:#f92672>,</span> n<span style=color:#f92672>);</span>
+            <span style=color:#f92672>}</span>
+        <span style=color:#f92672>}</span> <span style=color:#66d9ef>finally</span> <span style=color:#f92672>{</span>
+            out<span style=color:#f92672>.</span><span style=color:#a6e22e>close</span><span style=color:#f92672>();</span>
+        <span style=color:#f92672>}</span>
+    <span style=color:#f92672>}</span> <span style=color:#66d9ef>finally</span> <span style=color:#f92672>{</span>
+        in<span style=color:#f92672>.</span><span style=color:#a6e22e>close</span><span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>위 예제에서 device 문제로 Exception이 발생하면 첫번째 Exception은 먹히게 된다. in.read()에서 발생한 익셉션은 out.close() 에서 발생한 익셉션에 의해 먹히게 된다&mldr;</p>
+<p>java7에 나온 try-with-resources 를 이용하면 이 문제는 해결된다. 이를 위해 해당 자원은 AutoCloseable 인터페이스를 구현해야 한다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>copy</span><span style=color:#f92672>(</span>String src<span style=color:#f92672>,</span> String dst<span style=color:#f92672>)</span> <span style=color:#66d9ef>throws</span> IOException <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>try</span> <span style=color:#f92672>(</span>InputStream in <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> FileInputStream<span style=color:#f92672>(</span>in<span style=color:#f92672>);</span>
+        OutputStream out <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> FileOutputStream<span style=color:#f92672>(</span>dst<span style=color:#f92672>))</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>byte</span><span style=color:#f92672>[]</span> buf <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#66d9ef>byte</span><span style=color:#f92672>[</span>BUFFER_SIZE<span style=color:#f92672>];</span>
+        <span style=color:#66d9ef>int</span> n<span style=color:#f92672>;</span>
+        <span style=color:#66d9ef>while</span><span style=color:#f92672>((</span>n <span style=color:#f92672>=</span> in<span style=color:#f92672>.</span><span style=color:#a6e22e>read</span><span style=color:#f92672>(</span>buf<span style=color:#f92672>)</span> <span style=color:#f92672>&gt;=</span> 0<span style=color:#f92672>))</span> <span style=color:#f92672>{</span>
+            out<span style=color:#f92672>.</span><span style=color:#a6e22e>write</span><span style=color:#f92672>(</span>buf<span style=color:#f92672>,</span> 0<span style=color:#f92672>,</span> n<span style=color:#f92672>);</span>
+        <span style=color:#f92672>}</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>더 간결하고 읽기 쉬워졌다.</p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#item-9-prefer-try-with-resources-to-try-finally>Item 9: Prefer try-with-resources to try-finally</a></li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

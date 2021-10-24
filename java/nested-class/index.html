@@ -1,0 +1,141 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="어디서 봤는지는 모르지만 일단 Java">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Java">
+<meta property="og:description" content="어디서 봤는지는 모르지만 일단 Java">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/java/nested-class/"><meta property="article:section" content="Java">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Java | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Java</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents></nav>
+</aside>
+</header>
+<article class=markdown><h1 id=nested-class>
+nested-class
+<a class=anchor href=#nested-class>#</a>
+</h1>
+<p>class 내부에 class를 정의한 것을 nested class라고 한다.</p>
+<ol>
+<li>inner class</li>
+<li>method local inner class</li>
+<li>anonymous inner class</li>
+<li>static nested class</li>
+</ol>
+<p>4 종류가 있다. 1 ~ 3 은 non-static, 4는 static class 이다.</p>
+<p><code>inner class</code>(member inner class)의 경우 inner class를 private 로 선언하여도
+outer class에서 inner에 접근이 가능하며, inner 에서도 outer의 private 멤버에 접근 가능하다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Outer</span><span style=color:#f92672>{</span>
+    <span style=color:#75715e>//...
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Inner</span><span style=color:#f92672>{</span>
+        <span style=color:#75715e>//...
+</span><span style=color:#75715e></span>    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>LinkedList class 내의 ListItr class가 한 예이다.</p>
+<p><code>method-local Inner class</code> 는 외부 class의 method에 내부 class를 정의하여 사용 한다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Outer</span><span style=color:#f92672>{</span>
+    <span style=color:#75715e>//...
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>my_method</span><span style=color:#f92672>(){</span>
+        <span style=color:#75715e>//...
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Inner</span><span style=color:#f92672>(){</span>
+            <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>my_method2</span><span style=color:#f92672>(){</span>
+                <span style=color:#75715e>//...
+</span><span style=color:#75715e></span>            <span style=color:#f92672>}</span>
+        <span style=color:#f92672>}</span>
+        Inner in <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Inner<span style=color:#f92672>();</span>
+        in<span style=color:#f92672>.</span><span style=color:#a6e22e>my_method2</span><span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span>
+    <span style=color:#75715e>//...
+</span><span style=color:#75715e></span><span style=color:#f92672>}</span>
+</code></pre></div><p><code>anonymous Inner class</code>는 클래스의 선언과 초기화를 동시에 하는 방식이다. class나 interface의 method를 override 할 때 보통 사용한다.
+Android 할 때 button eventListener 만들 때 이런 식으로 했던 것 같다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>abstract</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>AnonymousInner</span> <span style=color:#f92672>{</span>
+   <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>abstract</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>mymethod</span><span style=color:#f92672>();</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Outer_class</span> <span style=color:#f92672>{</span>
+
+   <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span><span style=color:#f92672>(</span>String args<span style=color:#f92672>[])</span> <span style=color:#f92672>{</span>
+      AnonymousInner inner <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> AnonymousInner<span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+         <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>mymethod</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+            System<span style=color:#f92672>.</span><span style=color:#a6e22e>out</span><span style=color:#f92672>.</span><span style=color:#a6e22e>println</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;This is an example of anonymous inner class&#34;</span><span style=color:#f92672>);</span>
+         <span style=color:#f92672>}</span>
+      <span style=color:#f92672>};</span>
+      inner<span style=color:#f92672>.</span><span style=color:#a6e22e>mymethod</span><span style=color:#f92672>();</span>
+   <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>compile 과정에서 자동으로 class를 생성해주기 때문에 코드량이 많이 줄어든다.</p>
+<p><code>static nested class</code> 는 outer class의 static member이다. 초기화 없이 접근할 수 있다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Outer</span> <span style=color:#f92672>{</span>
+   <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Nested_Demo</span> <span style=color:#f92672>{</span>
+      <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>my_method</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+         System<span style=color:#f92672>.</span><span style=color:#a6e22e>out</span><span style=color:#f92672>.</span><span style=color:#a6e22e>println</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;This is my nested class&#34;</span><span style=color:#f92672>);</span>
+      <span style=color:#f92672>}</span>
+   <span style=color:#f92672>}</span>
+
+   <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span><span style=color:#f92672>(</span>String args<span style=color:#f92672>[])</span> <span style=color:#f92672>{</span>
+      Outer<span style=color:#f92672>.</span><span style=color:#a6e22e>Nested_Demo</span> nested <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Outer<span style=color:#f92672>.</span><span style=color:#a6e22e>Nested_Demo</span><span style=color:#f92672>();</span>
+      nested<span style=color:#f92672>.</span><span style=color:#a6e22e>my_method</span><span style=color:#f92672>();</span>
+   <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>이 방식은 singleton object를 만들 때 enum이나 DCL보다 간편해서 많이 쓰인다.</p>
+<p>참조 <a href=https://www.tutorialspoint.com/java/java_innerclasses.htm>tutorialspoint 링크</a></p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents></nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

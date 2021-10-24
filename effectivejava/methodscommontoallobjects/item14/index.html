@@ -1,0 +1,128 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="자바 잘 짜보자">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Effective Java">
+<meta property="og:description" content="자바 잘 짜보자">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/effectivejava/methodscommontoallobjects/item14/"><meta property="article:section" content="EffectiveJava">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Effective Java | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Effective Java</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#item-14-consider-implementing-comparable>Item 14: Consider implementing Comparable</a></li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h2 id=item-14-consider-implementing-comparable>
+Item 14: Consider implementing Comparable
+<a class=anchor href=#item-14-consider-implementing-comparable>#</a>
+</h2>
+<p>Comparable은 Object에 정의된 인터페이스가 아니고, 단독 인터페이스이다. equals와 비슷한데 순서를 정하게 해준다.
+Comparable을 구현한 객체 배열은 다음과 같이 정렬할 수 있다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>Arrays<span style=color:#f92672>.</span><span style=color:#a6e22e>sort</span><span style=color:#f92672>(</span>a<span style=color:#f92672>);</span>
+</code></pre></div><p>기본적으로 java에서 값을 나타내는 클래스는 Comparable을 구현한다. 만약 알파벳 순서나, 수치 순서, 연대 순 등과 같은 natural ordering이 필요하다면
+반드시 <code>Comparable</code> 인터페이스를 구현해야 한다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Comparable</span><span style=color:#f92672>&lt;</span>T<span style=color:#f92672>&gt;</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>compareTo</span><span style=color:#f92672>(</span>T t<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>compareTo의 일반적인 규약은 equals와 비슷하다.</p>
+<blockquote>
+<p>이 객체가 비교하고자 하는 녀석보다 작으면 음수를 반환,
+같으면 0을 반환
+크면 양수를 반환한다.
+비교할 수 없는 녀석이면 <code>ClassCastException</code> 을 반환한다.</p>
+</blockquote>
+<ul>
+<li>sgn() 은 signum function을 의미한다.</li>
+<li>sgn(x.compareTo(y)) == -sgn(y.compareTo(x)) for all x and y(이건 x.compareTo(y) 가 exception 나오면 y.compareTo(x) 도 exception 을 반환해야 한다는 것을 의미한다)</li>
+<li><code>transitive</code> 함을 보장해야 한다.(x.compareTo(y) > 0 && y.compareTo(z) > 0 이면 x.compareTo(z) > 0 이여야 한다.)</li>
+<li>x.compareTo(y) == 0 이면 sgn(x.compare(z)) == sgn(y.compare(z)) 여야 한다.</li>
+<li>(x.compareTo(y) == 0) == (x.equals(y)) 는 강제는 아니지만 정말 추천한다. Comparable을 구현하면서 이 규약을 위반하는 경우 분명히 명시해야 한다. &ldquo;이 클래스는 equals와 대치되는 순서를 갖고 있습니다.&rdquo;</li>
+</ul>
+<p>보면 equals와 굉장히 닮아 있다, <code>reflexivity</code> <code>symmetry</code> <code>transitivity</code> 모두를 만족해야 한다. 따라서 같은 문제가 있다. 기존 compareTo 규약을 유지하면서 상속을 통해 확장할 방법이 없다. Comparable을 구현한 클래스에 값을 추가하고 싶다면 상속하지 마라. 구성을 통해 필드로 해당 객체를 사용하는 것이 유일한 방법이다.</p>
+<p>마지막 규약은 compareTo의 equality 판단 값이 equals의 판단과 같아야 한다는 것이다.
+둘이 다르면 일관성이 깨졌다고 표현하고, 동작은 하겠지만 Collection, Set, Map 에서 생각대로 동작하지 않을 수 있다. 왜냐하면 이런 인터페이스들은 equals 를 이용해 보통 정의되지만, sorted algorithm은 보통 compareTo를 이용하기 때문이다. 큰 재앙은 아니지만 주의해야 한다.</p>
+<p>compareTo method에서는 필드를 비교하면 되는데 객체의 경우 recursive하게 compareTo를 불러주면 된다. 만약 객체가 Comparable을 상속하지 안았다면 Comparator를 대신 써라.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>final</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>CaseInsensitiveString</span> <span style=color:#66d9ef>implements</span> Comparable<span style=color:#f92672>&lt;</span>CaseInsensitiveString<span style=color:#f92672>&gt;</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>compareTo</span><span style=color:#f92672>(</span>CaseInsensitiveString cis<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>return</span> String<span style=color:#f92672>.</span><span style=color:#a6e22e>CASE_INSENSITIVE_ORDER</span><span style=color:#f92672>.</span><span style=color:#a6e22e>compare</span><span style=color:#f92672>(</span>s<span style=color:#f92672>,</span> cis<span style=color:#f92672>.</span><span style=color:#a6e22e>s</span><span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>이전 버전의 책에서는 비교에서 부등흐를 사용했는데 java6부터 static compare methods들이 모든 boxed primitive type에 추가되었다. 부등호 쓰지말고 static method 사용하자.</p>
+<p>만약 중요한 필드가 여러개라면 비교하는 순서가 중요해진다. 가장 중요한 필드부터 차례대로 비교하고, 0이 아닌 값이 나오면 그 순간에 반환하면 된다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>compareTo</span><span style=color:#f92672>(</span>PhoneNumber pn<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>int</span> result <span style=color:#f92672>=</span> Short<span style=color:#f92672>.</span><span style=color:#a6e22e>compare</span><span style=color:#f92672>(</span>areaCode<span style=color:#f92672>,</span> pn<span style=color:#f92672>.</span><span style=color:#a6e22e>areaCode</span><span style=color:#f92672>);</span>
+    <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>result <span style=color:#f92672>==</span> 0<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        result <span style=color:#f92672>=</span> Short<span style=color:#f92672>.</span><span style=color:#a6e22e>compare</span><span style=color:#f92672>(</span>prefix<span style=color:#f92672>,</span> pn<span style=color:#f92672>.</span><span style=color:#a6e22e>prefix</span><span style=color:#f92672>);</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>result <span style=color:#f92672>==</span> 0<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            result <span style=color:#f92672>=</span> Short<span style=color:#f92672>.</span><span style=color:#a6e22e>compare</span><span style=color:#f92672>(</span>lineNum<span style=color:#f92672>,</span> pn<span style=color:#f92672>.</span><span style=color:#a6e22e>lineNum</span><span style=color:#f92672>);</span>
+        <span style=color:#f92672>}</span>
+    <span style=color:#f92672>}</span>
+    <span style=color:#66d9ef>return</span> result<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>요약하면 값을 비교해야할 필요가 있을 땐 Comparable을 구현해서 쉽게 정렬하고 검색할 수 있게 해라. 부등호 사용은 피하고 static method를 사용하거나 Comparator를 구현한 Comparator를 이용해라.</p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#item-14-consider-implementing-comparable>Item 14: Consider implementing Comparable</a></li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

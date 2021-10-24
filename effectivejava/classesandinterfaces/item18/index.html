@@ -1,0 +1,193 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="자바 잘 짜보자">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Effective Java">
+<meta property="og:description" content="자바 잘 짜보자">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/effectivejava/classesandinterfaces/item18/"><meta property="article:section" content="EffectiveJava">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Effective Java | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Effective Java</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#item-18-상속보다는-컴포지션을-사용해라>Item 18: 상속보다는 컴포지션을 사용해라</a>
+<ul>
+<li><a href=#상속-사용>상속 사용</a></li>
+<li><a href=#composition-사용>composition 사용</a></li>
+<li><a href=#요약>요약</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h2 id=item-18-상속보다는-컴포지션을-사용해라>
+Item 18: 상속보다는 컴포지션을 사용해라
+<a class=anchor href=#item-18-%ec%83%81%ec%86%8d%eb%b3%b4%eb%8b%a4%eb%8a%94-%ec%bb%b4%ed%8f%ac%ec%a7%80%ec%85%98%ec%9d%84-%ec%82%ac%ec%9a%a9%ed%95%b4%eb%9d%bc>#</a>
+</h2>
+<p><strong>상속은 캡슐화를 깨뜨린다</strong>. 상위 클래스 구현에 따라 하위 클래스의 동작이 이상해 질 수 있다.</p>
+<h3 id=상속-사용>
+상속 사용
+<a class=anchor href=#%ec%83%81%ec%86%8d-%ec%82%ac%ec%9a%a9>#</a>
+</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>InstrumentedHashSet</span><span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> <span style=color:#66d9ef>extends</span> HashSet<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>int</span> addCount <span style=color:#f92672>=</span> 0<span style=color:#f92672>;</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>InstrumentedHashSet</span><span style=color:#f92672>()</span> <span style=color:#f92672>{}</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>InstrumentedHashSet</span><span style=color:#f92672>(</span><span style=color:#66d9ef>int</span> initCap<span style=color:#f92672>,</span> <span style=color:#66d9ef>float</span> loadFactor<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>super</span><span style=color:#f92672>(</span>initCap<span style=color:#f92672>,</span> loadFactor<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#a6e22e>@Override</span> <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>add</span><span style=color:#f92672>(</span>E e<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        addCount<span style=color:#f92672>++;</span>
+        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>super</span><span style=color:#f92672>.</span><span style=color:#a6e22e>add</span><span style=color:#f92672>(</span>e<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#a6e22e>@Override</span> <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>addAll</span><span style=color:#f92672>(</span>Collection<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> E<span style=color:#f92672>&gt;</span> c<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        addCount <span style=color:#f92672>+=</span> c<span style=color:#f92672>.</span><span style=color:#a6e22e>size</span><span style=color:#f92672>();</span>
+        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>super</span><span style=color:#f92672>.</span><span style=color:#a6e22e>addAll</span><span style=color:#f92672>(</span>c<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>getAddCount</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>return</span> addCount<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+
+
+    InstrumentedHashSet<span style=color:#f92672>&lt;</span>Stirng<span style=color:#f92672>&gt;</span> s <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> InstrumentedHashSet<span style=color:#f92672>&lt;&gt;();</span>
+    s<span style=color:#f92672>.</span><span style=color:#a6e22e>addAll</span><span style=color:#f92672>(</span>List<span style=color:#f92672>.</span><span style=color:#a6e22e>of</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;일&#34;</span><span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;이&#34;</span><span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;삼&#34;</span><span style=color:#f92672>));</span>
+
+    print<span style=color:#f92672>(</span>s<span style=color:#f92672>.</span><span style=color:#a6e22e>getAddCount</span><span style=color:#f92672>());</span>
+    <span style=color:#75715e>// 6  (?!)
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// 3 이 아니다.
+</span><span style=color:#75715e></span><span style=color:#f92672>}</span>
+</code></pre></div><p>원인은 HashSet 의 <code>addAll</code> 이 <code>add</code> 를 사용해 구현되어 있기 때문이다.</p>
+<ul>
+<li><code>InstrumentedHashSet.addAll</code> 에서 3이 추가됨</li>
+<li><code>HashSet.addAll</code> 이 각각 인자에 대해 <code>add</code> 호출</li>
+<li>Override 된 <code>InstrumentedHashSet.add</code> 가 3번 호출되어 3이 또 더해짐</li>
+<li>결론적으로 원소 당 2씩 추가됨</li>
+</ul>
+<p><strong>이 문제는 결국 메소드 재정의 때문에 발생했다.</strong></p>
+<h3 id=composition-사용>
+composition 사용
+<a class=anchor href=#composition-%ec%82%ac%ec%9a%a9>#</a>
+</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// Wrapper class
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>InstrumentedSet</span><span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> <span style=color:#66d9ef>extends</span> ForawrdingSet<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>int</span> addCount <span style=color:#f92672>=</span> 0<span style=color:#f92672>;</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>InstrumentedSet</span><span style=color:#f92672>(</span>Set<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> s<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>super</span><span style=color:#f92672>(</span>e<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#a6e22e>@Override</span> <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>add</span><span style=color:#f92672>(</span>E e<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        addCount<span style=color:#f92672>++;</span>
+        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>super</span><span style=color:#f92672>.</span><span style=color:#a6e22e>add</span><span style=color:#f92672>(</span>e<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#a6e22e>@Override</span> <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>addAll</span><span style=color:#f92672>(</span>Collection<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> E<span style=color:#f92672>&gt;</span> c<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        addCount <span style=color:#f92672>+=</span> c<span style=color:#f92672>.</span><span style=color:#a6e22e>size</span><span style=color:#f92672>();</span>
+        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>super</span><span style=color:#f92672>.</span><span style=color:#a6e22e>addAll</span><span style=color:#f92672>(</span>c<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// Forwarding class
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ForwardingSet</span><span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> <span style=color:#66d9ef>implements</span> Set<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>final</span> Set<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> s<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>ForwardingSet</span><span style=color:#f92672>(</span>Set<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> s<span style=color:#f92672>)</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>s</span> <span style=color:#f92672>=</span> s<span style=color:#f92672>;}</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>clear</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>s<span style=color:#f92672>.</span><span style=color:#a6e22e>clear</span><span style=color:#f92672>();}</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>contains</span><span style=color:#f92672>(</span>Object o<span style=color:#f92672>)</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>return</span> s<span style=color:#f92672>.</span><span style=color:#a6e22e>contains</span><span style=color:#f92672>(</span>o<span style=color:#f92672>);}</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>isEmpty</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>return</span> s<span style=color:#f92672>.</span><span style=color:#a6e22e>isEmpty</span><span style=color:#f92672>();}</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>size</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>return</span> s<span style=color:#f92672>.</span><span style=color:#a6e22e>size</span><span style=color:#f92672>();}</span>
+    <span style=color:#66d9ef>public</span> Iterator<span style=color:#f92672>&lt;</span>E<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>iterator</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>return</span> s<span style=color:#f92672>.</span><span style=color:#a6e22e>iterator</span><span style=color:#f92672>();}</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>add</span><span style=color:#f92672>(</span>E e<span style=color:#f92672>)</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>return</span> s<span style=color:#f92672>.</span><span style=color:#a6e22e>add</span><span style=color:#f92672>(</span>e<span style=color:#f92672>);}</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>remove</span><span style=color:#f92672>(</span>Object o<span style=color:#f92672>)</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>return</span> s<span style=color:#f92672>.</span><span style=color:#a6e22e>remove</span><span style=color:#f92672>(</span>o<span style=color:#f92672>)};</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>containsAll</span><span style=color:#f92672>(</span>Collection<span style=color:#f92672>&lt;?&gt;</span> c<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>return</span> s<span style=color:#f92672>.</span><span style=color:#a6e22e>containsAll</span><span style=color:#f92672>(</span>c<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>addAll</span><span style=color:#f92672>(</span>Collection<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> E<span style=color:#f92672>&gt;</span> c<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>return</span> s<span style=color:#f92672>.</span><span style=color:#a6e22e>addAll</span><span style=color:#f92672>(</span>c<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+    <span style=color:#75715e>// 후략
+</span><span style=color:#75715e></span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>이러면 기존 Set 에 영향을 주지 않고 기능을 확장할 수 있다. 디자인 패턴으로 보면 <strong>Decorator pattern</strong> 으로 볼 수 있다. Composition 과 Forwarding 은 넓은 의미로 <strong>Deligation</strong> 이라고 부른다.</p>
+<p>wrapper class 의 단점은 거의 없는데, callback 프레임워크와 어울리지 않는다. callback framework 에서는 <code>this</code> 를 넘겨서 callback 호출 시 사용하도록 한다. 그런데 내부 객체는 wrapper 를 모르므로 wrapper 가 아닌 내부 객체 자신을 넘기게 된다(SELF problem).</p>
+<h3 id=요약>
+요약
+<a class=anchor href=#%ec%9a%94%ec%95%bd>#</a>
+</h3>
+<blockquote>
+<p>상속은 강력하지만 캡슐화를 해친다.
+상속 대신 composition 과 forwarding 을 사용하자.</p>
+</blockquote>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#item-18-상속보다는-컴포지션을-사용해라>Item 18: 상속보다는 컴포지션을 사용해라</a>
+<ul>
+<li><a href=#상속-사용>상속 사용</a></li>
+<li><a href=#composition-사용>composition 사용</a></li>
+<li><a href=#요약>요약</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

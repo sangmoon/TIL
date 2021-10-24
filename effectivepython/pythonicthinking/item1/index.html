@@ -1,0 +1,115 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="파이썬 잘 짜보자">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Effective Python">
+<meta property="og:description" content="파이썬 잘 짜보자">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/effectivepython/pythonicthinking/item1/"><meta property="article:section" content="EffectivePython">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Effective Python | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Effective Python</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#item-1-know-which-version-of-python-youre-using>Item 1: Know Which Version of Python You&rsquo;re Using</a>
+<ul>
+<li><a href=#기억해야-할-것>기억해야 할 것</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h2 id=item-1-know-which-version-of-python-youre-using>
+Item 1: Know Which Version of Python You&rsquo;re Using
+<a class=anchor href=#item-1-know-which-version-of-python-youre-using>#</a>
+</h2>
+<p><code>python</code> 은 보통 python2.7 의 alias 이다. 가끔은 더 낮은 버전을 쓰는 곳도 있다.
+이를 확실히 하기 위해선 &ndash;version flag를 사용한다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ python --version
+Python 2.7.10
+</code></pre></div><p><code>python3</code> 는 보통 Python3를 사용하기위해 쓰인다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ python3 --version
+Python 3.8.0
+</code></pre></div><p>runtime 에서도 sys module을 통해 호출 가능하다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>import</span> sys
+print(sys<span style=color:#f92672>.</span>version_info)
+print(sys<span style=color:#f92672>.</span>version)
+
+<span style=color:#75715e># sys.version_info(major=3, minor=6, micro=9, releaselevel=&#39;final&#39;, serial=0)</span>
+<span style=color:#75715e># 3.6.9 (default, Jan 15 2020, 10:45:58) [GCC 5.4.0 20160609]</span>
+</code></pre></div><h3 id=기억해야-할-것>
+기억해야 할 것
+<a class=anchor href=#%ea%b8%b0%ec%96%b5%ed%95%b4%ec%95%bc-%ed%95%a0-%ea%b2%83>#</a>
+</h3>
+<ul>
+<li>Python3가 최신이고 지원되는 버전이며 앞으로 프로젝트는 이걸로 해야 한다.</li>
+<li>당신 시스템 버전이 기대하는 버전과 맞는지 항상 확인해라</li>
+<li>Python2는 2020 1월 부로 지원 중단된다.</li>
+</ul>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#item-1-know-which-version-of-python-youre-using>Item 1: Know Which Version of Python You&rsquo;re Using</a>
+<ul>
+<li><a href=#기억해야-할-것>기억해야 할 것</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="자바 잘 짜보자">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Effective Java">
+<meta property="og:description" content="자바 잘 짜보자">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/effectivejava/classesandinterfaces/item15/"><meta property="article:section" content="EffectiveJava">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Effective Java | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Effective Java</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#item-15-minimize-the-accessibility-of-classess-and-members>Item 15: Minimize the accessibility of classess and members</a>
+<ul>
+<li><a href=#캡슐화의-장점>캡슐화의 장점</a></li>
+<li><a href=#java에서-가능한-access-level>java에서 가능한 access level</a></li>
+<li><a href=#pubic-array-의-허점>pubic array 의 허점</a></li>
+<li><a href=#java9-부터-나온-module-system>Java9 부터 나온 Module system</a></li>
+<li><a href=#요약>요약</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h2 id=item-15-minimize-the-accessibility-of-classess-and-members>
+Item 15: Minimize the accessibility of classess and members
+<a class=anchor href=#item-15-minimize-the-accessibility-of-classess-and-members>#</a>
+</h2>
+<p>잘 설계된 컴포넌트는 상세 구현을 숨기고 API와 완벽히 분리해야 한다.
+<code>Information hiding</code> or <code>encapsulation</code> 으로 알려진 이 생각은 소프트웨어 디자인의 기본이다.</p>
+<h3 id=캡슐화의-장점>
+캡슐화의 장점
+<a class=anchor href=#%ec%ba%a1%ec%8a%90%ed%99%94%ec%9d%98-%ec%9e%a5%ec%a0%90>#</a>
+</h3>
+<ul>
+<li>병렬 개발을 통한 개발 속도 증가</li>
+<li>독립적인 컴포넌트 분리로 인한 관리 비용 감소</li>
+<li>성능 최적화에 도움</li>
+<li>재사용성 증가</li>
+<li>제작 난이도 감소</li>
+</ul>
+<p>룰은 간단하다. <strong>모든 클래스와 멤버의 접근성을 가능한 한 좁혀야 한다.</strong></p>
+<h3 id=java에서-가능한-access-level>
+java에서 가능한 access level
+<a class=anchor href=#java%ec%97%90%ec%84%9c-%ea%b0%80%eb%8a%a5%ed%95%9c-access-level>#</a>
+</h3>
+<ul>
+<li><strong>private</strong>: 멤버들은 오직 해당 클래스에서만 접근 가능하다</li>
+<li><strong>package-private</strong>: 멤버는 해당 클래스가 선언되어 있는 패키지에서 접근 가능하다(접근자를 안쓰면 되는데, interface는 기본 public 이라 예외)</li>
+<li><strong>protected</strong>: 패키지 내와 상속받은 클래스에서만 접근 가능하다</li>
+<li><strong>public</strong>: 어디서든 접근 가능하다</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>total</th>
+<th>In the class</th>
+<th>Same package</th>
+<th>Extended class</th>
+<th>Another area</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>private</td>
+<td>O</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>package-private</td>
+<td>O</td>
+<td>O</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>protected</td>
+<td>O</td>
+<td>O</td>
+<td>O</td>
+<td>X</td>
+</tr>
+<tr>
+<td>public</td>
+<td>O</td>
+<td>O</td>
+<td>O</td>
+<td>O</td>
+</tr>
+</tbody>
+</table>
+<p><strong>public class의 객체 필드는 public 이어선 안 된다.</strong></p>
+<h3 id=pubic-array-의-허점>
+pubic array 의 허점
+<a class=anchor href=#pubic-array-%ec%9d%98-%ed%97%88%ec%a0%90>#</a>
+</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>final</span> Thing<span style=color:#f92672>[]</span> VALUES <span style=color:#f92672>=</span> <span style=color:#f92672>{...};</span>
+<span style=color:#75715e>// client 가 배열 필드 참조를 받아서 수정할 수 있다.
+</span></code></pre></div><h4 id=해결책-1-immutable-list>
+해결책 1. immutable list
+<a class=anchor href=#%ed%95%b4%ea%b2%b0%ec%b1%85-1-immutable-list>#</a>
+</h4>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>final</span> Thing<span style=color:#f92672>[]</span> PRIVATE_VALUES <span style=color:#f92672>=</span> <span style=color:#f92672>{...};</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>final</span> List<span style=color:#f92672>&lt;</span>Thing<span style=color:#f92672>&gt;</span> VALUES <span style=color:#f92672>=</span> Collections<span style=color:#f92672>.</span><span style=color:#a6e22e>unmodifiableList</span><span style=color:#f92672>(</span>Arrays<span style=color:#f92672>.</span><span style=color:#a6e22e>asList</span><span style=color:#f92672>(</span>PRIVATE_VALUES<span style=color:#f92672>));</span>
+</code></pre></div><h4 id=해결책-2-array-copy>
+해결책 2. array copy
+<a class=anchor href=#%ed%95%b4%ea%b2%b0%ec%b1%85-2-array-copy>#</a>
+</h4>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>final</span> Thing<span style=color:#f92672>[]</span> PRIVATE_VALUES <span style=color:#f92672>=</span> <span style=color:#f92672>{...};</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>final</span> Thing<span style=color:#f92672>[]</span> <span style=color:#a6e22e>values</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>return</span> PRIAVTE_VALUES<span style=color:#f92672>.</span><span style=color:#a6e22e>clone</span><span style=color:#f92672>();</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h3 id=java9-부터-나온-module-system>
+Java9 부터 나온 Module system
+<a class=anchor href=#java9-%eb%b6%80%ed%84%b0-%eb%82%98%ec%98%a8-module-system>#</a>
+</h3>
+<p><code>class</code> 모음은 <code>packages</code>, <code>packages</code> 의 모음이 <code>module</code></p>
+<p>외부에 노출할 패키지는 명시적으로 <code>export</code> 해주어야 함.
+외부 패키지에서 참조할 패키지는 명시적으로 <code>require</code> 해주어야 함. (java script 의 모듈화 방식과 유사하다..?)</p>
+<p>JDK 에서는 많이 쓰이고 있는데 실제 어플리케이션에는 아직 시기상조라고&mldr;</p>
+<h3 id=요약>
+요약
+<a class=anchor href=#%ec%9a%94%ec%95%bd>#</a>
+</h3>
+<blockquote>
+<p>API 설계 시 public 은 최소화 하자.
+public class 는 public static final 외 에는 public 필드를 가져서는 안 된다.
+public static final 필드도 immutable 인지 확인하자.</p>
+</blockquote>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#item-15-minimize-the-accessibility-of-classess-and-members>Item 15: Minimize the accessibility of classess and members</a>
+<ul>
+<li><a href=#캡슐화의-장점>캡슐화의 장점</a></li>
+<li><a href=#java에서-가능한-access-level>java에서 가능한 access level</a></li>
+<li><a href=#pubic-array-의-허점>pubic array 의 허점</a></li>
+<li><a href=#java9-부터-나온-module-system>Java9 부터 나온 Module system</a></li>
+<li><a href=#요약>요약</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

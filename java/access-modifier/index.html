@@ -1,0 +1,98 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="어디서 봤는지는 모르지만 일단 Java">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Java">
+<meta property="og:description" content="어디서 봤는지는 모르지만 일단 Java">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/java/access-modifier/"><meta property="article:section" content="Java">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Java | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Java</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents></nav>
+</aside>
+</header>
+<article class=markdown><h1 id=access-modifier>
+Access modifier
+<a class=anchor href=#access-modifier>#</a>
+</h1>
+<p>java 에는 4개의 access modifier 가 있다.</p>
+<ol>
+<li>public ()</li>
+<li>protected</li>
+<li>default(package private)</li>
+<li>private</li>
+</ol>
+<p>위의 순서대로 public에 가까울 수록 제한이 적고, private에 갈수록 제한이 커진다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>            <span style=color:#f92672>|</span> Class <span style=color:#f92672>|</span> Package <span style=color:#f92672>|</span> Subclass <span style=color:#f92672>|</span> Subclass <span style=color:#f92672>|</span> World
+            <span style=color:#f92672>|</span>       <span style=color:#f92672>|</span>         <span style=color:#f92672>|(</span>same pkg<span style=color:#f92672>)|(</span>diff pkg<span style=color:#f92672>)|</span>
+<span style=color:#960050;background-color:#1e0010>————————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>———————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>—————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>——————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>——————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>————————</span>
+<span style=color:#66d9ef>public</span>      <span style=color:#f92672>|</span>   <span style=color:#f92672>+</span>   <span style=color:#f92672>|</span>    <span style=color:#f92672>+</span>    <span style=color:#f92672>|</span>    <span style=color:#f92672>+</span>     <span style=color:#f92672>|</span>     <span style=color:#f92672>+</span>    <span style=color:#f92672>|</span>   <span style=color:#f92672>+</span>
+<span style=color:#960050;background-color:#1e0010>————————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>———————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>—————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>——————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>——————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>————————</span>
+<span style=color:#66d9ef>protected</span>   <span style=color:#f92672>|</span>   <span style=color:#f92672>+</span>   <span style=color:#f92672>|</span>    <span style=color:#f92672>+</span>    <span style=color:#f92672>|</span>    <span style=color:#f92672>+</span>     <span style=color:#f92672>|</span>     <span style=color:#f92672>+</span>    <span style=color:#f92672>|</span>
+<span style=color:#960050;background-color:#1e0010>————————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>———————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>—————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>——————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>——————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>————————</span>
+<span style=color:#66d9ef>default</span>     <span style=color:#f92672>|</span>   <span style=color:#f92672>+</span>   <span style=color:#f92672>|</span>    <span style=color:#f92672>+</span>    <span style=color:#f92672>|</span>    <span style=color:#f92672>+</span>     <span style=color:#f92672>|</span>          <span style=color:#f92672>|</span>
+<span style=color:#960050;background-color:#1e0010>————————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>———————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>—————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>——————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>——————————</span><span style=color:#f92672>+</span><span style=color:#960050;background-color:#1e0010>————————</span>
+<span style=color:#66d9ef>private</span>     <span style=color:#f92672>|</span>   <span style=color:#f92672>+</span>   <span style=color:#f92672>|</span>         <span style=color:#f92672>|</span>          <span style=color:#f92672>|</span>          <span style=color:#f92672>|</span>
+
+<span style=color:#f92672>+</span> <span style=color:#f92672>:</span> accessible
+blank <span style=color:#f92672>:</span> not accessible
+</code></pre></div><p><a href=https://stackoverflow.com/questions/215497/in-java-difference-between-package-private-public-protected-and-private>https://stackoverflow.com/questions/215497/in-java-difference-between-package-private-public-protected-and-private</a></p>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents></nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

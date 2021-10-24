@@ -1,0 +1,233 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="디자인 패턴에 대해 알아보자">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Design Pattern">
+<meta property="og:description" content="디자인 패턴에 대해 알아보자">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/designpattern/creationalpatterns/abstract-factory/"><meta property="article:section" content="DesignPattern">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Design Pattern | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Design Pattern</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#abstract-factory-pattern>Abstract Factory Pattern</a>
+<ul>
+<li><a href=#intent-br>Intent </a></li>
+<li><a href=#implementation-br>Implementation </a></li>
+<li><a href=#consequences-br>Consequences </a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h2 id=abstract-factory-pattern>
+Abstract Factory Pattern
+<a class=anchor href=#abstract-factory-pattern>#</a>
+</h2>
+<h3 id=intent-br>
+Intent
+<a class=anchor href=#intent-br>#</a>
+</h3>
+<p>관련성 있는 어려 종류의 객체를 특정 그룹으로 묶어 한번에 일관된 방식으로 생성하고 교체할 수 있도록 만든 디자인 패턴이다.</p>
+<h3 id=implementation-br>
+Implementation
+<a class=anchor href=#implementation-br>#</a>
+</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// factory method 사용할 경우
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>enum</span> VenderID<span style=color:#f92672>{</span>LG<span style=color:#f92672>,</span> SAMSUNG<span style=color:#f92672>,</span> APPLE<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ScreenFactory</span><span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> Screen <span style=color:#a6e22e>createScreen</span><span style=color:#f92672>(</span>VendorID vendorID<span style=color:#f92672>){</span>
+       Screen screen  <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+       <span style=color:#66d9ef>switch</span><span style=color:#f92672>(</span>vendorID<span style=color:#f92672>){</span>
+           <span style=color:#66d9ef>case</span> LG<span style=color:#f92672>:</span>
+             screen <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> LGScreen<span style=color:#f92672>();</span>
+             <span style=color:#66d9ef>break</span><span style=color:#f92672>;</span>
+          <span style=color:#66d9ef>case</span> SAMSUNG<span style=color:#f92672>:</span>
+             screen <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> SAMSUNGScreen<span style=color:#f92672>();</span>
+             <span style=color:#66d9ef>break</span><span style=color:#f92672>;</span>
+          <span style=color:#66d9ef>case</span> APPLE<span style=color:#f92672>:</span>
+          	screen <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> APPLEScreen<span style=color:#f92672>();</span>
+      <span style=color:#f92672>}</span>
+      <span style=color:#66d9ef>return</span> screen<span style=color:#f92672>;</span>
+   <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>FrameFactory</span><span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> Frame <span style=color:#a6e22e>createFrame</span><span style=color:#f92672>(</span>VendorID vendorID<span style=color:#f92672>){</span>
+		Frame frame <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+		<span style=color:#66d9ef>switch</span><span style=color:#f92672>(</span>vendorID<span style=color:#f92672>){</span>
+			<span style=color:#66d9ef>case</span> LG<span style=color:#f92672>:</span>
+				frame <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> LGFrame<span style=color:#f92672>();</span>
+				<span style=color:#66d9ef>break</span><span style=color:#f92672>;</span>
+			<span style=color:#66d9ef>case</span> SAMSUNG<span style=color:#f92672>:</span>
+				frame <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> SAMSUNGFrame<span style=color:#f92672>();</span>
+				<span style=color:#66d9ef>break</span><span style=color:#f92672>;</span>
+			<span style=color:#66d9ef>case</span> APPLE<span style=color:#f92672>:</span>
+				frame <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> APPLEFrame<span style=color:#f92672>();</span>
+				<span style=color:#66d9ef>break</span><span style=color:#f92672>;</span>
+		<span style=color:#f92672>}</span>
+		<span style=color:#66d9ef>return</span> frame<span style=color:#f92672>;</span>
+	<span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>client</span><span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span><span style=color:#f92672>(</span>String<span style=color:#f92672>[]</span> args<span style=color:#f92672>){</span>
+		Frame frame <span style=color:#f92672>=</span> FrameFactory<span style=color:#f92672>.</span><span style=color:#a6e22e>createFrame</span><span style=color:#f92672>(</span>VendorID<span style=color:#f92672>.</span><span style=color:#a6e22e>APPLE</span><span style=color:#f92672>);</span>
+		Screen screen <span style=color:#f92672>=</span> ScreenFactory<span style=color:#f92672>.</span><span style=color:#a6e22e>createScreen</span><span style=color:#f92672>(</span>VendorID<span style=color:#f92672>.</span><span style=color:#a6e22e>APPLE</span><span style=color:#f92672>);</span>
+
+		Phone phone <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> PhoneBuilder<span style=color:#f92672>().</span><span style=color:#a6e22e>setFrame</span><span style=color:#f92672>(</span>frame<span style=color:#f92672>).</span><span style=color:#a6e22e>setScreen</span><span style=color:#f92672>(</span>screen<span style=color:#f92672>).</span><span style=color:#a6e22e>build</span><span style=color:#f92672>();</span>
+
+		<span style=color:#75715e>//...
+</span><span style=color:#75715e></span>	<span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>문제: 제조사에 화웨이나 소니 등 다른 업체가 추가되면 각각 팩토리의 switch 문을 수정해야 한다.</p>
+<p>어차피 객체 사이에 연관성이 있기 때문에 모아서 만들자!</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>enum</span> VenderID<span style=color:#f92672>{</span>LG<span style=color:#f92672>,</span> SAMSUNG<span style=color:#f92672>,</span> APPLE<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>PhoneFactory</span><span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>public</span> Frame <span style=color:#a6e22e>createFrame</span><span style=color:#f92672>();</span>
+	<span style=color:#66d9ef>public</span> Screen <span style=color:#a6e22e>createScreen</span><span style=color:#f92672>();</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>LGPhoneFactory</span> <span style=color:#66d9ef>implements</span> PhoneFactory<span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>public</span> Frame <span style=color:#a6e22e>createFrame</span><span style=color:#f92672>(){</span>
+		<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> LGFrame<span style=color:#f92672>();</span>
+	<span style=color:#f92672>}</span>
+	<span style=color:#66d9ef>public</span> Screen <span style=color:#a6e22e>createScreen</span><span style=color:#f92672>(){</span>
+		<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> LGScreen<span style=color:#f92672>();</span>
+	<span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>SAMSUNGPhoneFactory</span> <span style=color:#66d9ef>implements</span> PhoneFactory<span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>public</span> Frame <span style=color:#a6e22e>createFrame</span><span style=color:#f92672>(){</span>
+		<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> SAMSUNGFrame<span style=color:#f92672>();</span>
+	<span style=color:#f92672>}</span>
+	<span style=color:#66d9ef>public</span> Screen <span style=color:#a6e22e>createScreen</span><span style=color:#f92672>(){</span>
+		<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> SAMSUNGScreen<span style=color:#f92672>();</span>
+	<span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>APPLEPhoneFactory</span> <span style=color:#66d9ef>implements</span> PhoneFactory<span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>public</span> Frame <span style=color:#a6e22e>createFrame</span><span style=color:#f92672>(){</span>
+		<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> APPLEFrame<span style=color:#f92672>();</span>
+	<span style=color:#f92672>}</span>
+	<span style=color:#66d9ef>public</span> Screen <span style=color:#a6e22e>createScreen</span><span style=color:#f92672>(){</span>
+		<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> APPLEScreen<span style=color:#f92672>();</span>
+	<span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>client</span><span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span><span style=color:#f92672>(</span>String<span style=color:#f92672>[]</span> args<span style=color:#f92672>){</span>
+		PhnoeFactory aPPLEPhoneFactory <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> APPLEPhoneFactory<span style=color:#f92672>();</span>
+		Frame frame <span style=color:#f92672>=</span> aPPLEPhoneFactory<span style=color:#f92672>.</span><span style=color:#a6e22e>createFrame</span><span style=color:#f92672>();</span>
+		Screen screen <span style=color:#f92672>=</span> aPPLEPhoneFactory<span style=color:#f92672>.</span><span style=color:#a6e22e>createScreen</span><span style=color:#f92672>();</span>
+
+		Phone phone <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> PhoneBuilder<span style=color:#f92672>(</span>VendorID<span style=color:#f92672>.</span><span style=color:#a6e22e>APPLE</span><span style=color:#f92672>).</span><span style=color:#a6e22e>setFrame</span><span style=color:#f92672>(</span>frame<span style=color:#f92672>).</span><span style=color:#a6e22e>setScreen</span><span style=color:#f92672>(</span>screen<span style=color:#f92672>).</span><span style=color:#a6e22e>build</span><span style=color:#f92672>();</span>
+
+		<span style=color:#75715e>//...
+</span><span style=color:#75715e></span>	<span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span> 
+</code></pre></div><p>만약 화웨이 폰이 추가된다면? 화웨이폰factory implements PhoneFactory 만 구현하면 된다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>APPLEPhoneFactory</span> <span style=color:#66d9ef>implements</span> PhoneFactory<span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>public</span> Frame <span style=color:#a6e22e>createFrame</span><span style=color:#f92672>(){</span>
+		<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> APPLEFrame<span style=color:#f92672>();</span>
+	<span style=color:#f92672>}</span>
+	<span style=color:#66d9ef>public</span> Screen <span style=color:#a6e22e>createScreen</span><span style=color:#f92672>(){</span>
+		<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> APPLEScreen<span style=color:#f92672>();</span>
+	<span style=color:#f92672>}</span>
+
+	<span style=color:#66d9ef>public</span> Phone <span style=color:#a6e22e>createPhone</span><span style=color:#f92672>(){</span>
+		<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> IPhone<span style=color:#f92672>().</span><span style=color:#a6e22e>setFrame</span><span style=color:#f92672>(</span><span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>createFrame</span><span style=color:#f92672>()).</span><span style=color:#a6e22e>setScreen</span><span style=color:#f92672>(</span><span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>createScreen</span><span style=color:#f92672>());</span>
+	<span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>client</span><span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span><span style=color:#f92672>(</span>String<span style=color:#f92672>[]</span> args<span style=color:#f92672>){</span>
+		PhnoeFactory aPPLEPhoneFactory <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> APPLEPhoneFactory<span style=color:#f92672>();</span>
+		Phone phone <span style=color:#f92672>=</span> aPPLEPhoneFactory<span style=color:#f92672>.</span><span style=color:#a6e22e>createPhone</span><span style=color:#f92672>();</span>
+
+		phone<span style=color:#f92672>.</span><span style=color:#a6e22e>call</span><span style=color:#f92672>();</span>
+		<span style=color:#75715e>//...
+</span><span style=color:#75715e></span>	<span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h3 id=consequences-br>
+Consequences
+<a class=anchor href=#consequences-br>#</a>
+</h3>
+<ol>
+<li>concrete classes 들을 숨긴다.</li>
+<li>product families 교환을 쉽게 한다.</li>
+<li>같은 상속을 받는 product 간 consistency를 증가시킨다.</li>
+<li>새로운 product의 추가는 어려워진다.</li>
+</ol>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#abstract-factory-pattern>Abstract Factory Pattern</a>
+<ul>
+<li><a href=#intent-br>Intent </a></li>
+<li><a href=#implementation-br>Implementation </a></li>
+<li><a href=#consequences-br>Consequences </a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>

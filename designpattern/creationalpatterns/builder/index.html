@@ -1,0 +1,175 @@
+<!doctype html><html lang=en dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="디자인 패턴에 대해 알아보자">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="Design Pattern">
+<meta property="og:description" content="디자인 패턴에 대해 알아보자">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sangmoon.github.io/TIL/designpattern/creationalpatterns/builder/"><meta property="article:section" content="DesignPattern">
+<meta property="article:published_time" content="2021-10-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-10-23T00:00:00+00:00">
+<title>Design Pattern | Sangmoon's TIL</title>
+<link rel=manifest href=/TIL/manifest.json>
+<link rel=icon href=/TIL/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/TIL/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css integrity="sha256-RhgbyTN1upMgJudTs3xA5v+LsWqe93DHi8xmPkV3sbo=" crossorigin=anonymous>
+<script defer src=/TIL/flexsearch.min.js></script>
+<script defer src=/TIL/en.search.min.58e317a58bdb983ff9fe64dbce44994883782a83ea5a5d5fbf080e12279c4e0f.js integrity="sha256-WOMXpYvbmD/5/mTbzkSZSIN4KoPqWl1fvwgOEiecTg8=" crossorigin=anonymous></script>
+</head>
+<body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/TIL/><span>Sangmoon's TIL</span>
+</a>
+</h2>
+<div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div>
+<ul id=book-search-results></ul>
+</div>
+</nav>
+<script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div>
+</aside>
+<div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/TIL/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>Design Pattern</strong>
+<label for=toc-control>
+<img src=/TIL/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div>
+<aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#builder-pattern>Builder Pattern</a>
+<ul>
+<li><a href=#intent-br>Intent </a></li>
+<li><a href=#implementation-br>Implementation </a></li>
+<li><a href=#consequences-br>Consequences </a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+</header>
+<article class=markdown><h2 id=builder-pattern>
+Builder Pattern
+<a class=anchor href=#builder-pattern>#</a>
+</h2>
+<h3 id=intent-br>
+Intent
+<a class=anchor href=#intent-br>#</a>
+</h3>
+<p>인스턴스를 생성할 때 <code>생성자</code> 만을 통해서 생성하는데에는 어려움이 있다.
+생성자 인자가 너무 많은 경우 어떠한 인자가 어떠한 값을 나타내는지 확인하기 힘들다. 또 어떠한 인스턴스는 특정인자만으로
+생성해야 하는 경우가 발생한다. <code>telescoping constructor pattern</code>은 클래스가 지저분해진다.
+<code>java bean pattern</code>은 일관성이 깨지고, immutable한 객체 생성이 불가능하다.</p>
+<h3 id=implementation-br>
+Implementation
+<a class=anchor href=#implementation-br>#</a>
+</h3>
+<p><code>telescoping constructor pattern</code> 과 <code>java bean pattern</code>을 조합한다.
+앱들이를 만드는 클래스를 생성한다.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>//AppleMan.java
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>AppleMan</span><span style=color:#f92672>{</span>
+	<span style=color:#66d9ef>private</span> String name<span style=color:#f92672>;</span>
+	<span style=color:#66d9ef>private</span> <span style=color:#66d9ef>int</span> age<span style=color:#f92672>;</span>
+	<span style=color:#66d9ef>private</span> String phone<span style=color:#f92672>;</span>
+	<span style=color:#66d9ef>private</span> String notebook<span style=color:#f92672>;</span>
+	<span style=color:#66d9ef>private</span> String tablet<span style=color:#f92672>;</span>
+
+	<span style=color:#66d9ef>public</span> <span style=color:#a6e22e>student</span><span style=color:#f92672>(){}</span>
+
+	<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Builder</span> <span style=color:#f92672>{</span>
+		<span style=color:#66d9ef>private</span> String name<span style=color:#f92672>;</span>
+		<span style=color:#66d9ef>private</span> <span style=color:#66d9ef>int</span> age<span style=color:#f92672>;</span>
+		<span style=color:#66d9ef>private</span> String phone<span style=color:#f92672>;</span>
+		<span style=color:#66d9ef>private</span> String notebook<span style=color:#f92672>;</span>
+		<span style=color:#66d9ef>private</span> String tablet<span style=color:#f92672>;</span>
+
+		<span style=color:#66d9ef>public</span> <span style=color:#a6e22e>Builder</span><span style=color:#f92672>(</span>String name<span style=color:#f92672>,</span> <span style=color:#66d9ef>int</span> age<span style=color:#f92672>){</span>
+			<span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>name</span> <span style=color:#f92672>=</span> name<span style=color:#f92672>;</span>
+			<span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>age</span> <span style=color:#f92672>=</span> age<span style=color:#f92672>;</span>
+		<span style=color:#f92672>}</span>
+
+		<span style=color:#66d9ef>public</span> Builder <span style=color:#a6e22e>phone</span><span style=color:#f92672>(</span>String phone<span style=color:#f92672>){</span>
+			<span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>phone</span> <span style=color:#f92672>=</span> phone<span style=color:#f92672>;</span>
+			<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>this</span><span style=color:#f92672>;</span>
+		<span style=color:#f92672>}</span>
+
+		<span style=color:#66d9ef>public</span> Builder <span style=color:#a6e22e>notebook</span><span style=color:#f92672>(</span>String notebook<span style=color:#f92672>){</span>
+			<span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>notebook</span> <span style=color:#f92672>=</span> notebook<span style=color:#f92672>;</span>
+			<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>this</span><span style=color:#f92672>;</span>
+		<span style=color:#f92672>}</span>
+
+		<span style=color:#66d9ef>public</span> Builder <span style=color:#a6e22e>tablet</span><span style=color:#f92672>(</span>String tablet<span style=color:#f92672>){</span>
+			<span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>tablet</span> <span style=color:#f92672>=</span> tablet<span style=color:#f92672>;</span>
+			<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>this</span><span style=color:#f92672>;</span>
+		<span style=color:#f92672>}</span>
+
+		<span style=color:#66d9ef>public</span> AppleMan <span style=color:#a6e22e>build</span><span style=color:#f92672>(){</span>
+			<span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> AppleMan<span style=color:#f92672>(</span><span style=color:#66d9ef>this</span><span style=color:#f92672>);</span>
+		<span style=color:#f92672>}</span>
+
+		<span style=color:#66d9ef>private</span> <span style=color:#a6e22e>Appleman</span><span style=color:#f92672>(</span>Builder builder<span style=color:#f92672>){</span>
+			<span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>name</span> <span style=color:#f92672>=</span> builder<span style=color:#f92672>.</span><span style=color:#a6e22e>name</span><span style=color:#f92672>;</span>
+			<span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>age</span> <span style=color:#f92672>=</span> builder<span style=color:#f92672>.</span><span style=color:#a6e22e>age</span><span style=color:#f92672>;</span>
+			<span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>phone</span> <span style=color:#f92672>=</span> builder<span style=color:#f92672>.</span><span style=color:#a6e22e>phone</span><span style=color:#f92672>;</span>
+			<span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>notebook</span> <span style=color:#f92672>=</span> builder<span style=color:#f92672>.</span><span style=color:#a6e22e>notebook</span><span style=color:#f92672>;</span>
+			<span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>tablet</span> <span style=color:#f92672>=</span> builder<span style=color:#f92672>.</span><span style=color:#a6e22e>tablet</span><span style=color:#f92672>;</span>
+		<span style=color:#f92672>}</span>
+	<span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>//main.java
+</span><span style=color:#75715e></span>AppleMan man <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> AppleMan<span style=color:#f92672>.</span><span style=color:#a6e22e>Builder</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;sangmoon&#34;</span><span style=color:#f92672>,</span> 26<span style=color:#f92672>)</span>
+							<span style=color:#f92672>.</span><span style=color:#a6e22e>phone</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;iphone se&#34;</span><span style=color:#f92672>)</span>
+							<span style=color:#f92672>.</span><span style=color:#a6e22e>notebook</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;macbook pro&#34;</span><span style=color:#f92672>)</span>
+							<span style=color:#f92672>.</span><span style=color:#a6e22e>tablet</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;ipad pro&#34;</span><span style=color:#f92672>)</span>
+							<span style=color:#f92672>.</span><span style=color:#a6e22e>build</span><span style=color:#f92672>();</span>
+</code></pre></div><h3 id=consequences-br>
+Consequences
+<a class=anchor href=#consequences-br>#</a>
+</h3>
+<ol>
+<li>클래스 내부 표현을 다양화 할 수 있다.</li>
+<li>객체 생성과 표현을 분리할 수 있다.</li>
+<li>객체 생성에 대해 더 멋지게 조절 할 수 있다.</li>
+</ol>
+</article>
+<footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div>
+<script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+</footer>
+<div class=book-comments>
+</div>
+<label for=menu-control class="hidden book-menu-overlay"></label>
+</div>
+<aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#builder-pattern>Builder Pattern</a>
+<ul>
+<li><a href=#intent-br>Intent </a></li>
+<li><a href=#implementation-br>Implementation </a></li>
+<li><a href=#consequences-br>Consequences </a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</aside>
+</main>
+</body>
+</html>
